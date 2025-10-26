@@ -1,0 +1,13 @@
+Django==5.2.7
+djangorestframework==3.16.1
+django-cors-headers==4.9.0
+djangorestframework-simplejwt==5.5.1
+Pillow==12.0.0
+firebase-admin==7.1.0
+python-decouple==3.8
+python-dotenv==1.0.0
+celery==5.5.3
+redis==7.0.0
+channels==4.3.1
+channels-redis==4.3.0
+daphne==4.2.1
