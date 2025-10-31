@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CircleUP - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 100px;
+            flex: 1;
+            display: flex;
+            overflow-y: auto;
+        }
+        
+
+        .feed-container {
+            flex: 1;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        /* Story Slider */
+        .story-slider {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        .story-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .story-item {
+            flex-shrink: 0;
+            width: 120px;
+            text-align: center;
+        }
+
+        .story-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 8px;
+        }
+
+        .story-title {
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Post Card */
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .post-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-info h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .post-time {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .post-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #fff3e0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #e59d2c;
+            font-weight: 500;
+        }
+
+        .post-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: #e59d2c;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .reaction-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .reaction-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .reaction-btn.love {
+            background: #ffeaa7;
+        }
+
+        .reaction-btn.like {
+            background: #f0f0f0;
+        }
+
+        .reaction-btn.smile {
+            background: #f0f0f0;
+        }
+
+        .post-caption {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .post-caption strong {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 320px;
+            padding: 20px;
+            background: white;
+            margin: 20px;
+            border-radius: 12px;
+            height: fit-content;
+        }
+
+        .join-communities h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .community-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .community-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .community-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .community-details h4 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .community-members {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .join-btn {
+            padding: 8px 20px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+
+        .join-btn:hover {
+            background: #555;
+        }
+
+        .show-more {
+            text-align: center;
+            color: #e59d2c;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .story-item {
+            flex-shrink: 0;
+            width: 130px;
+            text-align: center;
+            position: relative;
+        }
+
+        .story-image {
+            width: 130px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 0;
+        }
+
+        .story-title {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: white;
+            font-weight: 500;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 6px;
+            width: calc(100% - 20px);
+            text-align: center;
+        }
+    </style>
+     {% include "circleup/sidebar.html" %}
+</head>
+
+<body>
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Feed Container -->
+        <div class="feed-container">
+            <!-- Story Slider -->
+            <div class="story-slider">
+                <div class="story-item">
+                    <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=200&h=200&fit=crop" alt="Tennis Story" class="story-image">
+                    <div class="story-title">Tennis Prasmul</div>
+                </div>
+                <div class="story-item">
+                    <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=200&h=200&fit=crop" alt="Tennis Story" class="story-image">
+                    <div class="story-title">Tennis Prasmul</div>
+                </div>
+                <div class="story-item">
+                    <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=200&h=200&fit=crop" alt="Tennis Story" class="story-image">
+                    <div class="story-title">Tennis Prasmul</div>
+                </div>
+                <div class="story-item">
+                    <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=200&h=200&fit=crop" alt="Tennis Story" class="story-image">
+                    <div class="story-title">Tennis Prasmul</div>
+                </div>
+                <div class="story-item">
+                    <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=200&h=200&fit=crop" alt="Tennis Story" class="story-image">
+                    <div class="story-title">Tennis Prasmul</div>
+                </div>
+            </div>
+
+            <!-- Post Card -->
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="post-user">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" alt="Luka MOD" class="post-avatar">
+                        <div class="post-info">
+                            <h4>Luka MOD</h4>
+                            <span class="post-time">10/22/24, 9:57 AM</span>
+                        </div>
+                    </div>
+                    <div class="post-badge">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Tennis club
+                    </div>
+                </div>
+
+                <img src="https://images.unsplash.com/photo-1527786356703-4b100091cd2c?w=800&h=600&fit=crop" alt="Racing Helmet" class="post-image">
+
+                <div class="post-actions">
+                    <button class="reaction-btn love">
+                        2 ❤️
+                    </button>
+                    <button class="reaction-btn like">
+                        1 👍
+                    </button>
+                    <button class="reaction-btn smile">
+                        😊
+                    </button>
+                </div>
+
+                <div class="post-caption">
+                    <strong>Luka MOD</strong> Kuy ikut Tennis malem ini ges
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="join-communities">
+                <h3>Join Communities!</h3>
+                
+                <div class="community-item">
+                    <div class="community-info">
+                        <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=100&h=100&fit=crop" alt="Basket Club" class="community-avatar">
+                        <div class="community-details">
+                            <h4>Basket Club</h4>
+                            <div class="community-members">3000 members</div>
+                        </div>
+                    </div>
+                    <button class="join-btn">Join</button>
+                </div>
+
+                <div class="community-item">
+                    <div class="community-info">
+                        <img src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=100&h=100&fit=crop" alt="Volleyy fly high" class="community-avatar">
+                        <div class="community-details">
+                            <h4>Volleyy fly high</h4>
+                            <div class="community-members">1000 members</div>
+                        </div>
+                    </div>
+                    <button class="join-btn">Join</button>
+                </div>
+
+                <div class="show-more">Show more</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

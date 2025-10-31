@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tennis Prasmul - Members</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:#f5f5f5;display:flex;overflow:hidden}
+    #sidebar-container{flex-shrink:0}
+    .main-container{display:flex;flex:1;height:100vh;overflow:hidden}
+
+    .members-container{
+      flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;
+    }
+
+    /* ===== NEW: dua kolom (Left Rail + konten members) ===== */
+    .members-body{
+      flex:1;display:flex;min-height:0;background:#fff;
+    }
+
+    /* Left Media Rail — Opsi “Large” */
+    .left-rail{
+      width:140px;                 /* ukuran besar seperti mockup */
+      padding:16px 10px;
+      border-right:1px solid #eee;
+      background:#fff;
+      overflow-y:auto;
+      flex-shrink:0;
+    }
+    .left-rail::-webkit-scrollbar{width:8px}
+    .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
+    .rail-item{
+      display:flex;align-items:center;gap:10px;
+      padding:10px;margin-bottom:16px;border-radius:16px;background:#f6f6f6;
+      cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s
+    }
+    .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .rail-thumb{
+      width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;
+    }
+    .rail-label{display:none;font-size:12px;color:#333} /* set ke block kalau mau tampilkan teks */
+
+    /* Kolom kanan (header + list members) */
+    .members-main{
+      flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;
+    }
+
+    .members-header{
+      padding:30px 40px;background:#f5f5f5;border-bottom:1px solid #e0e0e0;
+    }
+
+    .members-content{padding:30px 40px;flex:1;overflow:auto}
+
+    .member-item{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:20px;background:#f9f9f9;border-radius:12px;margin-bottom:12px;
+      transition:background-color .2s ease;
+    }
+    .member-item:hover{background:#f0f0f0}
+
+    .member-info{display:flex;align-items:center;gap:15px;flex:1}
+    .member-avatar{width:45px;height:45px;border-radius:50%;object-fit:cover}
+    .member-details{display:flex;flex-direction:column}
+    .member-name{
+      font-size:15px;font-weight:600;color:#333;display:flex;align-items:center;gap:8px;
+    }
+    .member-badge{
+      font-size:12px;font-weight:600;color:#e59d2c;background:#fff3e0;padding:3px 10px;border-radius:12px;
+    }
+
+    .member-actions{display:flex;gap:10px}
+    .action-button{
+      padding:8px 20px;border:none;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:.3s;
+      font-family:'Poppins',sans-serif;
+    }
+    .action-button.admin{background:#e59d2c;color:#fff}
+    .action-button.admin:hover{background:#d48b1f}
+    .action-button.kick{background:#333;color:#fff}
+    .action-button.kick:hover{background:#555}
+    .action-button.remove{background:#f5f5f5;color:#e74c3c}
+    .action-button.remove:hover{background:#ffe5e5}
+
+
+
+    #right-sidebar-container{flex-shrink:0}
+  </style>
+</head>
+<body>
+  <div id="sidebar-container"></div>
+
+  <div class="main-container">
+    <div class="members-container">
+      <!-- NEW: dua kolom -->
+      <div class="members-body">
+        <!-- LEFT RAIL (Opsi Large) -->
+        <aside class="left-rail">
+          <!-- ganti src sesuai asetmu -->
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1517495306984-9133a0b411c7?q=80&w=600&auto=format&fit=crop" alt=""></div>
+        </aside>
+
+
+
+          <div class="members-content">
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe <span class="member-badge">Creator</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=12" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe <span class="member-badge">Admin</span></div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button remove" onclick="removeAdmin(2)">Remove Admin</button>
+                <button class="action-button kick" onclick="kickMember(2)">Kick</button>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=13" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe</div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button admin" onclick="makeAdmin(3)">Make Admin</button>
+                <button class="action-button kick" onclick="kickMember(3)">Kick</button>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=14" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe</div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button admin" onclick="makeAdmin(4)">Make Admin</button>
+                <button class="action-button kick" onclick="kickMember(4)">Kick</button>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=15" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe</div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button admin" onclick="makeAdmin(5)">Make Admin</button>
+                <button class="action-button kick" onclick="kickMember(5)">Kick</button>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=16" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe</div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button admin" onclick="makeAdmin(6)">Make Admin</button>
+                <button class="action-button kick" onclick="kickMember(6)">Kick</button>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=17" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe</div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button admin" onclick="makeAdmin(7)">Make Admin</button>
+                <button class="action-button kick" onclick="kickMember(7)">Kick</button>
+              </div>
+            </div>
+
+            <div class="member-item">
+              <div class="member-info">
+                <img src="https://i.pravatar.cc/150?img=18" alt="Peppe" class="member-avatar">
+                <div class="member-details">
+                  <div class="member-name">Peppe</div>
+                </div>
+              </div>
+              <div class="member-actions">
+                <button class="action-button admin" onclick="makeAdmin(8)">Make Admin</button>
+                <button class="action-button kick" onclick="kickMember(8)">Kick</button>
+              </div>
+            </div>
+          </div>
+        </div><!-- /members-main -->
+      </div><!-- /members-body -->
+    </div>
+
+    <div id="right-sidebar-container"></div>
+  </div>
+
+  <script>
+    // Load sidebars
+    fetch('sidebar.html')
+      .then(r=>r.text()).then(t=>{document.getElementById('sidebar-container').innerHTML=t})
+      .catch(err=>console.error('Failed to load sidebar:', err));
+
+    fetch('right-sidebar.html')
+      .then(r=>r.text()).then(t=>{document.getElementById('right-sidebar-container').innerHTML=t})
+      .catch(err=>console.error('Failed to load right sidebar:', err));
+
+    function makeAdmin(memberId){
+      if(confirm('Make this member an admin?')){
+        const memberItem=event.target.closest('.member-item');
+        const memberName=memberItem.querySelector('.member-name');
+        const badge=document.createElement('span');
+        badge.className='member-badge'; badge.textContent='Admin';
+        memberName.appendChild(badge);
+        const actions=memberItem.querySelector('.member-actions');
+        actions.innerHTML=`
+          <button class="action-button remove" onclick="removeAdmin(${memberId})">Remove Admin</button>
+          <button class="action-button kick" onclick="kickMember(${memberId})">Kick</button>
+        `;
+        alert('Member promoted to admin successfully');
+      }
+    }
+    function removeAdmin(memberId){
+      if(confirm('Remove admin privileges from this member?')){
+        const memberItem=event.target.closest('.member-item');
+        const badge=memberItem.querySelector('.member-badge'); if(badge) badge.remove();
+        const actions=memberItem.querySelector('.member-actions');
+        actions.innerHTML=`
+          <button class="action-button admin" onclick="makeAdmin(${memberId})">Make Admin</button>
+          <button class="action-button kick" onclick="kickMember(${memberId})">Kick</button>
+        `;
+        alert('Admin privileges removed successfully');
+      }
+    }
+    function kickMember(memberId){
+      if(confirm('Are you sure you want to kick this member from the community?')){
+        const memberItem=event.target.closest('.member-item');
+        memberItem.style.transition='opacity .3s ease'; memberItem.style.opacity='0';
+        setTimeout(()=>{ memberItem.remove(); alert('Member kicked successfully'); },300);
+      }
+    }
+  </script>
+</body>
+</html>

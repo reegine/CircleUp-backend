@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tennis Prasmul - Feeds</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:#f5f5f5;display:flex;overflow:hidden}
+    #sidebar-container{flex-shrink:0}
+    .main-container{display:flex;flex:1;height:100vh;overflow:hidden}
+
+    /* Modal Styles */
+    .modal{
+      display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);
+      z-index:1000;align-items:center;justify-content:center
+    }
+    .modal.active{display:flex}
+    .modal-content{
+      background:#fff;border-radius:16px;width:90%;max-width:700px;max-height:90vh;
+      overflow:hidden;display:flex;flex-direction:column;position:relative
+    }
+    .modal-header{
+      padding:20px 30px;border-bottom:1px solid #eee;display:flex;
+      align-items:center;justify-content:space-between
+    }
+    .modal-header h2{font-size:20px;font-weight:600;color:#333}
+    .close-btn{
+      background:none;border:none;font-size:28px;color:#999;cursor:pointer;
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      border-radius:50%;transition:background .2s
+    }
+    .close-btn:hover{background:#f5f5f5}
+    .modal-body{padding:30px;overflow-y:auto;flex:1}
+
+    /* Create Post Modal */
+    .upload-area{
+      border:2px dashed #ddd;border-radius:12px;padding:60px 20px;
+      text-align:center;margin-bottom:20px;cursor:pointer;transition:all .3s
+    }
+    .upload-area:hover{border-color:#e59d2c;background:#fffbf5}
+    .upload-area svg{width:60px;height:60px;fill:#ccc;margin-bottom:15px}
+    .upload-area p{color:#666;font-size:16px;margin-bottom:10px}
+    .upload-area button{
+      padding:10px 24px;background:#333;color:#fff;border:none;
+      border-radius:20px;font-size:14px;cursor:pointer;margin-top:10px
+    }
+    .upload-area button:hover{background:#555}
+    
+    .post-input{
+      width:100%;min-height:120px;padding:15px;border:1px solid #ddd;
+      border-radius:12px;font-family:'Poppins',sans-serif;font-size:15px;
+      resize:vertical;margin-bottom:20px
+    }
+    .post-input:focus{outline:none;border-color:#e59d2c}
+    
+    .post-submit-btn{
+      width:100%;padding:14px;background:#333;color:#fff;border:none;
+      border-radius:25px;font-size:16px;font-weight:600;cursor:pointer
+    }
+    .post-submit-btn:hover{background:#555}
+
+    /* Post Detail Modal */
+    .post-detail{display:flex;flex-direction:column}
+    .post-detail-header{
+      display:flex;align-items:center;gap:12px;padding:20px 30px;
+      border-bottom:1px solid #eee
+    }
+    .post-author-avatar{
+      width:45px;height:45px;border-radius:50%;background:#e59d2c;
+      display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600
+    }
+    .post-author-info h3{font-size:16px;font-weight:600;color:#333}
+    .post-author-info p{font-size:13px;color:#999;margin-top:2px}
+    .post-detail-image{width:100%;max-height:500px;object-fit:contain;background:#000}
+    .post-detail-content{padding:20px 30px}
+    .post-caption{font-size:15px;color:#333;line-height:1.6;margin-bottom:20px}
+    
+    .reactions-bar{
+      display:flex;align-items:center;gap:10px;padding:15px 0;
+      border-top:1px solid #eee;border-bottom:1px solid #eee
+    }
+    .reaction-btn{
+      padding:8px 16px;border:1px solid #ddd;background:#fff;
+      border-radius:20px;font-size:14px;cursor:pointer;display:flex;
+      align-items:center;gap:6px;transition:all .2s
+    }
+    .reaction-btn:hover{background:#f5f5f5;transform:scale(1.05)}
+    .reaction-btn.active{background:#fffbf5;border-color:#e59d2c}
+    .reaction-btn span{font-size:18px}
+    
+    .comments-section{padding-top:20px}
+    .comments-section h4{font-size:15px;font-weight:600;color:#333;margin-bottom:15px}
+    .comment{
+      padding:12px 0;display:flex;gap:10px;border-bottom:1px solid #f5f5f5
+    }
+    .comment-avatar{
+      width:35px;height:35px;border-radius:50%;background:#ddd;flex-shrink:0
+    }
+    .comment-content{flex:1}
+    .comment-author{font-size:14px;font-weight:600;color:#333}
+    .comment-text{font-size:14px;color:#666;margin-top:4px}
+
+    .feeds-container{
+      flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;
+    }
+
+    /* ====== NEW: body 2 kolom (Left Rail + konten feeds) ====== */
+    .feeds-body{
+      flex:1;display:flex;min-height:0;background:#fff;
+    }
+
+    /* Left Media Rail — Opsi "Large" */
+    .left-rail{
+      width:140px;                 /* ukuran besar seperti mockup */
+      padding:16px 10px;
+      border-right:1px solid #eee;
+      background:#fff;
+      overflow-y:auto;
+      flex-shrink:0;
+    }
+    .left-rail::-webkit-scrollbar{width:8px}
+    .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
+
+    .rail-item{
+      display:flex;align-items:center;gap:10px;
+      padding:10px;margin-bottom:16px;border-radius:16px;background:#f6f6f6;
+      cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s
+    }
+    .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .rail-thumb{
+      width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;
+    }
+    .rail-label{display:none;font-size:12px;color:#333} /* set ke block kalau mau tampilkan teks */
+
+    /* Kolom kanan (header + grid feeds) */
+    .feeds-main{
+      flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;
+    }
+
+    .feeds-header{
+      padding:30px 40px;background:#ffffff;border-bottom:1px solid #e0e0e0;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .header-left{display:flex;align-items:center;gap:15px}
+
+    .post-btn{
+      padding:12px 25px;background:#e59d2c;color:#fff;border:none;border-radius:25px;
+      font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;
+      transition:background-color .3s ease
+    }
+    .post-btn:hover{background:#d48b1f}
+    .post-btn svg{width:18px;height:18px;fill:#fff}
+
+
+    .sort-btn{
+      padding:10px 20px;background:transparent;color:#e59d2c;border:none;font-size:15px;font-weight:600;
+      cursor:pointer;display:flex;align-items:center;gap:8px;transition:color .3s ease
+    }
+    .sort-btn:hover{color:#d48b1f}
+    .sort-btn svg{width:20px;height:20px;fill:#e59d2c}
+
+    .feeds-content{padding:30px 40px;flex:1;overflow:auto}
+
+    .feeds-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+    }
+    .feed-item{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s}
+    .feed-item:hover{transform:scale(1.02)}
+    .feed-image{width:100%;height:100%;object-fit:cover}
+
+    .feed-overlay{
+      position:absolute;top:8px;right:8px;width:35px;height:35px;border-radius:50%;
+      background:rgba(229,157,44,.9);display:flex;align-items:center;justify-content:center;
+    }
+    .feed-overlay svg{width:20px;height:20px;fill:#fff}
+    
+    .preview-image{width:100%;border-radius:12px;margin-bottom:20px}
+
+    #right-sidebar-container{flex-shrink:0}
+  </style>
+</head>
+<body>
+  <div id="sidebar-container"></div>
+
+  <div class="main-container">
+    <div class="feeds-container">
+      <!-- NEW: dua kolom -->
+      <div class="feeds-body">
+        <!-- LEFT RAIL (Opsi Large) -->
+        <aside class="left-rail">
+          <!-- ganti src sesuai asetmu -->
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1517495306984-9133a0b411c7?q=80&w=600&auto=format&fit=crop" alt=""></div>
+        </aside>
+
+        <!-- KANAN: header + grid -->
+        <div class="feeds-main">
+          <div class="feeds-header">
+            <div class="header-left">
+              <button class="post-btn" onclick="createPost()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Post
+              </button>
+            </div>
+            <button class="sort-btn" onclick="sortFeeds()">
+              <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
+              Sort
+            </button>
+          </div>
+
+          <div class="feeds-content">
+            <div class="feeds-grid">
+              <div class="feed-item" onclick="viewPost(1)">
+                <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&h=400&fit=crop" alt="Feed 1" class="feed-image">
+                <div class="feed-overlay">
+                  <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                </div>
+              </div>
+
+              <div class="feed-item" onclick="viewPost(2)">
+                <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=400&fit=crop" alt="Feed 2" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(3)">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop" alt="Feed 3" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(4)">
+                <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop" alt="Feed 4" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(5)">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=400&fit=crop" alt="Feed 5" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(6)">
+                <img src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=400&fit=crop" alt="Feed 6" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(7)">
+                <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400&h=400&fit=crop" alt="Feed 7" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(8)">
+                <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400&h=400&fit=crop" alt="Feed 8" class="feed-image">
+              </div>
+
+              <div class="feed-item" onclick="viewPost(9)">
+                <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400&h=400&fit=crop" alt="Feed 9" class="feed-image">
+              </div>
+            </div>
+          </div>
+        </div><!-- /feeds-main -->
+      </div><!-- /feeds-body -->
+    </div>
+
+    <div id="right-sidebar-container"></div>
+  </div>
+
+  <!-- Create Post Modal -->
+  <div id="createPostModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create new post</h2>
+        <button class="close-btn" onclick="closeCreateModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+          <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" fill="none"/></svg>
+          <p>Drag photos and videos here</p>
+          <button>Select from computer</button>
+          <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="previewFile(event)">
+        </div>
+        <img id="previewImg" class="preview-image" style="display:none">
+        <textarea class="post-input" placeholder="Type something here!"></textarea>
+        <button class="post-submit-btn" onclick="submitPost()">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Detail Modal -->
+  <div id="postDetailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Post</h2>
+        <button class="close-btn" onclick="closeDetailModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:0">
+        <div class="post-detail">
+          <div class="post-detail-header">
+            <div class="post-author-avatar">LM</div>
+            <div class="post-author-info">
+              <h3>Luka MOD</h3>
+              <p>10/22/24, 9:57 AM</p>
+            </div>
+          </div>
+          <img id="detailImage" class="post-detail-image" src="" alt="Post">
+          <div class="post-detail-content">
+            <p class="post-caption" id="detailCaption">Kuy ikut Tennis malem ini ges</p>
+            <div class="reactions-bar">
+              <button class="reaction-btn" onclick="toggleReaction(this, '❤️')">
+                <span>❤️</span> <span class="count">2</span>
+              </button>
+              <button class="reaction-btn" onclick="toggleReaction(this, '👍')">
+                <span>👍</span> <span class="count">1</span>
+              </button>
+              <button class="reaction-btn" onclick="toggleReaction(this, '😂')">
+                <span>😂</span> <span class="count">0</span>
+              </button>
+              <button class="reaction-btn" onclick="toggleReaction(this, '😮')">
+                <span>😮</span> <span class="count">0</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load sidebars
+    fetch('sidebar.html')
+      .then(r=>r.text()).then(t=>{document.getElementById('sidebar-container').innerHTML=t})
+      .catch(err=>console.error('Failed to load sidebar:',err));
+
+    fetch('right-sidebar.html')
+      .then(r=>r.text()).then(t=>{document.getElementById('right-sidebar-container').innerHTML=t})
+      .catch(err=>console.error('Failed to load right sidebar:',err));
+
+    // Post data
+    const posts = [
+      {id: 1, image: 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=400&h=400&fit=crop', caption: 'Amazing tennis match today!'},
+      {id: 2, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=400&fit=crop', caption: 'Beautiful car spotted'},
+      {id: 3, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop', caption: 'Great game night'},
+      {id: 4, image: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop', caption: 'New equipment arrived'},
+      {id: 5, image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=400&fit=crop', caption: 'Technology at its finest'},
+      {id: 6, image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=400&fit=crop', caption: 'Working hard'},
+      {id: 7, image: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=400&h=400&fit=crop', caption: 'Workspace setup'},
+      {id: 8, image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400&h=400&fit=crop', caption: 'Building something great'},
+      {id: 9, image: 'https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400&h=400&fit=crop', caption: 'Tennis practice session'}
+    ];
+
+    function createPost(){ 
+      document.getElementById('createPostModal').classList.add('active');
+    }
+
+    function closeCreateModal(){
+      document.getElementById('createPostModal').classList.remove('active');
+      document.getElementById('previewImg').style.display = 'none';
+      document.getElementById('fileInput').value = '';
+    }
+
+    function closeDetailModal(){
+      document.getElementById('postDetailModal').classList.remove('active');
+    }
+
+    function previewFile(event){
+      const file = event.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          const preview = document.getElementById('previewImg');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function submitPost(){
+      alert('Post submitted successfully!');
+      closeCreateModal();
+    }
+
+    function sortFeeds(){ 
+      alert('Sort feeds functionality'); 
+    }
+
+    function viewPost(id){ 
+      const post = posts.find(p => p.id === id);
+      if(post){
+        document.getElementById('detailImage').src = post.image;
+        document.getElementById('detailCaption').textContent = post.caption;
+        document.getElementById('postDetailModal').classList.add('active');
+      }
+    }
+
+    function toggleReaction(btn, emoji){
+      btn.classList.toggle('active');
+      const countSpan = btn.querySelector('.count');
+      let count = parseInt(countSpan.textContent);
+      if(btn.classList.contains('active')){
+        count++;
+      } else {
+        count = Math.max(0, count - 1);
+      }
+      countSpan.textContent = count;
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event){
+      const createModal = document.getElementById('createPostModal');
+      const detailModal = document.getElementById('postDetailModal');
+      if(event.target === createModal){
+        closeCreateModal();
+      }
+      if(event.target === detailModal){
+        closeDetailModal();
+      }
+    }
+  </script>
+</body>
+</html>

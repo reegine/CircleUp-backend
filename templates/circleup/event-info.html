@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tennis Prasmul - Event Info</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:#f5f5f5;display:flex;overflow:hidden}
+    #sidebar-container{flex-shrink:0}
+    .main-container{display:flex;flex:1;height:100vh;overflow:hidden}
+
+    .event-container{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+
+    /* ====== Body 2 kolom ====== */
+    .event-body{flex:1;display:flex;min-height:0;background:#fff}
+
+    /* Left Rail — Opsi Large */
+    .left-rail{
+      width:140px;padding:16px 10px;border-right:1px solid #eee;background:#fff;
+      overflow-y:auto;flex-shrink:0;
+    }
+    .left-rail::-webkit-scrollbar{width:8px}
+    .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
+    .rail-item{
+      display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:16px;border-radius:16px;
+      background:#f6f6f6;cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s
+    }
+    .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .rail-thumb{width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0}
+    .rail-label{display:none;font-size:12px;color:#333}
+
+    /* Kolom kanan (header + tabel) */
+    .events-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+    /* Header SEKARANG di kolom kanan */
+    .event-header{
+      padding:30px 40px;background:#ffffff;border-bottom:1px solid #e0e0e0;
+      display:flex;align-items:center;justify-content:space-between
+    }
+    .header-left{display:flex;align-items:center;gap:15px}
+    .add-event-btn{
+      padding:12px 25px;background:#e59d2c;color:#fff;border:none;border-radius:25px;
+      font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;
+      transition:background-color .3s ease
+    }
+    .add-event-btn:hover{background:#d48b1f}
+    .add-event-btn svg{width:18px;height:18px;fill:#fff}
+
+    .sort-btn{
+      padding:10px 20px;background:transparent;color:#e59d2c;border:none;font-size:15px;font-weight:600;
+      cursor:pointer;display:flex;align-items:center;gap:8px;transition:color .3s ease
+    }
+    .sort-btn:hover{color:#d48b1f}
+    .sort-btn svg{width:20px;height:20px;fill:#e59d2c}
+
+    .event-content{padding:30px 40px;flex:1;overflow:auto}
+
+    .event-table{width:100%;border-collapse:separate;border-spacing:0}
+    .event-table thead{background:#f5f5f5}
+    .event-table th{
+      padding:18px 20px;text-align:left;font-size:14px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0
+    }
+    .event-table th:first-child{border-radius:12px 0 0 0}
+    .event-table th:last-child{border-radius:0 12px 0 0}
+    .event-table tbody tr{background:#fff;transition:background-color .2s ease}
+    .event-table tbody tr:hover{background:#f9f9f9}
+    .event-table tbody tr.highlighted{background:#fff3e0}
+    .event-table tbody tr.highlighted:hover{background:#ffe8cc}
+    .event-table td{padding:20px;font-size:14px;color:#333;border-bottom:1px solid #f0f0f0}
+    .event-name{font-weight:500;display:flex;align-items:center;gap:10px}
+    .edit-icon{cursor:pointer;opacity:0;transition:opacity .2s ease}
+    .event-table tbody tr:hover .edit-icon{opacity:1}
+    .edit-icon svg{width:16px;height:16px;fill:#888}
+    .edit-icon:hover svg{fill:#333}
+    .event-date,.event-time,.event-location{color:#555}
+
+    .participation-btn{
+      padding:8px 20px;border:none;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:all .3s ease
+    }
+    .participation-btn.join{background:#333;color:#fff}
+    .participation-btn.join:hover{background:#555}
+    .participation-btn.cancel{background:#f5f5f5;color:#333}
+    .participation-btn.cancel:hover{background:#e0e0e0}
+
+    #right-sidebar-container{flex-shrink:0}
+
+    /* ===== Modal Add Event (tambahan) ===== */
+    .modal{
+      display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.35);
+      align-items:center;justify-content:center;padding:24px
+    }
+    .modal-content{
+      width:100%;max-width:560px;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.18);
+      overflow:hidden
+    }
+    .modal-header{
+      display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eee
+    }
+    .modal-header h2{font-size:18px}
+    .close-modal{
+      font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px
+    }
+    .close-modal:hover{background:#f5f5f5}
+    .add-btn{
+      padding:8px 16px;border:none;border-radius:10px;background:#e59d2c;color:#fff;font-weight:600;cursor:pointer
+    }
+    .add-btn:hover{background:#d48b1f}
+    .modal-body{padding:18px 20px}
+    .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+    .form-group label{font-size:13px;color:#333}
+    .form-group input{
+      padding:10px 12px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;outline:none
+    }
+    .form-group input:focus{border-color:#e59d2c;box-shadow:0 0 0 3px rgba(229,157,44,.15)}
+  </style>
+</head>
+<body>
+  <div id="sidebar-container"></div>
+
+  <div class="main-container">
+    <div class="event-container">
+
+      <!-- BODY 2 kolom: rail nempel paling atas -->
+      <div class="event-body">
+        <!-- LEFT RAIL -->
+        <aside class="left-rail">
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt=""></div>
+          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1517495306984-9133a0b411c7?q=80&w=600&auto=format&fit=crop" alt=""></div>
+        </aside>
+
+        <!-- KANAN: header + tabel -->
+        <div class="events-main">
+          <!-- HEADER dipindah ke sini -->
+          <div class="event-header">
+            <div class="header-left">
+              <button class="add-event-btn" onclick="addEvent()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Add event
+              </button>
+            </div>
+            <button class="sort-btn" onclick="sortEvents()">
+              <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
+              Sort
+            </button>
+          </div>
+
+          <div class="event-content">
+            <table class="event-table">
+              <thead>
+                <tr>
+                  <th>Event</th><th>Date</th><th>Time</th><th>Location</th><th>Participation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="event-name">Workshop on Web Development
+                    <span class="edit-icon" onclick="editEvent(1)">
+                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </span></div></td>
+                  <td class="event-date">2024-03-15</td>
+                  <td class="event-time">10:00 AM - 2:00 PM</td>
+                  <td class="event-location">Tech Hub Room 101</td>
+                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
+                </tr>
+
+                <tr>
+                  <td><div class="event-name">Art Exhibition - "Expressions of Color"
+                    <span class="edit-icon" onclick="editEvent(2)">
+                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </span></div></td>
+                  <td class="event-date">2024-04-05</td>
+                  <td class="event-time">6:00 PM - 8:00 PM</td>
+                  <td class="event-location">Art Gallery Hall</td>
+                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
+                </tr>
+
+                <tr class="highlighted">
+                  <td><div class="event-name">Tech Conference - Future Tech Trends
+                    <span class="edit-icon" onclick="editEvent(3)">
+                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </span></div></td>
+                  <td class="event-date">2024-05-20</td>
+                  <td class="event-time">9:00 AM - 5:00 PM</td>
+                  <td class="event-location">Convention Center</td>
+                  <td><button class="participation-btn cancel" onclick="toggleParticipation(this)">Cancel</button></td>
+                </tr>
+
+                <tr>
+                  <td><div class="event-name">Fitness Challenge - 5K Run
+                    <span class="edit-icon" onclick="editEvent(4)">
+                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </span></div></td>
+                  <td class="event-date">2024-06-08</td>
+                  <td class="event-time">7:30 AM - 11:00 AM</td>
+                  <td class="event-location">City Park</td>
+                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
+                </tr>
+
+                <tr>
+                  <td><div class="event-name">Music Festival - Harmony Fest
+                    <span class="edit-icon" onclick="editEvent(5)">
+                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </span></div></td>
+                  <td class="event-date">2024-07-15</td>
+                  <td class="event-time">3:00 PM - 10:00 PM</td>
+                  <td class="event-location">Outdoor Amphitheater</td>
+                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div><!-- /events-main -->
+      </div><!-- /event-body -->
+    </div>
+
+    <div id="right-sidebar-container"></div>
+  </div>
+
+  <!-- ===== Modal Add Event (ditambahkan) ===== -->
+  <div id="addEventModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2>Add Event</h2>
+        <button class="add-btn" onclick="saveNewEvent()">Add</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Event</label>
+          <input type="text" id="eventName" placeholder="Enter event name">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="eventDate">
+        </div>
+        <div class="form-group">
+          <label>Time</label>
+          <input type="text" id="eventTime" placeholder="e.g., 10:00 AM - 2:00 PM">
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="eventLocation" placeholder="Enter location">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ===== /Modal ===== -->
+
+  <script>
+    // Load sidebars
+    fetch('sidebar.html')
+      .then(r=>r.text()).then(t=>{document.getElementById('sidebar-container').innerHTML=t})
+      .catch(err=>console.error('Failed to load sidebar:',err));
+
+    fetch('right-sidebar.html')
+      .then(r=>r.text()).then(t=>{document.getElementById('right-sidebar-container').innerHTML=t})
+      .catch(err=>console.error('Failed to load right sidebar:',err));
+
+    // === Functions dari snippet kamu + integrasi modal ===
+    function addEvent(){ 
+      document.getElementById('addEventModal').style.display='flex';
+    }
+    
+    function closeModal(){
+      document.getElementById('addEventModal').style.display='none';
+      // Clear form
+      document.getElementById('eventName').value='';
+      document.getElementById('eventDate').value='';
+      document.getElementById('eventTime').value='';
+      document.getElementById('eventLocation').value='';
+    }
+    
+    function saveNewEvent(){
+      const name = document.getElementById('eventName').value.trim();
+      const date = document.getElementById('eventDate').value.trim();
+      const time = document.getElementById('eventTime').value.trim();
+      const location = document.getElementById('eventLocation').value.trim();
+      
+      if(!name || !date || !time || !location){
+        alert('Please fill all fields');
+        return;
+      }
+      
+      // Add new row to table (prepend)
+      const tbody = document.querySelector('.event-table tbody');
+      const newRow = tbody.insertRow(0);
+      newRow.innerHTML = `
+        <td><div class="event-name">${name}
+          <span class="edit-icon" onclick="editEvent('new')">
+            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          </span></div></td>
+        <td class="event-date">${date}</td>
+        <td class="event-time">${time}</td>
+        <td class="event-location">${location}</td>
+        <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
+      `;
+      
+      closeModal();
+    }
+    
+    function editEvent(id){ alert('Edit event '+id); }
+    function sortEvents(){ alert('Sort events functionality'); }
+    function toggleParticipation(button){
+      const row=button.closest('tr');
+      if(button.classList.contains('join')){
+        button.textContent='Cancel';
+        button.classList.remove('join'); button.classList.add('cancel');
+        row.classList.add('highlighted');
+      }else{
+        button.textContent='Join';
+        button.classList.remove('cancel'); button.classList.add('join');
+        row.classList.remove('highlighted');
+      }
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e){
+      const modal = document.getElementById('addEventModal');
+      if (e.target === modal) closeModal();
+    });
+    // Esc to close
+    window.addEventListener('keydown', function(e){
+      if(e.key==='Escape'){ closeModal(); }
+    });
+  </script>
+</body>
+</html>

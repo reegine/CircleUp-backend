@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CircleUP - Explore</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #c99746 0%, #b8863d 100%);
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before,
+        .hero::after {
+            content: '';
+            position: absolute;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        .hero::before {
+            width: 150px;
+            height: 150px;
+            top: 20px;
+            left: 10%;
+        }
+
+        .hero::after {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: 15%;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            color: white;
+            font-size: 16px;
+            max-width: 650px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-light {
+            background-color: white;
+            color: #333;
+        }
+
+        .btn-light:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn-dark {
+            background-color: #3a3a3a;
+            color: white;
+        }
+
+        .btn-dark:hover {
+            background-color: #2a2a2a;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background-color: #e8e8e8;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .search-btn {
+            padding: 15px 25px;
+            background-color: #c99746;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .search-btn:hover {
+            background-color: #b8863d;
+        }
+
+        /* Communities Grid */
+        .communities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .community-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            height: 280px;
+        }
+
+        .community-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .community-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .community-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+            padding: 25px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .community-card:hover .community-overlay {
+            opacity: 1;
+        }
+
+        .community-name {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .community-members {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .join-btn {
+            background-color: white;
+            color: #333;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .join-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Decorative circles in hero */
+        .circle {
+            position: absolute;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+        }
+
+        .circle1 {
+            width: 120px;
+            height: 120px;
+            top: 50%;
+            right: 5%;
+        }
+
+        .circle2 {
+            width: 180px;
+            height: 180px;
+            bottom: 20%;
+            right: 25%;
+        }
+    </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      {% include 'circleup/sidebar.html' %}
+    </aside>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="circle circle1"></div>
+                <div class="circle circle2"></div>
+                <h1>FIND YOUR COMMUNITY</h1>
+                <p>Looking for a place to belong? Search for a community that fits you, join instantly with a link, or start your own community and bring people together on CircleUP.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-light">Join with Link</button>
+                    <button class="btn btn-dark">Start New Community</button>
+                </div>
+            </section>
+
+            <!-- Search & Communities Section -->
+            <section class="search-section">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Explore communities">
+                    <button class="search-btn">🔍</button>
+                </div>
+
+                <div class="communities-grid">
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=400&fit=crop" alt="Basket Club">
+                        <div class="community-overlay">
+                            <div class="community-name">Basket Club</div>
+                            <div class="community-members">3000 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1617654112368-307921291f42?w=400&h=400&fit=crop" alt="Car Enthusiasts">
+                        <div class="community-overlay">
+                            <div class="community-name">Car Enthusiasts</div>
+                            <div class="community-members">5200 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop" alt="Tech Lovers">
+                        <div class="community-overlay">
+                            <div class="community-name">Tech Lovers</div>
+                            <div class="community-members">8500 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop&q=80" alt="Mobile Fans">
+                        <div class="community-overlay">
+                            <div class="community-name">Mobile Fans</div>
+                            <div class="community-members">4100 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=400&fit=crop" alt="Content Creators">
+                        <div class="community-overlay">
+                            <div class="community-name">Content Creators</div>
+                            <div class="community-members">6700 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?w=400&h=400&fit=crop" alt="Smart Home">
+                        <div class="community-overlay">
+                            <div class="community-name">Smart Home</div>
+                            <div class="community-members">3300 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=400&fit=crop" alt="Developers">
+                        <div class="community-overlay">
+                            <div class="community-name">Developers</div>
+                            <div class="community-members">9200 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" alt="Startup Hub">
+                        <div class="community-overlay">
+                            <div class="community-name">Startup Hub</div>
+                            <div class="community-members">5800 Members</div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>
