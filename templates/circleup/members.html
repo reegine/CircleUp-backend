@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -88,7 +89,7 @@
   </style>
 </head>
 <body>
-  <div id="sidebar-container"></div>
+  {% include "circleup/sidebar.html" %}
 
   <div class="main-container">
     <div class="members-container">
@@ -213,16 +214,9 @@
 
     <div id="right-sidebar-container"></div>
   </div>
-
+  {% include "circleup/right-sidebar.html" %}
   <script>
-    // Load sidebars
-    fetch('sidebar.html')
-      .then(r=>r.text()).then(t=>{document.getElementById('sidebar-container').innerHTML=t})
-      .catch(err=>console.error('Failed to load sidebar:', err));
 
-    fetch('right-sidebar.html')
-      .then(r=>r.text()).then(t=>{document.getElementById('right-sidebar-container').innerHTML=t})
-      .catch(err=>console.error('Failed to load right sidebar:', err));
 
     function makeAdmin(memberId){
       if(confirm('Make this member an admin?')){

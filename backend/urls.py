@@ -18,6 +18,11 @@ urlpatterns = [
     path('event-info/',  TemplateView.as_view(template_name='circleup/event-info.html'),  name='event_info'),
     path('members/',     TemplateView.as_view(template_name='circleup/members.html'),     name='members'),
     path('about/',       TemplateView.as_view(template_name='circleup/about.html'),       name='about'),
+    path('forgot-password/',  TemplateView.as_view(template_name='circleup/forgot-password.html'),  name='forgot_password'),
+    path('reset-password/',   TemplateView.as_view(template_name='circleup/reset-password.html'),   name='reset_password'),
+    path('register/',         TemplateView.as_view(template_name='circleup/register.html'),         name='register'),
+    path('profile/',          TemplateView.as_view(template_name='circleup/profile-and-edit.html'), name='profile'),
+    path('login/',          TemplateView.as_view(template_name='circleup/login.html'), name='profile'),
 ]
 
 # Static/media saat development (aman dibiarkan)

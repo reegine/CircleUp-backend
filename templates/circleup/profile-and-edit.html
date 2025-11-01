@@ -1,0 +1,510 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CircleUP - Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #e8e8e8;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            z-index: 1;
+        }
+
+        .logo {
+            padding: 0 30px;
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            font-style: italic;
+        }
+
+        .nav-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 30px;
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 16px;
+        }
+
+        .nav-item.active {
+            background-color: #d4a044;
+            color: white;
+            border-radius: 0;
+        }
+
+        .profile-nav {
+            margin-top: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            position: relative;
+            background-color: white;
+        }
+
+        .cover-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .profile-info {
+            padding: 0 60px 40px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 6px solid white;
+            margin-top: -90px;
+            object-fit: cover;
+            background-color: white;
+        }
+
+        .edit-profile-btn {
+            position: absolute;
+            right: 60px;
+            top: 30px;
+            padding: 12px 32px;
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            background-color: #3a3a3a;
+        }
+
+        .profile-details {
+            margin-top: 20px;
+        }
+
+        .profile-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .profile-username {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .profile-bio {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 30px;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-item svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* Edit Profile Modal */
+        .edit-modal {
+            background-color: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #1a1a1a;
+        }
+
+        .save-btn {
+            padding: 8px 24px;
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .save-btn:hover {
+            background-color: #3a3a3a;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .image-upload-section {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .cover-upload {
+            width: 100%;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .cover-upload:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .avatar-upload {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            position: absolute;
+            bottom: -60px;
+            left: 24px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .avatar-upload .upload-overlay {
+            opacity: 0;
+        }
+
+        .avatar-upload:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            margin-top: 70px;
+        }
+
+        .form-group:first-of-type {
+            margin-top: 70px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #d4a044;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .logo h1,
+            .nav-item span {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 16px;
+            }
+
+            .nav-item svg {
+                margin-right: 0;
+            }
+
+            .profile-info {
+                padding: 0 30px 30px;
+            }
+
+            .edit-profile-btn {
+                right: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+  {% include "circleup/sidebar.html" %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="profile-header">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&h=300&fit=crop" alt="Cover" class="cover-image">
+            
+            <div class="profile-info">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop" alt="Profile" class="profile-avatar">
+                
+                <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>
+
+                <div class="profile-details">
+                    <h2 class="profile-name">Luka MOD</h2>
+                    <p class="profile-username">@LukaMOD</p>
+                    <p class="profile-bio">HIIIIIIIII</p>
+
+                    <div class="profile-meta">
+                        <div class="meta-item">
+                            <svg fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            <span>Indonesia</span>
+                        </div>
+                        <div class="meta-item">
+                            <svg fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                            </svg>
+                            <span>Joined September 2011</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="edit-modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <button class="close-btn" onclick="closeEditModal()">✕</button>
+                    <span>Edit Profile</span>
+                </div>
+                <button class="save-btn" onclick="saveProfile()">Save</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="image-upload-section">
+                    <div class="cover-upload" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=200&fit=crop');">
+                        <div class="upload-overlay">
+                            <div class="upload-icon">
+                                <svg fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="avatar-upload" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop');">
+                        <div class="upload-overlay">
+                            <div class="upload-icon">
+                                <svg fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-input" value="Luka MOD" placeholder="Your name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-textarea" placeholder="Tell us about yourself">hee
+hee</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal() {
+            document.getElementById('editModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function saveProfile() {
+            // Here you would typically save the profile data
+            alert('Profile saved!');
+            closeEditModal();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
+    </script>
+</body>
+</html>

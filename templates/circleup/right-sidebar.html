@@ -1,4 +1,57 @@
 {% with current=request.resolver_match.url_name %}
+<style>
+  /* RIGHT SIDEBAR LAYOUT */
+  .right-sidebar{
+    flex:0 0 320px;           /* width fixed di kanan */
+    width:320px;
+    height:100vh;
+    overflow:auto;
+    background:#f9f9f9;
+    border-left:1px solid #eee;
+    padding:16px;
+  }
+  .community-header{margin-bottom:12px}
+  .community-cover{
+    width:100%;height:150px;object-fit:cover;border-radius:12px
+  }
+  .community-name{font-weight:600;font-size:18px;margin-top:10px}
+  .community-stats{font-size:13px;color:#666;margin-bottom:8px}
+
+  /* MENU */
+  .sidebar-menu{list-style:none;margin:10px 0 6px 0;padding:0}
+  .sidebar-menu-item{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:10px;
+    text-decoration:none;color:#333
+  }
+  .sidebar-menu-item:hover{background:#fff}
+  .sidebar-menu-item.active{
+    background:#fff3e0;border:1px solid #e59d2c
+  }
+  .sidebar-menu-item svg{width:18px;height:18px;flex:0 0 18px}
+
+  /* SECTIONS */
+  .sidebar-section{margin-top:14px}
+  .section-toggle{
+    display:flex;align-items:center;gap:8px;cursor:pointer;
+    color:#666;padding:8px 0
+  }
+  .section-toggle svg{width:16px;height:16px}
+  #channels-list,#events-list{margin-top:6px}
+  .channel-item,.event-item{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 10px;border-radius:8px;
+    text-decoration:none;color:#333
+  }
+  .channel-item:hover,.event-item:hover{background:#fff}
+  .channel-item.active{background:#f5f5f5}
+  .channel-item svg,.event-item svg{width:16px;height:16px;flex:0 0 16px}
+
+  /* umum */
+  .right-sidebar a{color:#333;text-decoration:none}
+  .right-sidebar a:hover{text-decoration:none}
+</style>
+
 <div class="right-sidebar">
   <div class="community-header">
     <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=400&h=150&fit=crop" alt="Cover" class="community-cover" />
@@ -10,25 +63,25 @@
     <li>
       <a href="{% url 'about' %}" class="sidebar-menu-item {% if current == 'about' %}active{% endif %}" data-page="about">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        About
+        <span>About</span>
       </a>
     </li>
     <li>
       <a href="{% url 'event_info' %}" class="sidebar-menu-item {% if current == 'event_info' %}active{% endif %}" data-page="event-info">
         <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-        Event Info
+        <span>Event Info</span>
       </a>
     </li>
     <li>
       <a href="{% url 'feeds' %}" class="sidebar-menu-item {% if current == 'feeds' %}active{% endif %}" data-page="feeds">
         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        Feeds
+        <span>Feeds</span>
       </a>
     </li>
     <li>
       <a href="{% url 'members' %}" class="sidebar-menu-item {% if current == 'members' %}active{% endif %}" data-page="members">
         <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        Members
+        <span>Members</span>
       </a>
     </li>
   </ul>
@@ -41,15 +94,15 @@
     <div id="channels-list">
       <a href="{% url 'chat' %}?channel=announcement" class="channel-item" data-channel="announcement">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 14H6v-2h2v2zm0-3H6V9h2v2zm0-3H6V6h2v2zm7 6h-5v-2h5v2zm3-3h-8V9h8v2zm0-3h-8V6h8v2z"/></svg>
-        Announcement
+        <span>Announcement</span>
       </a>
       <a href="{% url 'chat' %}?channel=general" class="channel-item active" data-channel="general">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        General
+        <span>General</span>
       </a>
       <a href="{% url 'chat' %}?channel=random" class="channel-item" data-channel="random">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        Random
+        <span>Random</span>
       </a>
     </div>
   </div>
@@ -62,11 +115,11 @@
     <div id="events-list">
       <a href="{% url 'event_info' %}#event1" class="event-item">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        Tennis 17 Nov
+        <span>Tennis 17 Nov</span>
       </a>
       <a href="{% url 'event_info' %}#event2" class="event-item">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        Lapangan Pm malem ini
+        <span>Lapangan Pm malem ini</span>
       </a>
     </div>
   </div>
@@ -85,8 +138,6 @@
       toggle.classList.add('collapsed');
     }
   }
-
-  // Highlight active channel berdasarkan ?channel=
   (function() {
     const params = new URLSearchParams(window.location.search);
     const channel = params.get('channel') || 'general';

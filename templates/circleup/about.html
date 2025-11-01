@@ -55,58 +55,292 @@
     .logo-svg{width:22px;height:22px;display:block}
 
     /* ====== TYPO mirip screenshot ====== */
-    .community-title{font-size:48px;font-weight:900;letter-spacing:-.5px;color:var(--ink);margin: 0 0 8px;}
-    .community-stats{font-size:22px;font-weight:800;margin-bottom:28px;}
+    .community-title{
+      font-size:48px;font-weight:900;letter-spacing:-.5px;color:var(--ink);margin: 0 0 8px;
+    }
+    .community-stats{
+      font-size:22px;font-weight:800;margin-bottom:28px;
+    }
     .community-stats .members{color:#E6AF2E;}
     .community-stats .online{color:var(--ok);}
-    .community-lead{font-size:22px;line-height:1.6;color:#111;margin:0 0 18px;}
+
+    .community-lead{
+      font-size:22px;line-height:1.6;color:#111;margin:0 0 18px;
+    }
     .feature-list{list-style:none;margin:0 0 16px;padding:0}
     .feature-list li{font-size:24px;line-height:1.5;margin:6px 0}
     .feature-list .bullet{margin-right:10px}
-    .community-motto{font-size:24px;font-weight:600;font-style:normal;background:none;border:0;padding:0;color:#111;margin:4px 0 24px;}
+
+    .community-motto{
+      font-size:24px;font-weight:600;font-style:normal;background:none;border:0;padding:0;color:#111;margin:4px 0 24px;
+    }
 
     .community-footer{
-      margin-top:36px; padding-top:18px; border-top:1px solid #e0e0e0;
-      display:flex; justify-content:space-between; align-items:flex-start;
+      margin-top:36px;
+      padding-top:18px;
+      border-top:1px solid #e0e0e0;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
     }
     .footer-info{display:flex;align-items:center;gap:12px;font-size:18px;color:var(--muted);font-weight:700;margin-bottom:12px}
     .footer-info .icon{font-size:22px;line-height:1}
-    .delete-community-btn{padding:10px 20px;background:#fff;border:0;color:#e45b55;border-radius:999px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:all .2s;}
-    .delete-community-btn:hover{filter:brightness(0.95);transform:translateY(-1px);}
 
-    /* MODAL, FORM, dll (tetap dari versi kamu) */
-    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+    .delete-community-btn{
+      padding:10px 20px;
+      background:#fff;
+      border:0;
+      color:#e45b55;
+      border-radius:999px;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      transition:all .2s;
+    }
+    .delete-community-btn:hover{
+      filter:brightness(0.95);
+      transform:translateY(-1px);
+    }
+
+    /* MODAL STYLES */
+    .modal-overlay{
+      display:none;
+      position:fixed;
+      top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.6);
+      z-index:1000;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
     .modal-overlay.active{display:flex}
-    .modal-content{background:#fff;border-radius:16px;padding:32px;max-width:500px;width:100%;position:relative;box-shadow:0 10px 40px rgba(0,0,0,0.2);animation:modalSlideIn 0.3s ease;}
-    @keyframes modalSlideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
-    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
-    .modal-title{font-size:20px;font-weight:700;color:#000;}
-    .modal-close{background:none;border:none;font-size:24px;cursor:pointer;padding:4px 8px;color:#666;line-height:1;}
+    
+    .modal-content{
+      background:#fff;
+      border-radius:16px;
+      padding:32px;
+      max-width:500px;
+      width:100%;
+      position:relative;
+      box-shadow:0 10px 40px rgba(0,0,0,0.2);
+      animation:modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn{
+      from{transform:translateY(-20px);opacity:0}
+      to{transform:translateY(0);opacity:1}
+    }
+
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:24px;
+    }
+
+    .modal-title{
+      font-size:20px;
+      font-weight:700;
+      color:#000;
+    }
+
+    .modal-close{
+      background:none;
+      border:none;
+      font-size:24px;
+      cursor:pointer;
+      padding:4px 8px;
+      color:#666;
+      line-height:1;
+    }
     .modal-close:hover{color:#000}
+
     .modal-body{margin-bottom:20px}
+
     .form-group{margin-bottom:20px}
-    .form-label{display:block;font-size:14px;font-weight:600;color:#333;margin-bottom:8px;}
-    .form-input,.invite-link-input{width:100%;padding:12px 16px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:'Poppins',sans-serif;transition:border-color .2s;}
-    .form-input:focus{outline:none;border-color:var(--accent);}
-    .form-textarea{width:100%;padding:12px 16px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:'Poppins',sans-serif;min-height:120px;resize:vertical;}
-    .form-textarea:focus{outline:none;border-color:var(--accent);}
-    .image-upload-area{width:100%;height:160px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;cursor:pointer;transition:all .2s;background:#f9f9f9;}
-    .image-upload-area:hover{border-color:var(--accent);background:#fff;}
-    .image-upload-icon{font-size:48px;color:#999;}
-    .toggle-container{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+    .form-label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      color:#333;
+      margin-bottom:8px;
+    }
+
+    .form-input{
+      width:100%;
+      padding:12px 16px;
+      border:1px solid #ddd;
+      border-radius:8px;
+      font-size:15px;
+      font-family:'Poppins',sans-serif;
+      transition:border-color .2s;
+    }
+    .form-input:focus{
+      outline:none;
+      border-color:var(--accent);
+    }
+
+    .form-textarea{
+      width:100%;
+      padding:12px 16px;
+      border:1px solid #ddd;
+      border-radius:8px;
+      font-size:15px;
+      font-family:'Poppins',sans-serif;
+      min-height:120px;
+      resize:vertical;
+    }
+    .form-textarea:focus{
+      outline:none;
+      border-color:var(--accent);
+    }
+
+    .image-upload-area{
+      width:100%;
+      height:160px;
+      border:2px dashed #ccc;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:8px;
+      cursor:pointer;
+      transition:all .2s;
+      background:#f9f9f9;
+    }
+    .image-upload-area:hover{
+      border-color:var(--accent);
+      background:#fff;
+    }
+
+    .image-upload-icon{
+      font-size:48px;
+      color:#999;
+    }
+
+    .toggle-container{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 0;
+    }
+
     .toggle-info{flex:1}
-    .toggle-title{font-size:16px;font-weight:600;color:#000;margin-bottom:4px;}
-    .toggle-desc{font-size:13px;color:#666;}
-    .toggle-switch{position:relative;width:50px;height:28px;background:#ccc;border-radius:14px;cursor:pointer;transition:background .2s;}
+    .toggle-title{
+      font-size:16px;
+      font-weight:600;
+      color:#000;
+      margin-bottom:4px;
+    }
+    .toggle-desc{
+      font-size:13px;
+      color:#666;
+    }
+
+    .toggle-switch{
+      position:relative;
+      width:50px;
+      height:28px;
+      background:#ccc;
+      border-radius:14px;
+      cursor:pointer;
+      transition:background .2s;
+    }
     .toggle-switch.active{background:var(--accent)}
-    .toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .2s;}
-    .toggle-switch.active::after{transform:translateX(22px);}
-    .modal-actions{display:flex;gap:12px;justify-content:flex-end;}
-    .btn-save{padding:12px 28px;background:#000;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;}
+    .toggle-switch::after{
+      content:'';
+      position:absolute;
+      top:3px;
+      left:3px;
+      width:22px;
+      height:22px;
+      background:#fff;
+      border-radius:50%;
+      transition:transform .2s;
+    }
+    .toggle-switch.active::after{
+      transform:translateX(22px);
+    }
+
+    .modal-actions{
+      display:flex;
+      gap:12px;
+      justify-content:flex-end;
+    }
+
+    .btn-save{
+      padding:12px 28px;
+      background:#000;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      font-family:'Poppins',sans-serif;
+    }
     .btn-save:hover{background:#333}
-    .btn-cancel{padding:12px 28px;background:#f5f5f5;color:#333;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:background .2s;}
+
+    .invite-link-container{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-top:20px;
+    }
+
+    .invite-link-input{
+      flex:1;
+      padding:14px 18px;
+      background:#f5f5f5;
+      border:1px solid #e0e0e0;
+      border-radius:8px;
+      font-size:15px;
+      font-family:'Poppins',sans-serif;
+      color:#333;
+    }
+
+    .btn-copy{
+      padding:14px 28px;
+      background:var(--accent);
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      font-family:'Poppins',sans-serif;
+      flex-shrink:0;
+    }
+    .btn-copy:hover{filter:brightness(1.1)}
+
+    .btn-cancel{
+      padding:12px 28px;
+      background:#f5f5f5;
+      color:#333;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      font-family:'Poppins',sans-serif;
+      transition:background .2s;
+    }
     .btn-cancel:hover{background:#e5e5e5}
-    .btn-delete{padding:12px 28px;background:#e45b55;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:background .2s;}
+
+    .btn-delete{
+      padding:12px 28px;
+      background:#e45b55;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      font-family:'Poppins',sans-serif;
+      transition:background .2s;
+    }
     .btn-delete:hover{background:#d04942}
 
     @media (max-width:900px){.community-title{font-size:36px}}
@@ -122,10 +356,7 @@
   </style>
 </head>
 <body>
-  <!-- Sidebar kiri (server-side include) -->
-  <div id="sidebar-container">
-    {% include 'circleup/sidebar.html' %}
-  </div>
+  {% include "circleup/sidebar.html" %}
 
   <div class="main-container">
     <div class="about-container">
@@ -139,9 +370,6 @@
 
         <div class="about-main">
           <div class="about-content">
-            <!-- ====== konten ABOUT kamu (tidak diubah) ====== -->
-            <!-- ... (SELURUH blok profile-card & modal tetap seperti versi kamu) ... -->
-
             <div class="profile-card">
               <div class="profile-banner">
                 <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&h=300&fit=crop" alt="Banner" class="banner-image">
@@ -150,6 +378,7 @@
                 </div>
               </div>
 
+              <!-- tombol di bawah banner -->
               <div class="actions-below">
                 <button class="action-button icon-only logo-btn" title="Tennis Prasmul" onclick="openChannelModal()">
                   <svg class="logo-svg" viewBox="0 0 48 48" aria-hidden="true">
@@ -172,14 +401,22 @@
                 </button>
               </div>
 
+              <!-- konten -->
               <h1 class="community-title">Tennis Prasmul</h1>
-              <p class="community-stats"><span class="members">260 Members</span>, <span class="online">128 Online</span></p>
-              <p class="community-lead">Tempatnya mahasiswa &amp; alumni Prasmul yang hobi tenis buat kumpul, latihan, &amp; fun match bareng.</p>
+              <p class="community-stats">
+                <span class="members">260 Members</span>, <span class="online">128 Online</span>
+              </p>
+
+              <p class="community-lead">
+                Tempatnya mahasiswa &amp; alumni Prasmul yang hobi tenis buat kumpul, latihan, &amp; fun match bareng.
+              </p>
+
               <ul class="feature-list">
                 <li><span class="bullet">🌞</span>Regular practice &amp; sparring</li>
                 <li><span class="bullet">🤝</span>Open for all levels</li>
                 <li><span class="bullet">📍</span>Prasmul Tennis Court</li>
               </ul>
+
               <p class="community-motto">"Serve, rally, and grow together on and off the court!"</p>
 
               <div class="community-footer">
@@ -190,43 +427,161 @@
                 <button class="delete-community-btn" onclick="deleteCommunity()">Delete Community</button>
               </div>
             </div>
-            <!-- ====== /konten ABOUT ====== -->
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Right sidebar (server-side include) -->
-    <div id="right-sidebar-container">
-      {% include 'circleup/right-sidebar.html' %}
+    <div id="right-sidebar-container"></div>
+  </div>
+
+  <!-- Add Channel Modal -->
+  <div class="modal-overlay" id="channelModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Add Channel</span>
+        <button class="modal-close" onclick="closeModal('channelModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Channel Name</label>
+          <input type="text" class="form-input" placeholder="Enter channel name">
+        </div>
+        <div class="toggle-container">
+          <div class="toggle-info">
+            <div class="toggle-title">🔒 Restricted Channel</div>
+            <div class="toggle-desc">Only Creator and admin will be able to view this channel</div>
+          </div>
+          <div class="toggle-switch" id="restrictedToggle" onclick="toggleSwitch('restrictedToggle')"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="closeModal('channelModal')">Add</button>
+      </div>
     </div>
   </div>
 
-  <!-- ======= Modal-modal kamu tetap sama di bawah ini ======= -->
-  <!-- (Add Channel, Edit Bio, Invite Link, Delete Warning) -->
-  <!-- ======= /Modal ======= -->
+  <!-- Edit Bio Modal -->
+  <div class="modal-overlay" id="editBioModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Edit Community Bio</span>
+        <button class="modal-close" onclick="closeModal('editBioModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Banner Image</label>
+          <div class="image-upload-area">
+            <div class="image-upload-icon">📷</div>
+            <div style="font-size:13px;color:#999">Click to upload banner</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Profile Image</label>
+          <div class="image-upload-area" style="height:120px">
+            <div class="image-upload-icon">📷</div>
+            <div style="font-size:13px;color:#999">Click to upload profile image</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Community Name</label>
+          <input type="text" class="form-input" value="Tennis Prasmul" placeholder="Enter community name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bio</label>
+          <textarea class="form-textarea" placeholder="Enter bio">Tempatnya mahasiswa & alumni Prasmul yang hobi tenis buat kumpul, latihan, & fun match bareng.</textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="closeModal('editBioModal')">Save</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Invite Link Modal -->
+  <div class="modal-overlay" id="inviteModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Share community invite link</span>
+        <button class="modal-close" onclick="closeModal('inviteModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="invite-link-container">
+          <input type="text" class="invite-link-input" value="Https://blabla.com" readonly>
+          <button class="btn-copy" onclick="copyInviteLink()">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Warning Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-content" style="max-width:440px">
+      <div class="modal-header" style="border-bottom:none;padding-bottom:0">
+        <span class="modal-title" style="color:#e45b55;font-size:22px">⚠️ Delete Community</span>
+        <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:16px;color:#333;line-height:1.6;margin-bottom:16px">
+          Are you sure you want to delete <strong>Tennis Prasmul</strong>?
+        </p>
+        <p style="font-size:14px;color:#666;line-height:1.5;margin-bottom:0">
+          This action cannot be undone. All members, channels, and content will be permanently deleted.
+        </p>
+      </div>
+      <div class="modal-actions" style="gap:10px">
+        <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn-delete" onclick="confirmDelete()">Delete Community</button>
+      </div>
+    </div>
+  </div>
+  {% include "circleup/right-sidebar.html" %}
   <script>
-    // Hapus fetch() lama karena sekarang include server-side.
+    
     function deleteCommunity(){
       document.getElementById('deleteModal').classList.add('active');
     }
+
     function confirmDelete(){
       closeModal('deleteModal');
       alert('Community deleted successfully');
-      window.location.href='{% url "home" %}';
+      window.location.href='home.html';
     }
-    function openChannelModal(){document.getElementById('channelModal').classList.add('active');}
-    function openEditBioModal(){document.getElementById('editBioModal').classList.add('active');}
-    function openInviteModal(){document.getElementById('inviteModal').classList.add('active');}
-    function closeModal(id){document.getElementById(id).classList.remove('active');}
-    function toggleSwitch(id){document.getElementById(id).classList.toggle('active');}
+
+    function openChannelModal(){
+      document.getElementById('channelModal').classList.add('active');
+    }
+
+    function openEditBioModal(){
+      document.getElementById('editBioModal').classList.add('active');
+    }
+
+    function openInviteModal(){
+      document.getElementById('inviteModal').classList.add('active');
+    }
+
+    function closeModal(modalId){
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function toggleSwitch(toggleId){
+      document.getElementById(toggleId).classList.toggle('active');
+    }
+
     function copyInviteLink(){
       const input = document.querySelector('.invite-link-input');
-      input.select(); document.execCommand('copy'); alert('Link copied to clipboard!');
+      input.select();
+      document.execCommand('copy');
+      alert('Link copied to clipboard!');
     }
-    document.querySelectorAll('.modal-overlay').forEach(ov=>{
-      ov.addEventListener('click',e=>{ if(e.target===ov){ ov.classList.remove('active'); }});
+
+    // Close modal when clicking outside
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e){
+        if(e.target === this){
+          this.classList.remove('active');
+        }
+      });
     });
   </script>
 </body>
