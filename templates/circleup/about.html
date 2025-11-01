@@ -537,7 +537,34 @@
   </div>
   {% include "circleup/right-sidebar.html" %}
   <script>
-    
+        const API = {
+      base: "/api",
+      token: null,
+      setToken(t){ this.token = t },
+      async req(path, opts={}){
+        const headers = {'Content-Type':'application/json', ...(opts.headers||{})};
+        if(this.token) headers.Authorization = `Bearer ${this.token}`;
+        const res = await fetch(this.base + path, {...opts, headers});
+        if(!res.ok) throw await res.json().catch(()=>({error: res.statusText}));
+        return res.json();
+      },
+      form(path, form){ // untuk upload image
+        const headers = {};
+        if(this.token) headers.Authorization = `Bearer ${this.token}`;
+        return fetch(this.base + path, { method:'POST', headers, body: form }).then(r=>r.json());
+      }
+    }
+
+    // About actions
+    async function loadCommunity(id){
+      const data = await API.req(`/communities/${id}/`);
+      // isi DOM (judul, bio, stats, gambar) dari 'data'
+    }
+    function joinCommunity(id){ return API.req(`/communities/${id}/join/`, {method:'POST'}); }
+    function leaveCommunity(id){ return API.req(`/communities/${id}/leave/`, {method:'POST'}); }
+    function addChannel(commId, payload){ return API.req(`/communities/${commId}/add_channel/`, {method:'POST', body: JSON.stringify(payload)}); }
+    function deleteCommunity(id){ return fetch(`/api/communities/${id}/`, { method:'DELETE', headers:{Authorization:`Bearer ${API.token}`} }); }
+
     function deleteCommunity(){
       document.getElementById('deleteModal').classList.add('active');
     }

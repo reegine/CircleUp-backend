@@ -428,7 +428,41 @@
 
   {% include "circleup/right-sidebar.html" %}
   <script>
+    const API = '/api';
+    let token = localStorage.getItem('access_token');
 
+    function setToken(t){ token=t; localStorage.setItem('access_token', t); }
+
+    async function api(path, opts={}){
+      const headers = opts.headers || {};
+      if(token) headers['Authorization'] = `Bearer ${token}`;
+      if(!(opts.body instanceof FormData)) headers['Content-Type']='application/json';
+      const res = await fetch(API+path, {...opts, headers});
+      if(!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+    const channelId = '...';
+
+    async function loadMessages(){
+      const msgs = await api(`/chat-messages/?channel_id=${channelId}`);
+      // render ke #chatMessages
+    }
+
+    async function sendMessage(){
+      const text = document.getElementById('messageInput').value.trim();
+      if(!text) return;
+      await api('/chat-messages/', {method:'POST', body: JSON.stringify({channel: channelId, message: text, mentions: []})});
+      document.getElementById('messageInput').value='';
+      loadMessages();
+    }
+
+    async function addReaction(messageId, emoji){
+      // map emoji → reaction_type FE (contoh sederhana)
+      const map = {'👍':'like','❤️':'love','😂':'laugh','😮':'wow','😢':'sad','🔥':'fire','👏':'clap'};
+      const type = map[emoji] || 'like';
+      await api(`/chat-messages/${messageId}/react/`, {method:'POST', body: JSON.stringify({reaction_type: type})});
+      loadMessages();
+    }
     // ----- Left Rail data (ubah sesuai kebutuhan) -----
     const LEFT_RAIL_ITEMS = [
       {img:'https://images.unsplash.com/photo-1520975922215-230d636f4a59?q=80&w=600&auto=format&fit=crop', label:'Tennis Prasmul'},
