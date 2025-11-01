@@ -378,6 +378,40 @@
             </div>
         </div>
     </div>
+<script>
+  // Cek token login
+  const access = localStorage.getItem("access");
+  if (!access) {
+    // Belum login → arahkan ke halaman login
+    window.location.href = "/login/";
+  } else {
+    console.log("✅ User sudah login, token ditemukan:", access);
+
+    // (opsional) Coba ambil profil user dari backend untuk memastikan token valid
+    fetch("http://127.0.0.1:8000/api/users/profile/", {
+      headers: { "Authorization": `Bearer ${access}` }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Token tidak valid, harus login ulang");
+        return res.json();
+      })
+      .then(user => {
+        console.log("User profile:", user);
+        // (opsional) tampilkan nama user di UI
+        const nama = document.createElement("p");
+        nama.textContent = `Hai, ${user.first_name || user.username}!`;
+        document.body.prepend(nama);
+      })
+      .catch(err => {
+        console.warn(err.message);
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.removeItem("currentUser");
+        window.location.href = "/login/";
+      });
+  }
+</script>
 
 </body>
+
 </html>
