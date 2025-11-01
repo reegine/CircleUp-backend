@@ -151,7 +151,7 @@
         msg.textContent = "Login successful!";
         msg.className = "success small";
 
-        setTimeout(() => (window.location.href = "/"), 600);
+        setTimeout(() => (window.location.href = "/home/"), 600);
       } catch (err) {
         msg.textContent = err?.error || err?.detail || "Login failed. Please check your credentials.";
         msg.className = "error small";
