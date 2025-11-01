@@ -11,7 +11,7 @@ urlpatterns = [
     path('api/', include('api.urls')),  # hapus baris ini kalau tidak punya app api
 
     # ===== PAGES (no .html) =====
-    path('',             TemplateView.as_view(template_name='circleup/home.html'),        name='home'),
+    path('',             TemplateView.as_view(template_name='circleup/login.html'),        name='home'),
     path('explore/',     TemplateView.as_view(template_name='circleup/explore.html'),     name='explore'),
     path('notifications/', TemplateView.as_view(template_name='circleup/notifications.html'), name='notifications'),
     path('chat/',        TemplateView.as_view(template_name='circleup/chat.html'),        name='chat'),
