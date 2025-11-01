@@ -1,286 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CircleUP - Create Account</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            height: 100vh;
-            display: flex;
-        }
-
-        .container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Left side - Form */
-        .left-section {
-            flex: 1;
-            padding: 60px 80px;
-            display: flex;
-            flex-direction: column;
-            background-color: #ffffff;
-        }
-
-        .google-icon {
-            width: 48px;
-            height: 48px;
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 60px;
-        }
-
-        .google-icon img {
-            width: 24px;
-            height: 24px;
-        }
-
-        h1 {
-            font-size: 42px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #1a1a1a;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 48px;
-        }
-
-        .form-group {
-            margin-bottom: 32px;
-        }
-
-        label {
-            display: block;
-            font-size: 15px;
-            font-weight: 500;
-            margin-bottom: 12px;
-            color: #1a1a1a;
-        }
-
-        .name-fields {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        input {
-            width: 100%;
-            padding: 16px 20px;
-            font-size: 15px;
-            border: none;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            outline: none;
-            transition: background-color 0.2s;
-        }
-
-        input:focus {
-            background-color: #ebebeb;
-        }
-
-        input::placeholder {
-            color: #999;
-        }
-
-        .terms {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .terms a {
-            color: #666;
-            text-decoration: underline;
-        }
-
-        .register-btn {
-            width: 100%;
-            padding: 18px;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            background-color: #d4a044;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .register-btn:hover {
-            background-color: #c59138;
-        }
-
-        /* Right side - Hero */
-        .right-section {
-            flex: 1;
-            background: linear-gradient(135deg, #e8b558 0%, #d4a044 100%);
-            padding: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .circles-pattern {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            padding: 40px;
-        }
-
-        .circle {
-            width: 150px;
-            height: 150px;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            position: absolute;
-        }
-
-        .circle:nth-child(1) { top: 10%; left: 15%; width: 120px; height: 120px; }
-        .circle:nth-child(2) { top: 5%; left: 35%; width: 160px; height: 160px; }
-        .circle:nth-child(3) { top: 8%; left: 58%; width: 140px; height: 140px; }
-        .circle:nth-child(4) { top: 12%; right: 10%; width: 180px; height: 180px; }
-        .circle:nth-child(5) { top: 35%; left: 8%; width: 150px; height: 150px; }
-        .circle:nth-child(6) { top: 32%; left: 28%; width: 130px; height: 130px; }
-        .circle:nth-child(7) { top: 30%; left: 48%; width: 170px; height: 170px; }
-        .circle:nth-child(8) { top: 35%; right: 15%; width: 140px; height: 140px; }
-        .circle:nth-child(9) { bottom: 45%; left: 12%; width: 160px; height: 160px; }
-        .circle:nth-child(10) { bottom: 42%; right: 8%; width: 150px; height: 150px; }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            color: white;
-            max-width: 500px;
-        }
-
-        .brand {
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-            opacity: 0.95;
-        }
-
-        .hero-text {
-            font-size: 32px;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 968px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .left-section,
-            .right-section {
-                padding: 40px;
-            }
-
-            .right-section {
-                min-height: 300px;
-            }
-
-            .hero-text {
-                font-size: 24px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CircleUP - Create Account</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; height: 100vh; display: flex; }
+    .container { display: flex; width: 100%; height: 100%; }
+    .left-section { flex: 1; padding: 60px 80px; display: flex; flex-direction: column; background-color: #ffffff; }
+    .google-icon { width: 48px; height: 48px; background-color: #f8f9fa; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 60px; }
+    h1 { font-size: 42px; font-weight: 600; margin-bottom: 16px; color: #1a1a1a; }
+    .subtitle { font-size: 16px; color: #666; line-height: 1.6; margin-bottom: 48px; }
+    .form-group { margin-bottom: 32px; }
+    label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 12px; color: #1a1a1a; }
+    .name-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    input { width: 100%; padding: 16px 20px; font-size: 15px; border: none; background-color: #f5f5f5; border-radius: 8px; outline: none; transition: background-color 0.2s; }
+    input:focus { background-color: #ebebeb; }
+    input::placeholder { color: #999; }
+    .terms { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 16px; }
+    .register-btn { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; color: white; background-color: #d4a044; border: none; border-radius: 50px; cursor: pointer; transition: background-color 0.3s; }
+    .register-btn:hover { background-color: #c59138; }
+    .right-section { flex: 1; background: linear-gradient(135deg, #e8b558 0%, #d4a044 100%); padding: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
+    .circles-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 60%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 20px; padding: 40px; }
+    .circle { width: 150px; height: 150px; border: 3px solid rgba(255, 255, 255, 0.4); border-radius: 50%; position: absolute; }
+    .circle:nth-child(1) { top: 10%; left: 15%; width: 120px; height: 120px; }
+    .circle:nth-child(2) { top: 5%; left: 35%; width: 160px; height: 160px; }
+    .circle:nth-child(3) { top: 8%; left: 58%; width: 140px; height: 140px; }
+    .circle:nth-child(4) { top: 12%; right: 10%; width: 180px; height: 180px; }
+    .circle:nth-child(5) { top: 35%; left: 8%; width: 150px; height: 150px; }
+    .circle:nth-child(6) { top: 32%; left: 28%; width: 130px; height: 130px; }
+    .circle:nth-child(7) { top: 30%; left: 48%; width: 170px; height: 170px; }
+    .circle:nth-child(8) { top: 35%; right: 15%; width: 140px; height: 140px; }
+    .circle:nth-child(9) { bottom: 45%; left: 12%; width: 160px; height: 160px; }
+    .circle:nth-child(10) { bottom: 42%; right: 8%; width: 150px; height: 150px; }
+    .hero-content { position: relative; z-index: 10; text-align: center; color: white; max-width: 500px; }
+    .brand { font-size: 14px; font-weight: 500; letter-spacing: 2px; margin-bottom: 24px; opacity: 0.95; }
+    .hero-text { font-size: 32px; font-weight: 400; line-height: 1.5; }
+    @media (max-width: 968px) {
+      .container { flex-direction: column; }
+      .left-section, .right-section { padding: 40px; }
+      .right-section { min-height: 300px; }
+      .hero-text { font-size: 24px; }
+    }
+    .small { font-size: 13px; color: #666; margin-top: 10px; }
+    .error { color: #b00020; }
+    .success { color: #0a7f3f; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Left Section - Form -->
-        <div class="left-section">
-            <div class="google-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-            </div>
+  <div class="container">
+    <div class="left-section">
+      <div class="google-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+      </div>
 
-            <h1>Create a New Account</h1>
-            <p class="subtitle">Join CircleUP, the place to chat, post, and find your people — because connection should be fun!</p>
+      <h1>Create a New Account</h1>
+      <p class="subtitle">Join CircleUP, the place to chat, post, and find your people — because connection should be fun!</p>
 
-            <form>
-                <div class="form-group">
-                    <label>Name</label>
-                    <div class="name-fields">
-                        <input type="text" placeholder="Marcus" value="Marcus">
-                        <input type="text" placeholder="Aurelius" value="Aurelius">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="aurelius@rocketmail.com" value="aurelius@rocketmail.com">
-                </div>
-
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" value="••••••••••••••••">
-                </div>
-
-                <p class="terms">
-                    By registering, you are agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of Circle Up.
-                </p>
-
-                <button type="submit" class="register-btn">Register</button>
-            </form>
+      <form id="registerForm">
+        <div class="form-group">
+          <label>Name</label>
+          <div class="name-fields">
+            <input id="firstName" type="text" placeholder="Marcus" required />
+            <input id="lastName" type="text" placeholder="Aurelius" required />
+          </div>
         </div>
 
-        <!-- Right Section - Hero -->
-        <div class="right-section">
-            <div class="circles-pattern">
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-                <div class="circle"></div>
-            </div>
-
-            <div class="hero-content">
-                <div class="brand">CircleUP.io</div>
-                <p class="hero-text">
-                    Create your account and step into a world where conversations and creativity come alive — chat, post, and connect with communities that inspire you.
-                </p>
-            </div>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" type="text" placeholder="marcus123" />
+          <div class="small">Jika kosong, akan otomatis dibuat dari email sebelum tanda @.</div>
         </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input id="email" type="email" placeholder="aurelius@rocketmail.com" required />
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input id="password" type="password" placeholder="••••••••••••••" required />
+        </div>
+
+        <div class="checkbox-group" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+          <input id="tos" type="checkbox" checked required />
+          <label for="tos" class="checkbox-label">I agree to the Terms of Service and Privacy Policy</label>
+        </div>
+
+        <button type="submit" class="register-btn">Register</button>
+        <p id="registerMsg" class="small"></p>
+      </form>
     </div>
+
+    <div class="right-section">
+      <div class="circles-pattern">
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="brand">CircleUP.io</div>
+        <p class="hero-text">
+          Create your account and step into a world where conversations and creativity come alive — chat, post, and connect with communities that inspire you.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Ganti base API kamu di sini bila perlu:
+    // localStorage.setItem("API_BASE", "http://127.0.0.1:8000/api");
+    const BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+
+    const form = document.getElementById("registerForm");
+    const msg = document.getElementById("registerMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "Registering...";
+      msg.className = "small";
+
+      const email = document.getElementById("email").value.trim();
+      let username = document.getElementById("username").value.trim();
+      if (!username && email.includes("@")) {
+        username = email.split("@")[0];
+      }
+
+      const payload = {
+        email,
+        username,
+        first_name: document.getElementById("firstName").value.trim(),
+        last_name: document.getElementById("lastName").value.trim(),
+        password: document.getElementById("password").value,
+        terms_and_service: document.getElementById("tos").checked
+      };
+
+      try {
+        const res = await fetch(`${BASE}/auth/register/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw data;
+
+        localStorage.setItem("access", data.tokens.access);
+        localStorage.setItem("refresh", data.tokens.refresh);
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+
+        msg.textContent = "Registration successful! Redirecting to login...";
+        msg.className = "success small";
+
+        setTimeout(() => (window.location.href = "./login.html"), 800);
+      } catch (err) {
+        const errMsg = err?.error || err?.detail || Object.values(err || {})[0] || "Registration failed.";
+        msg.textContent = String(errMsg);
+        msg.className = "error small";
+      }
+    });
+  </script>
 </body>
 </html>
