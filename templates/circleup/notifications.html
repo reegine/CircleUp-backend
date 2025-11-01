@@ -1,0 +1,466 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CircleUP - Notifications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 200px;
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 30px 40px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .panel-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .notifications-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .notification-section {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section-title {
+            padding: 20px 40px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px 40px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f8f8;
+        }
+
+        .notification-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .notification-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .community-tag {
+            color: #d4a044;
+            font-weight: 500;
+        }
+
+        /* Multiple avatars for group notifications */
+        .notification-avatars {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .notification-avatars .avatar-1 {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
+        .notification-avatars .avatar-2 {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+            bottom: 0;
+            right: 0;
+            z-index: 1;
+        }
+
+        /* Right Sidebar - Communities */
+        .right-sidebar {
+            width: 380px;
+            background-color: white;
+            border-left: 1px solid #e0e0e0;
+            overflow-y: auto;
+            padding: 30px 24px;
+        }
+
+        .sidebar-header {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .communities-slider {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 24px;
+        }
+
+        .communities-slider::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .communities-slider::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+
+        .community-card {
+            flex-shrink: 0;
+            width: 160px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .community-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .community-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .community-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        .community-list-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .community-list-item:hover {
+            opacity: 0.7;
+        }
+
+        .community-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+        }
+
+        .community-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .community-info p {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .show-more {
+            text-align: center;
+            padding: 12px;
+            color: #d4a044;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .show-more:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 1200px) {
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .panel-header {
+                padding: 20px 20px;
+            }
+
+            .section-title {
+                padding: 16px 20px 10px;
+            }
+
+            .notification-item {
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "circleup/sidebar.html" %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Notifications Panel -->
+        <div class="notifications-panel">
+            <div class="panel-header">
+                <h1>Notifications</h1>
+            </div>
+
+            <div class="notifications-content">
+                <!-- Today Section -->
+                <div class="notification-section">
+                    <div class="section-title">Today</div>
+                    
+                    <a href="#" class="notification-item">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Kenny" class="notification-avatar">
+                        <div class="notification-body">
+                            <div class="notification-title">Lab Project</div>
+                            <div class="notification-text">
+                                Kenny mentioned you in the "Lab Project" community.
+                            </div>
+                            <div class="notification-time">5m</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Yesterday Section -->
+                <div class="notification-section">
+                    <div class="section-title">Yesterday</div>
+                    
+                    <a href="#" class="notification-item">
+                        <img src="https://i.pravatar.cc/150?img=8" alt="Mimi" class="notification-avatar">
+                        <div class="notification-body">
+                            <div class="notification-title">
+                                Mimi <span class="community-tag"><Tennis Club></span>
+                            </div>
+                            <div class="notification-text">
+                                Mimi React to your post.
+                            </div>
+                            <div class="notification-time">1d</div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="notification-item">
+                        <img src="https://i.pravatar.cc/150?img=9" alt="Tennis Club" class="notification-avatar">
+                        <div class="notification-body">
+                            <div class="notification-title">Tennis Club</div>
+                            <div class="notification-text">
+                                New update! Check <#announcements> for details.
+                            </div>
+                            <div class="notification-time">1d</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Earlier Section -->
+                <div class="notification-section">
+                    <div class="section-title">Earlier</div>
+                    
+                    <a href="#" class="notification-item">
+                        <div class="notification-avatars">
+                            <img src="https://i.pravatar.cc/150?img=15" alt="User 1" class="avatar-1">
+                            <img src="https://i.pravatar.cc/150?img=16" alt="User 2" class="avatar-2">
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-text">
+                                <strong>brainmemind</strong>, <strong>sarakbrl</strong> and <strong>yashwant_chandel_</strong><span class="community-tag"><Tennis Club></span> react to your post.
+                            </div>
+                            <div class="notification-time">7w</div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="notification-item">
+                        <div class="notification-avatars">
+                            <img src="https://i.pravatar.cc/150?img=17" alt="User 1" class="avatar-1">
+                            <img src="https://i.pravatar.cc/150?img=18" alt="User 2" class="avatar-2">
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-text">
+                                <strong>brainmemind</strong>, <strong>hirdesh__10</strong> and <strong>13 others</strong> react to your post.
+                            </div>
+                            <div class="notification-time">7w</div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="notification-item">
+                        <img src="https://i.pravatar.cc/150?img=9" alt="Tennis Club" class="notification-avatar">
+                        <div class="notification-body">
+                            <div class="notification-title">Tennis Club</div>
+                            <div class="notification-text">
+                                A new event just dropped! See <#event info> for all the info.
+                            </div>
+                            <div class="notification-time">7w</div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="notification-item">
+                        <div class="notification-avatars">
+                            <img src="https://i.pravatar.cc/150?img=19" alt="User 1" class="avatar-1">
+                            <img src="https://i.pravatar.cc/150?img=20" alt="User 2" class="avatar-2">
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-text">
+                                <strong>brainmemind</strong>, <strong>sarakbrl</strong> and <strong>yashwant_chandel_</strong><span class="community-tag"><Tennis Club></span> react to your post.
+                            </div>
+                            <div class="notification-time">7w</div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="notification-item">
+                        <div class="notification-avatars">
+                            <img src="https://i.pravatar.cc/150?img=21" alt="User 1" class="avatar-1">
+                            <img src="https://i.pravatar.cc/150?img=22" alt="User 2" class="avatar-2">
+                        </div>
+                        <div class="notification-body">
+                            <div class="notification-text">
+                                <strong>brainmemind</strong>, <strong>hirdesh__10</strong> and <strong>13 others</strong> react to your post.
+                            </div>
+                            <div class="notification-time">7w</div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="notification-item">
+                        <img src="https://i.pravatar.cc/150?img=9" alt="Tennis Club" class="notification-avatar">
+                        <div class="notification-body">
+                            <div class="notification-title">Tennis Club</div>
+                            <div class="notification-text">
+                                A new event just dropped! See <#event info> for all the info.
+                            </div>
+                            <div class="notification-time">7w</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Communities -->
+        <aside class="right-sidebar">
+            <div class="sidebar-header">
+                <h2>Join Communities</h2>
+                
+                <!-- Communities Slider -->
+                <div class="communities-slider">
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&h=300&fit=crop" alt="Prasmul">
+                        <div class="community-card-title">Prasmul</div>
+                    </div>
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=400&h=300&fit=crop" alt="Tennis Prasmul">
+                        <div class="community-card-title">Tennis Prasmul</div>
+                    </div>
+                    <div class="community-card">
+                        <img src="https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=400&h=300&fit=crop" alt="Tennis Prasmul">
+                        <div class="community-card-title">Tennis Prasmul</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community List -->
+            <div class="community-list">
+                <div class="community-list-item">
+                    <img src="https://i.pravatar.cc/150?img=30" alt="Basket Club" class="community-avatar">
+                    <div class="community-info">
+                        <h3>Basket Club</h3>
+                        <p>3000 members</p>
+                    </div>
+                </div>
+
+                <div class="community-list-item">
+                    <img src="https://i.pravatar.cc/150?img=31" alt="Volleyy fly high" class="community-avatar">
+                    <div class="community-info">
+                        <h3>Volleyy fly high</h3>
+                        <p>1000 members</p>
+                    </div>
+                </div>
+
+                <div class="show-more">Show more</div>
+            </div>
+        </aside>
+    </main>
+</body>
+</html>

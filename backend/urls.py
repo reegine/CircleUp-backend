@@ -13,6 +13,7 @@ urlpatterns = [
     # ===== PAGES (no .html) =====
     path('',             TemplateView.as_view(template_name='circleup/home.html'),        name='home'),
     path('explore/',     TemplateView.as_view(template_name='circleup/explore.html'),     name='explore'),
+    path('notifications/', TemplateView.as_view(template_name='circleup/notifications.html'), name='notifications'),
     path('chat/',        TemplateView.as_view(template_name='circleup/chat.html'),        name='chat'),
     path('feeds/',       TemplateView.as_view(template_name='circleup/feeds.html'),       name='feeds'),
     path('event-info/',  TemplateView.as_view(template_name='circleup/event-info.html'),  name='event_info'),
@@ -22,7 +23,7 @@ urlpatterns = [
     path('reset-password/',   TemplateView.as_view(template_name='circleup/reset-password.html'),   name='reset_password'),
     path('register/',         TemplateView.as_view(template_name='circleup/register.html'),         name='register'),
     path('profile/',          TemplateView.as_view(template_name='circleup/profile-and-edit.html'), name='profile'),
-    path('login/',          TemplateView.as_view(template_name='circleup/login.html'), name='profile'),
+    path('login/',          TemplateView.as_view(template_name='circleup/login.html'), name='login'),
 ]
 
 # Static/media saat development (aman dibiarkan)
