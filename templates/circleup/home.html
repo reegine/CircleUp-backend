@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CircleUP - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Guard PALING AWAL: kalau belum login, langsung redirect ke /login/ -->
+  <script>
+    (function () {
+      if (!localStorage.getItem("access")) {
+        window.location.replace("/login/");
+      }
+    })();
+  </script>
+
   <style>
     :root{
       --brand:#e59d2c;
@@ -118,7 +128,7 @@
       display:flex;align-items:center;justify-content:center;font-size:36px
     }
     .empty h2{font-size:20px}
-    .empty p{font-size:13px;color:var(--muted)}
+    .empty p{font-size:13px;color:grey}
     .empty .cta{
       border:none;background:var(--brand);color:#fff;border-radius:999px;padding:10px 16px;font-weight:600;cursor:pointer
     }
@@ -151,20 +161,13 @@
 </head>
 <body>
 
-  <!-- Tarik sidebar dari file terpisah -->
   {% include "circleup/sidebar.html" %}
 
-  <!-- ===== PAGE GRID ===== -->
   <main class="page">
-    <!-- ===== LEFT: FEED / EMPTY ===== -->
     <section class="feed-col">
-      <!-- stories (hanya muncul jika sudah join) -->
       <div id="stories" class="stories"></div>
-
-      <!-- feed posts -->
       <div id="feed"></div>
 
-      <!-- empty state (hanya muncul jika belum join) -->
       <div id="empty" class="empty" style="display:none">
         <div class="icon">👋</div>
         <h2>Welcome aboard!</h2>
@@ -173,7 +176,6 @@
       </div>
     </section>
 
-    <!-- ===== RIGHT: JOIN COMMUNITIES ===== -->
     <aside class="right-col">
       <div class="panel" id="joinPanel">
         <h3>Join Communities!</h3>
@@ -188,13 +190,12 @@
   <script>
     // Konfigurasi dasar
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS   = localStorage.getItem("access");
-    if (!ACCESS) { window.location.href = "/login/"; }
-
+    const ACCESS   = localStorage.getItem("access") || ""; // sudah dicek di head; ini aman
     const authHeaders = { "Authorization": `Bearer ${ACCESS}`, "Content-Type": "application/json" };
-    const toAbs = (u)=>{
-      if(!u) return "";
-      if(u.startsWith("http")) return u;
+
+    const toAbs = (u) => {
+      if (!u) return "";
+      if (u.startsWith("http")) return u;
       const root = API_BASE.replace(/\/api\/?$/,"");
       return `${root}${u.startsWith("/")?"":"/"}${u}`;
     };
@@ -214,6 +215,10 @@
           fetch(`${API_BASE}/users/profile/`, { headers: authHeaders }),
           fetch(`${API_BASE}/home/`,          { headers: authHeaders }),
         ]);
+
+        // kalau token invalid/expired → logout & redirect
+        if (meR.status === 401 || homeR.status === 401) throw new Error("Unauthorized");
+
         if (!meR.ok) throw new Error("Unauthorized");
         if (!homeR.ok) throw new Error("Gagal memuat feed");
 
@@ -222,14 +227,12 @@
         const posts  = home.posts || [];
         const sugg   = home.suggestions || [];
 
-        // TENTUKAN STATE
         if (joined.length > 0) {
           renderStories(joined);
           renderPosts(posts);
           emptyEl.style.display = "none";
           storiesEl.style.display = "flex";
         } else {
-          // non-member state → sembunyikan stories & feed, tampilkan empty
           storiesEl.style.display = "none";
           feedEl.innerHTML = "";
           emptyEl.style.display = "flex";
@@ -240,7 +243,7 @@
         console.warn(e);
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
-        window.location.href = "/login/";
+        window.location.replace("/login/");
       }
     })();
 
@@ -256,7 +259,6 @@
 
     function renderPosts(list){
       if(!list.length){
-        // kalau tidak ada post walaupun sudah join, tetap tampil placeholder kecil
         feedEl.innerHTML = `<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>`;
         return;
       }
@@ -331,7 +333,6 @@
       `).join("");
       joinMore.style.display = "block";
 
-      // join handler
       joinList.addEventListener("click", async (e)=>{
         const btn = e.target.closest(".btn-join");
         if(!btn) return;

@@ -1,76 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CircleUP - Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Poppins', sans-serif; height: 100vh; display: flex; }
-    .container { display: flex; width: 100%; height: 100%; }
-    .left-section { flex: 1; padding: 60px 80px; display: flex; flex-direction: column; background-color: #ffffff; }
-    .google-icon { width: 48px; height: 48px; background-color: #f8f9fa; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 60px; }
-    h1 { font-size: 42px; font-weight: 600; margin-bottom: 16px; color: #1a1a1a; }
-    .subtitle { font-size: 16px; color: #666; line-height: 1.6; margin-bottom: 48px; }
-    .form-group { margin-bottom: 24px; }
-    .form-group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    label { display: block; font-size: 15px; font-weight: 500; color: #1a1a1a; }
-    .forgot-password { font-size: 14px; color: #d4a044; text-decoration: none; font-weight: 500; }
-    .forgot-password:hover { text-decoration: underline; }
-    input[type="email"], input[type="password"] { width: 100%; padding: 16px 20px; font-size: 15px; border: none; background-color: #f5f5f5; border-radius: 8px; outline: none; transition: background-color 0.2s; }
-    input:focus { background-color: #ebebeb; }
-    input::placeholder { color: #999; }
-    .checkbox-group { display: flex; align-items: center; margin-bottom: 16px; gap: 10px; }
-    input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #d4a044; }
-    .checkbox-label { font-size: 14px; color: #1a1a1a; cursor: pointer; user-select: none; }
-    .login-btn { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; color: white; background-color: #d4a044; border: none; border-radius: 50px; cursor: pointer; transition: background-color 0.3s; margin-bottom: 12px; }
-    .login-btn:hover { background-color: #c59138; }
-    .small { font-size: 13px; color: #666; margin-top: 6px; }
-    .signup-link { text-align: center; font-size: 15px; color: #666; margin-top: 16px; }
-    .signup-link a { color: #d4a044; text-decoration: none; font-weight: 500; }
-    .signup-link a:hover { text-decoration: underline; }
-    .right-section { flex: 1; background: linear-gradient(135deg, #e8b558 0%, #d4a044 100%); padding: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-    .circles-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 60%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 20px; padding: 40px; }
-    .circle { width: 150px; height: 150px; border: 3px solid rgba(255, 255, 255, 0.4); border-radius: 50%; position: absolute; }
-    .circle:nth-child(1) { top: 10%; left: 15%; width: 120px; height: 120px; }
-    .circle:nth-child(2) { top: 5%; left: 35%; width: 160px; height: 160px; }
-    .circle:nth-child(3) { top: 8%; left: 58%; width: 140px; height: 140px; }
-    .circle:nth-child(4) { top: 12%; right: 10%; width: 180px; height: 180px; }
-    .circle:nth-child(5) { top: 35%; left: 8%; width: 150px; height: 150px; }
-    .circle:nth-child(6) { top: 32%; left: 28%; width: 130px; height: 130px; }
-    .circle:nth-child(7) { top: 30%; left: 48%; width: 170px; height: 170px; }
-    .circle:nth-child(8) { top: 35%; right: 15%; width: 140px; height: 140px; }
-    .circle:nth-child(9) { bottom: 45%; left: 12%; width: 160px; height: 160px; }
-    .circle:nth-child(10) { bottom: 42%; right: 8%; width: 150px; height: 150px; }
-    .hero-content { position: relative; z-index: 10; text-align: center; color: white; max-width: 500px; }
-    .brand { font-size: 14px; font-weight: 500; letter-spacing: 2px; margin-bottom: 24px; opacity: 0.95; }
-    .hero-text { font-size: 30px; font-weight: 400; line-height: 1.5; }
-    @media (max-width: 968px) {
-      .container { flex-direction: column; }
-      .left-section, .right-section { padding: 40px; }
-      .right-section { min-height: 300px; }
-      .hero-text { font-size: 24px; }
-      h1 { font-size: 32px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .error { color: #b00020; font-size: 14px; margin: 8px 0; }
-    .success { color: #0a7f3f; font-size: 14px; margin: 8px 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .left-section {
+      flex: 1;
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+    }
+
+    .google-icon {
+      width: 48px;
+      height: 48px;
+      background-color: #f8f9fa;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .forgot-password {
+      font-size: 14px;
+      color: #d4a044;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 15px;
+      border: none;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      outline: none;
+      transition: background-color 0.2s;
+    }
+
+    input:focus {
+      background-color: #ebebeb;
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      width: 100%;
+      padding: 16px 50px 16px 20px;
+      /* Tambah space kanan buat ikon */
+      font-size: 15px;
+      border: none;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      outline: none;
+      transition: background-color 0.2s;
+    }
+
+    .password-wrapper img {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .password-wrapper img:hover {
+      opacity: 1;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #d4a044;
+    }
+
+    .checkbox-label {
+      font-size: 14px;
+      color: #1a1a1a;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background-color: #d4a044;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 12px;
+    }
+
+    .login-btn:hover {
+      background-color: #c59138;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    .signup-link {
+      text-align: center;
+      font-size: 15px;
+      color: #666;
+      margin-top: 16px;
+    }
+
+    .signup-link a {
+      color: #d4a044;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    .right-section {
+      flex: 1;
+      background: linear-gradient(135deg, #e8b558 0%, #d4a044 100%);
+      padding: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .circles-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 40px;
+    }
+
+    .circle {
+      width: 150px;
+      height: 150px;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .circle:nth-child(1) {
+      top: 10%;
+      left: 15%;
+      width: 120px;
+      height: 120px;
+    }
+
+    .circle:nth-child(2) {
+      top: 5%;
+      left: 35%;
+      width: 160px;
+      height: 160px;
+    }
+
+    .circle:nth-child(3) {
+      top: 8%;
+      left: 58%;
+      width: 140px;
+      height: 140px;
+    }
+
+    .circle:nth-child(4) {
+      top: 12%;
+      right: 10%;
+      width: 180px;
+      height: 180px;
+    }
+
+    .circle:nth-child(5) {
+      top: 35%;
+      left: 8%;
+      width: 150px;
+      height: 150px;
+    }
+
+    .circle:nth-child(6) {
+      top: 32%;
+      left: 28%;
+      width: 130px;
+      height: 130px;
+    }
+
+    .circle:nth-child(7) {
+      top: 30%;
+      left: 48%;
+      width: 170px;
+      height: 170px;
+    }
+
+    .circle:nth-child(8) {
+      top: 35%;
+      right: 15%;
+      width: 140px;
+      height: 140px;
+    }
+
+    .circle:nth-child(9) {
+      bottom: 45%;
+      left: 12%;
+      width: 160px;
+      height: 160px;
+    }
+
+    .circle:nth-child(10) {
+      bottom: 42%;
+      right: 8%;
+      width: 150px;
+      height: 150px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      color: white;
+      max-width: 500px;
+    }
+
+    .brand {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      opacity: 0.95;
+    }
+
+    .hero-text {
+      font-size: 30px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 968px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .left-section,
+      .right-section {
+        padding: 40px;
+      }
+
+      .right-section {
+        min-height: 300px;
+      }
+
+      .hero-text {
+        font-size: 24px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+    }
+
+    .error {
+      color: #b00020;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    .success {
+      color: #0a7f3f;
+      font-size: 14px;
+      margin: 8px 0;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="left-section">
       <div class="google-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          <path
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            fill="#4285F4" />
+          <path
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            fill="#34A853" />
+          <path
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            fill="#FBBC05" />
+          <path
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            fill="#EA4335" />
         </svg>
       </div>
 
       <h1>Log in to your account</h1>
-      <p class="subtitle">Hang out, share, and get creative on CircleUP, where communities grow and ideas come alive!</p>
+      <p class="subtitle">Hang out, share, and get creative on CircleUP, where communities grow and ideas come alive!
+      </p>
 
       <form id="loginForm">
         <div class="form-group">
@@ -83,8 +399,13 @@
             <label for="passwordInput">Password</label>
             <a href="/forgot-password/" class="forgot-password">Forgot Password?</a>
           </div>
-          <input id="passwordInput" type="password" placeholder="••••••••••••" required />
+          <div class="password-wrapper">
+            <input id="passwordInput" type="password" placeholder="••••••••••••" required />
+            <img id="togglePassword" src="https://cdn-icons-png.flaticon.com/512/2767/2767146.png"
+              alt="Toggle visibility" />
+          </div>
         </div>
+
 
         <div class="checkbox-group">
           <input id="rememberInput" type="checkbox" />
@@ -95,28 +416,39 @@
         <p id="loginMsg" class="small"></p>
 
         <p class="signup-link">
-  Don't have an account? <a href="/register/">Sign up now.</a>
-</p>
+          Don't have an account? <a href="/register/">Sign up now.</a>
+        </p>
       </form>
     </div>
 
     <div class="right-section">
       <div class="circles-pattern">
-        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
-        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
-        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
         <div class="circle"></div>
       </div>
       <div class="hero-content">
         <div class="brand">CircleUP.io</div>
         <p class="hero-text">
-          A place where communities connect and creativity thrives — chat in real time, share your posts, and explore endless spaces built around the things you love.
+          A place where communities connect and creativity thrives — chat in real time, share your posts, and explore
+          endless spaces built around the things you love.
         </p>
       </div>
     </div>
   </div>
 
   <script>
+    const EXISTING = localStorage.getItem("access");
+    if (EXISTING) {
+      window.location.href = "/home/";
+    }
     // Ganti base API kamu di sini bila perlu:
     // localStorage.setItem("API_BASE", "http://127.0.0.1:8000/api");
     const BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
@@ -157,6 +489,21 @@
         msg.className = "error small";
       }
     });
+
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("passwordInput");
+
+    togglePassword.addEventListener("click", () => {
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+
+      // Ganti gambar sesuai status
+      togglePassword.src = isPassword
+        ? "https://cdn-icons-png.flaticon.com/512/709/709612.png"  // ikon "lihat"
+        : "https://cdn-icons-png.flaticon.com/512/2767/2767146.png"; // ikon "tutup"
+    });
+
   </script>
 </body>
+
 </html>
