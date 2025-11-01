@@ -52,6 +52,83 @@
     .join-btn{background:#fff;color:#333;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:transform .2s}
     .join-btn:hover{transform:scale(1.05)}
     .empty{color:#666;padding:8px 2px}
+
+    /* === Modal Styles (required) === */
+    .modal-overlay{
+      display:none;
+      position:fixed;
+      top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.5);
+      z-index:1000;
+      align-items:center;
+      justify-content:center;
+    }
+    .modal-overlay.active{display:flex}
+    .modal{
+      background:#fff;
+      border-radius:12px;
+      width:90%;
+      max-width:540px;
+      max-height:90vh;
+      overflow:auto;
+      position:relative;
+    }
+    .modal-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:20px 24px;
+      border-bottom:1px solid #e0e0e0;
+    }
+    .modal-title{font-size:20px;font-weight:600;color:#1a1a1a}
+    .modal-close{
+      background:none;border:none;font-size:24px;cursor:pointer;color:#666;
+      width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+    }
+    .modal-close:hover{background:#f0f0f0}
+    .modal-body{padding:24px}
+    .form-group{margin-bottom:20px}
+    .form-label{display:block;font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+    .form-input{
+      width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;
+      font-family:'Poppins',sans-serif;background:#f8f8f8;
+    }
+    .form-input:focus{outline:none;border-color:#c99746;background:#fff}
+    .form-textarea{
+      width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;
+      font-family:'Poppins',sans-serif;background:#f8f8f8;min-height:120px;resize:vertical;
+    }
+    .form-textarea:focus{outline:none;border-color:#c99746;background:#fff}
+    .modal-btn{
+      width:100%;padding:14px;background:#3a3a3a;color:#fff;border:none;border-radius:25px;
+      font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;
+    }
+    .modal-btn:hover{background:#2a2a2a}
+    .save-btn{
+      background:#3a3a3a;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;
+    }
+    .save-btn:hover{background:#2a2a2a}
+
+    /* Upload (opsional) */
+    .image-upload-section{margin-bottom:24px}
+    .image-upload-grid{display:flex;gap:12px;align-items:flex-start}
+    .profile-upload,.banner-upload{
+      position:relative;background:#f0f0f0;border-radius:8px;overflow:hidden;cursor:pointer;border:2px dashed #ccc;
+    }
+    .profile-upload{width:120px;height:120px;flex-shrink:0}
+    .banner-upload{flex:1;height:180px}
+    .upload-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#666}
+    .upload-icon{font-size:32px;margin-bottom:8px}
+    .upload-text{font-size:13px}
+    .preview-image{width:100%;height:100%;object-fit:cover}
+    .upload-input{display:none}
+
+    @media(max-width:640px){
+      .modal{width:95%;max-width:none}
+      .image-upload-grid{flex-direction:column}
+      .banner-upload{width:100%;height:160px}
+    }
+
     @media(max-width:1024px){.main-content{margin-left:var(--sidebar-width)}}
   </style>
 </head>
@@ -62,18 +139,15 @@
     <!-- Hero -->
     <section class="hero">
       <div class="circles-pattern">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
       </div>
       <h1>FIND YOUR COMMUNITY</h1>
       <p>Looking for a place to belong? Search for a community that fits you, join instantly with a link, or start your own community and bring people together on CircleUP.</p>
       <div class="hero-buttons">
-        <button class="btn btn-light">Join with Link</button>
-        <button class="btn btn-dark">Start New Community</button>
+        <!-- Tambahkan ID di sini -->
+        <button class="btn btn-light" id="joinLinkBtn">Join with Link</button>
+        <button class="btn btn-dark" id="startCommunityBtn">Start New Community</button>
       </div>
     </section>
 
@@ -83,10 +157,64 @@
         <input type="text" class="search-input" id="q" placeholder="Explore communities"/>
         <button class="search-btn" type="submit">🔍</button>
       </form>
-      <div class="communities-grid" id="grid">
-        <!-- cards injected by JS -->
-      </div>
+      <div class="communities-grid" id="grid"></div>
     </section>
+  </div>
+</div>
+
+<!-- Join with Link Modal -->
+<div class="modal-overlay" id="joinLinkModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Join Community</h2>
+      <button class="modal-close" id="closeJoinModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="joinLinkForm">
+        <div class="form-group">
+          <label class="form-label" for="inviteLink">Invite Link</label>
+          <input id="inviteLink" type="url" class="form-input" placeholder="https://contoh.com/invite/abc" required />
+        </div>
+        <button type="submit" class="modal-btn">Join Community</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Start New Community Modal -->
+<div class="modal-overlay" id="startCommunityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Start New Community</h2>
+      <button class="modal-close" id="closeStartModal" aria-label="Close">✕</button>
+      <button class="save-btn" id="saveCommunityBtn">Save</button>
+    </div>
+    <div class="modal-body">
+      <form id="startCommunityForm">
+        <div class="image-upload-section">
+          <div class="image-upload-grid">
+            <div class="profile-upload" id="profileUpload">
+              <div class="upload-placeholder"><div class="upload-icon">📷</div></div>
+              <input type="file" class="upload-input" id="profileInput" accept="image/*" />
+            </div>
+            <div class="banner-upload" id="bannerUpload">
+              <div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Upload Banner</div></div>
+              <input type="file" class="upload-input" id="bannerInput" accept="image/*" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="communityName">Community Name</label>
+          <input id="communityName" type="text" class="form-input" placeholder="Enter community name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="communityBio">Bio</label>
+          <textarea id="communityBio" class="form-textarea" placeholder="Describe your community..."></textarea>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -97,7 +225,6 @@
   if (!ACCESS) { window.location.href = "/login/"; }
   const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type":"application/json" };
 
-  // normalize media/relative url
   const absUrl = (u) => {
     if (!u) return "";
     if (u.startsWith("http")) return u;
@@ -106,7 +233,6 @@
   };
 
   const grid = document.getElementById("grid");
-  const resultTitle = document.getElementById("resultTitle");
   const searchForm = document.getElementById("searchForm");
   const qInput = document.getElementById("q");
 
@@ -161,10 +287,9 @@
   // Search handler
   searchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const q = qInput.value.trim();
-    resultTitle.textContent = q ? `Search: "${q}"` : "Recommendations";
     grid.innerHTML = `<p class="empty">Loading...</p>`;
     try{
+      const q = qInput.value.trim();
       const data = q ? await fetchSearch(q) : await fetchExplore();
       renderCommunities(data || []);
     }catch(err){
@@ -184,6 +309,84 @@
       console.warn(err);
     }
   })();
+
+  // ======= Modal Controls =======
+  const joinLinkBtn = document.getElementById('joinLinkBtn');
+  const startCommunityBtn = document.getElementById('startCommunityBtn');
+  const joinLinkModal = document.getElementById('joinLinkModal');
+  const startCommunityModal = document.getElementById('startCommunityModal');
+  const closeJoinModal = document.getElementById('closeJoinModal');
+  const closeStartModal = document.getElementById('closeStartModal'); // baru
+  const saveCommunityBtn = document.getElementById('saveCommunityBtn');
+
+  // Open modals
+  joinLinkBtn?.addEventListener('click', () => joinLinkModal.classList.add('active'));
+  startCommunityBtn?.addEventListener('click', () => startCommunityModal.classList.add('active'));
+
+  // Close buttons
+  closeJoinModal?.addEventListener('click', () => joinLinkModal.classList.remove('active'));
+  closeStartModal?.addEventListener('click', () => startCommunityModal.classList.remove('active'));
+
+  // Save new community (contoh)
+  saveCommunityBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('Community saved!');
+    startCommunityModal.classList.remove('active');
+  });
+
+  // Close jika klik overlay
+  joinLinkModal?.addEventListener('click', (e) => {
+    if (e.target === joinLinkModal) joinLinkModal.classList.remove('active');
+  });
+  startCommunityModal?.addEventListener('click', (e) => {
+    if (e.target === startCommunityModal) startCommunityModal.classList.remove('active');
+  });
+
+  // Close dengan ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      joinLinkModal?.classList.remove('active');
+      startCommunityModal?.classList.remove('active');
+    }
+  });
+
+  // Join with link submit (contoh)
+  document.getElementById('joinLinkForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const link = (document.getElementById('inviteLink') || {}).value?.trim();
+    if (!link) return;
+    alert(`Joining via link: ${link}`);
+    joinLinkModal.classList.remove('active');
+  });
+
+  // Upload handlers (opsional)
+  const profileUpload = document.getElementById('profileUpload');
+  const profileInput = document.getElementById('profileInput');
+  const bannerUpload = document.getElementById('bannerUpload');
+  const bannerInput = document.getElementById('bannerInput');
+
+  profileUpload?.addEventListener('click', () => profileInput?.click());
+  bannerUpload?.addEventListener('click', () => bannerInput?.click());
+
+  profileInput?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      profileUpload.innerHTML = `<img src="${ev.target.result}" class="preview-image" alt="Profile"/>`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  bannerInput?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      bannerUpload.innerHTML = `<img src="${ev.target.result}" class="preview-image" alt="Banner"/>`;
+    };
+    reader.readAsDataURL(file);
+  });
 </script>
 </body>
 </html>
