@@ -7,24 +7,93 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Poppins', sans-serif; height: 100vh; display: flex; }
+    body { font-family: 'Poppins', sans-serif; height: 100vh; display: flex; overflow: hidden; }
     .container { display: flex; width: 100%; height: 100%; }
-    .left-section { flex: 1; padding: 60px 80px; display: flex; flex-direction: column; background-color: #ffffff; }
+    .left-section { flex: 1; padding: 60px 80px; display: flex; flex-direction: column; background-color: #ffffff; overflow-y: auto; }
     .google-icon { width: 48px; height: 48px; background-color: #f8f9fa; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 60px; }
     h1 { font-size: 42px; font-weight: 600; margin-bottom: 16px; color: #1a1a1a; }
     .subtitle { font-size: 16px; color: #666; line-height: 1.6; margin-bottom: 48px; }
     .form-group { margin-bottom: 32px; }
     label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 12px; color: #1a1a1a; }
     .name-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    input { width: 100%; padding: 16px 20px; font-size: 15px; border: none; background-color: #f5f5f5; border-radius: 8px; outline: none; transition: background-color 0.2s; }
+    input[type="text"], input[type="email"], input[type="password"] { 
+      width: 100%; 
+      padding: 16px 20px; 
+      font-size: 15px; 
+      border: none; 
+      background-color: #f5f5f5; 
+      border-radius: 8px; 
+      outline: none; 
+      transition: background-color 0.2s; 
+    }
     input:focus { background-color: #ebebeb; }
     input::placeholder { color: #999; }
     .terms { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 16px; }
-    .register-btn { width: 100%; padding: 18px; font-size: 16px; font-weight: 600; color: white; background-color: #d4a044; border: none; border-radius: 50px; cursor: pointer; transition: background-color 0.3s; }
+    .checkbox-group { 
+      display: flex; 
+      align-items: flex-start; 
+      gap: 10px; 
+      margin-bottom: 24px; 
+    }
+    input[type="checkbox"] { 
+      width: 18px; 
+      height: 18px; 
+      cursor: pointer; 
+      accent-color: #d4a044;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .checkbox-label { 
+      font-size: 14px; 
+      color: #1a1a1a; 
+      cursor: pointer; 
+      user-select: none;
+      line-height: 1.5;
+    }
+    .register-btn { 
+      width: 100%; 
+      padding: 18px; 
+      font-size: 16px; 
+      font-weight: 600; 
+      color: white; 
+      background-color: #d4a044; 
+      border: none; 
+      border-radius: 50px; 
+      cursor: pointer; 
+      transition: background-color 0.3s; 
+    }
     .register-btn:hover { background-color: #c59138; }
-    .right-section { flex: 1; background: linear-gradient(135deg, #e8b558 0%, #d4a044 100%); padding: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-    .circles-pattern { position: absolute; top: 0; left: 0; width: 100%; height: 60%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 20px; padding: 40px; }
-    .circle { width: 150px; height: 150px; border: 3px solid rgba(255, 255, 255, 0.4); border-radius: 50%; position: absolute; }
+    .right-section { 
+      flex: 1; 
+      background: linear-gradient(135deg, #e8b558 0%, #d4a044 100%); 
+      padding: 80px; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .circles-pattern { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 60%; 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 20px; 
+      padding: 40px; 
+    }
+    .circle { 
+      width: 150px; 
+      height: 150px; 
+      border: 3px solid rgba(255, 255, 255, 0.4); 
+      border-radius: 50%; 
+      position: absolute; 
+    }
     .circle:nth-child(1) { top: 10%; left: 15%; width: 120px; height: 120px; }
     .circle:nth-child(2) { top: 5%; left: 35%; width: 160px; height: 160px; }
     .circle:nth-child(3) { top: 8%; left: 58%; width: 140px; height: 140px; }
@@ -35,18 +104,53 @@
     .circle:nth-child(8) { top: 35%; right: 15%; width: 140px; height: 140px; }
     .circle:nth-child(9) { bottom: 45%; left: 12%; width: 160px; height: 160px; }
     .circle:nth-child(10) { bottom: 42%; right: 8%; width: 150px; height: 150px; }
-    .hero-content { position: relative; z-index: 10; text-align: center; color: white; max-width: 500px; }
-    .brand { font-size: 14px; font-weight: 500; letter-spacing: 2px; margin-bottom: 24px; opacity: 0.95; }
-    .hero-text { font-size: 32px; font-weight: 400; line-height: 1.5; }
+    .hero-content { 
+      position: relative; 
+      z-index: 10; 
+      text-align: center; 
+      color: white; 
+      max-width: 500px; 
+    }
+    .brand { 
+      font-size: 14px; 
+      font-weight: 500; 
+      letter-spacing: 2px; 
+      margin-bottom: 24px; 
+      opacity: 0.95; 
+    }
+    .hero-text { 
+      font-size: 32px; 
+      font-weight: 400; 
+      line-height: 1.5; 
+    }
     @media (max-width: 968px) {
+      body { overflow-y: auto; }
       .container { flex-direction: column; }
       .left-section, .right-section { padding: 40px; }
       .right-section { min-height: 300px; }
       .hero-text { font-size: 24px; }
     }
-    .small { font-size: 13px; color: #666; margin-top: 10px; }
+    .small { 
+      font-size: 13px; 
+      color: #666; 
+      margin-top: 10px; 
+    }
     .error { color: #b00020; }
     .success { color: #0a7f3f; }
+    .login-link {
+      text-align: center;
+      font-size: 15px;
+      color: #666;
+      margin-top: 16px;
+    }
+    .login-link a {
+      color: #d4a044;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .login-link a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -89,13 +193,17 @@
           <input id="password" type="password" placeholder="••••••••••••••" required />
         </div>
 
-        <div class="checkbox-group" style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+        <div class="checkbox-group">
           <input id="tos" type="checkbox" checked required />
           <label for="tos" class="checkbox-label">I agree to the Terms of Service and Privacy Policy</label>
         </div>
 
         <button type="submit" class="register-btn">Register</button>
         <p id="registerMsg" class="small"></p>
+
+        <p class="login-link">
+          Already have an account? <a href="/login/">Login here</a>
+        </p>
       </form>
     </div>
 
@@ -117,10 +225,7 @@
   </div>
 
   <script>
-    // Ganti base API kamu di sini bila perlu:
-    // localStorage.setItem("API_BASE", "http://127.0.0.1:8000/api");
     const BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-
     const form = document.getElementById("registerForm");
     const msg = document.getElementById("registerMsg");
 
@@ -157,181 +262,16 @@
         localStorage.setItem("refresh", data.tokens.refresh);
         localStorage.setItem("currentUser", JSON.stringify(data.user));
 
-        msg.textContent = "Registration successful! Redirecting to login...";
+        msg.textContent = "Registration successful! Redirecting...";
         msg.className = "success small";
 
-        setTimeout(() => (window.location.href = "/login.html"), 800);
+        setTimeout(() => (window.location.href = "/"), 800);
       } catch (err) {
         const errMsg = err?.error || err?.detail || Object.values(err || {})[0] || "Registration failed.";
         msg.textContent = String(errMsg);
         msg.className = "error small";
       }
     });
-      // ===== 0) Konfigurasi dasar =====
-  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-  const ACCESS = localStorage.getItem("access");
-  if (!ACCESS) window.location.href = "/login/"; // wajib login dulu
-
-  const authHeaders = {
-    Authorization: `Bearer ${ACCESS}`,
-    "Content-Type": "application/json",
-  };
-
-  // Helper buat jaga2 kalau url image dari API relatif (media/)
-  const absUrl = (u) => {
-    if (!u) return "";
-    if (u.startsWith("http")) return u;
-    // backend kamu serve media di root host
-    const root = (localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api").replace(/\/api\/?$/,"");
-    return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
-  };
-
-  // ===== 1) Ambil profil & data home dari backend =====
-  (async function init() {
-    try {
-      const [meRes, homeRes] = await Promise.all([
-        fetch(`${API_BASE}/users/profile/`, { headers: authHeaders }),
-        fetch(`${API_BASE}/home/`, { headers: authHeaders }),
-      ]);
-      if (!meRes.ok) throw new Error("Token invalid, silakan login ulang.");
-      if (!homeRes.ok) throw new Error("Gagal memuat feed.");
-
-      const me = await meRes.json();
-      const home = await homeRes.json(); // { joined_communities, posts, suggestions }
-
-      // Opsional: tampilkan salam cepat
-      const hello = document.createElement("div");
-      hello.style.cssText = "position:fixed;top:12px;right:16px;font:500 14px system-ui";
-      hello.textContent = `Hi, ${me.first_name || me.username || me.email}`;
-      document.body.appendChild(hello);
-
-      renderPosts(home.posts || []);
-      renderSuggestions(home.suggestions || []);
-      // Kalau mau: render daftar komunitas yang sudah diikuti -> home.joined_communities
-
-    } catch (e) {
-      console.warn(e);
-      localStorage.removeItem("access");
-      localStorage.removeItem("refresh");
-      localStorage.removeItem("currentUser");
-      window.location.href = "/login/";
-    }
-  })();
-
-  // ===== 2) Render feed posts =====
-  function renderPosts(posts) {
-    const feed = document.querySelector(".feed-container");
-    if (!feed) return;
-
-    // Bersihkan dummy card
-    feed.innerHTML = `
-      <div class="story-slider" id="storySlider"></div>
-      <div id="postsWrap"></div>
-    `;
-
-    const wrap = document.getElementById("postsWrap");
-
-    if (!posts.length) {
-      wrap.innerHTML = `<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>`;
-      return;
-    }
-
-    posts.forEach((p) => {
-      const user = p.posted_by || p.user || {};
-      const community = p.community || {};
-      const created = p.created_at ? new Date(p.created_at).toLocaleString() : "";
-
-      const card = document.createElement("div");
-      card.className = "post-card";
-      card.innerHTML = `
-        <div class="post-header">
-          <div class="post-user">
-            <img class="post-avatar" src="${absUrl(user.profile_pic)}" onerror="this.src='https://via.placeholder.com/90?text=%20'" />
-            <div class="post-info">
-              <h4>${user.username || user.email || "User"}</h4>
-              <span class="post-time">${created}</span>
-            </div>
-          </div>
-          <div class="post-badge">${community.name || "Community"}</div>
-        </div>
-
-        ${p.image ? `<img class="post-image" src="${absUrl(p.image)}" alt="" />` : ""}
-
-        <div class="post-actions">
-          <button class="reaction-btn love" data-id="${p.id}" data-type="love">❤️</button>
-          <button class="reaction-btn like" data-id="${p.id}" data-type="like">👍</button>
-          <button class="reaction-btn smile" disabled>😊</button>
-        </div>
-
-        <div class="post-caption">
-          <strong>${user.username || "User"}</strong> ${p.caption || ""}
-        </div>
-      `;
-      wrap.appendChild(card);
-    });
-
-    // Pasang handler like/react
-    wrap.addEventListener("click", async (e) => {
-      const btn = e.target.closest("button.reaction-btn");
-      if (!btn) return;
-      const postId = btn.dataset.id;
-      const type = btn.dataset.type;
-      try {
-        if (type === "like") {
-          await fetch(`${API_BASE}/posts/${postId}/like/`, {
-            method: "POST",
-            headers: authHeaders,
-          });
-        } else {
-          await fetch(`${API_BASE}/posts/${postId}/react/`, {
-            method: "POST",
-            headers: authHeaders,
-            body: JSON.stringify({ reaction_type: type }),
-          });
-        }
-        // efek cepat
-        btn.style.transform = "scale(1.08)";
-        setTimeout(() => (btn.style.transform = "scale(1)"), 150);
-      } catch {
-        alert("Gagal mengirim reaksi. Coba lagi.");
-      }
-    });
-  }
-
-  // ===== 3) Render suggested communities + Join =====
-  function renderSuggestions(suggestions) {
-    const right = document.querySelector(".right-sidebar .join-communities");
-    if (!right) return;
-
-    const listHtml = suggestions.slice(0, 5).map(c => `
-      <div class="community-item">
-        <div class="community-info">
-          <img class="community-avatar" src="${absUrl(c.profile_pic)}" onerror="this.src='https://via.placeholder.com/90?text=%20'"/>
-          <div class="community-details">
-            <h4>${c.name}</h4>
-            <div class="community-members">${(c.member_count ?? c.members?.length) || 0} members</div>
-          </div>
-        </div>
-        <button class="join-btn" data-id="${c.id}">Join</button>
-      </div>
-    `).join("");
-
-    right.innerHTML = `<h3>Join Communities!</h3>${listHtml || "<p style='color:#666'>Tidak ada saran komunitas.</p>"}<div class="show-more">Show more</div>`;
-
-    right.addEventListener("click", async (e) => {
-      const btn = e.target.closest(".join-btn");
-      if (!btn) return;
-      const id = btn.dataset.id;
-      btn.disabled = true;
-      try {
-        await fetch(`${API_BASE}/communities/${id}/join/`, { method: "POST", headers: authHeaders });
-        btn.textContent = "Joined ✓";
-      } catch {
-        btn.disabled = false;
-        alert("Gagal join komunitas.");
-      }
-    });
-  }
   </script>
 </body>
 </html>

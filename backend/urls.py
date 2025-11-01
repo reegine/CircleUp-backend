@@ -20,6 +20,7 @@ urlpatterns = [
     path('members/',     TemplateView.as_view(template_name='circleup/members.html'),     name='members'),
     path('about/',       TemplateView.as_view(template_name='circleup/about.html'),       name='about'),
     path('forgot-password/',  TemplateView.as_view(template_name='circleup/forgot-password.html'),  name='forgot_password'),
+    path('verify-otp/',       TemplateView.as_view(template_name='circleup/verify-otp.html'),       name='verify_otp'),
     path('reset-password/',   TemplateView.as_view(template_name='circleup/reset-password.html'),   name='reset_password'),
     path('register/',         TemplateView.as_view(template_name='circleup/register.html'),         name='register'),
     path('profile/',          TemplateView.as_view(template_name='circleup/profile-and-edit.html'), name='profile'),
