@@ -1,351 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CircleUP - Explore</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CircleUP - Explore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:#f5f5f5}
+    .container{display:flex;min-height:100vh}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f5f5;
-        }
+    /* Main */
+    :root{--sidebar-width:260px}
+    .main-content{
+      margin-left:var(--sidebar-width);
+      flex:1;overflow-y:auto;
+    }
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+    /* Hero */
+    .hero{background:linear-gradient(135deg,#c99746 0%,#b8863d 100%);padding:60px 40px;text-align:center;position:relative;overflow:hidden}
+    .hero h1{color:#fff;font-size:42px;font-weight:700;margin-bottom:16px}
+    .hero p{color:#fff;font-size:16px;max-width:650px;margin:0 auto 20px;line-height:1.6}
+    .hero-buttons{display:flex;gap:12px;justify-content:center}
+    .btn{padding:12px 22px;border:none;border-radius:25px;font-size:14px;font-weight:600;cursor:pointer}
+    .btn-light{background:#fff;color:#333}.btn-light:hover{background:#f0f0f0}
+    .btn-dark{background:#3a3a3a;color:#fff}.btn-dark:hover{background:#2a2a2a}
 
-        /* Main Content */
-        .main-content {
-            margin-left: 200px;
-            flex: 1;
-            overflow-y: auto;
-        }
+    /* Search */
+    .search-section{padding:28px 40px;max-width:1200px;margin:0 auto}
+    .search-bar{display:flex;gap:10px;margin-bottom:24px}
+    .search-input{flex:1;padding:14px 16px;border:none;background:#e8e8e8;border-radius:8px;font-size:15px;color:#444}
+    .search-btn{padding:14px 18px;background:#c99746;border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:16px}
+    .search-btn:hover{background:#b8863d}
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #c99746 0%, #b8863d 100%);
-            padding: 60px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before,
-        .hero::after {
-            content: '';
-            position: absolute;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-        }
-
-        .hero::before {
-            width: 150px;
-            height: 150px;
-            top: 20px;
-            left: 10%;
-        }
-
-        .hero::after {
-            width: 200px;
-            height: 200px;
-            bottom: -50px;
-            right: 15%;
-        }
-
-        .hero h1 {
-            color: white;
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero p {
-            color: white;
-            font-size: 16px;
-            max-width: 650px;
-            margin: 0 auto 30px;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-light {
-            background-color: white;
-            color: #333;
-        }
-
-        .btn-light:hover {
-            background-color: #f0f0f0;
-        }
-
-        .btn-dark {
-            background-color: #3a3a3a;
-            color: white;
-        }
-
-        .btn-dark:hover {
-            background-color: #2a2a2a;
-        }
-
-        /* Search Section */
-        .search-section {
-            padding: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .search-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: none;
-            background-color: #e8e8e8;
-            border-radius: 8px;
-            font-size: 15px;
-            color: #666;
-        }
-
-        .search-btn {
-            padding: 15px 25px;
-            background-color: #c99746;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .search-btn:hover {
-            background-color: #b8863d;
-        }
-
-        /* Communities Grid */
-        .communities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .community-card {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            height: 280px;
-        }
-
-        .community-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-
-        .community-card:hover img {
-            transform: scale(1.05);
-        }
-
-        .community-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
-            padding: 25px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .community-card:hover .community-overlay {
-            opacity: 1;
-        }
-
-        .community-name {
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .community-members {
-            color: rgba(255,255,255,0.9);
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .join-btn {
-            background-color: white;
-            color: #333;
-            border: none;
-            padding: 8px 24px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .join-btn:hover {
-            background-color: #f0f0f0;
-            transform: translateY(-2px);
-        }
-
-        /* Decorative circles in hero */
-        .circle {
-            position: absolute;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-        }
-
-        .circle1 {
-            width: 120px;
-            height: 120px;
-            top: 50%;
-            right: 5%;
-        }
-
-        .circle2 {
-            width: 180px;
-            height: 180px;
-            bottom: 20%;
-            right: 25%;
-        }
-    </style>
+    /* Grid */
+    .communities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+    .community-card{position:relative;border-radius:12px;overflow:hidden;height:260px;background:#ddd}
+    .community-card img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+    .community-card:hover img{transform:scale(1.05)}
+    .community-overlay{position:absolute;left:0;right:0;bottom:0;padding:20px;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,.35) 60%,transparent)}
+    .community-name{color:#fff;font-size:20px;font-weight:700;margin-bottom:6px}
+    .community-members{color:rgba(255,255,255,.9);font-size:13px;margin-bottom:10px}
+    .join-btn{background:#fff;color:#333;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer}
+    .empty{color:#666;padding:8px 2px}
+    @media(max-width:1024px){.main-content{margin-left:var(--sidebar-width)}}
+  </style>
 </head>
-
 <body>
-  <div class="container">
-     {% include 'circleup/sidebar.html' %}
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Hero Section -->
-            <section class="hero">
-                <div class="circle circle1"></div>
-                <div class="circle circle2"></div>
-                <h1>FIND YOUR COMMUNITY</h1>
-                <p>Looking for a place to belong? Search for a community that fits you, join instantly with a link, or start your own community and bring people together on CircleUP.</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-light">Join with Link</button>
-                    <button class="btn btn-dark">Start New Community</button>
-                </div>
-            </section>
+<div class="container">
+  {% include 'circleup/sidebar.html' %}
+  <div class="main-content">
+    <!-- Hero -->
+    <section class="hero">
+      <h1>FIND YOUR COMMUNITY</h1>
+      <p>Looking for a place to belong? Explore recommendations or search communities that fit you.</p>
+      <div class="hero-buttons">
+        <button class="btn btn-light" id="joinWithLinkBtn">Join with Link</button>
+        <button class="btn btn-dark" id="startNewBtn">Start New Community</button>
+      </div>
+    </section>
 
-            <!-- Search & Communities Section -->
-            <section class="search-section">
-                <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Explore communities">
-                    <button class="search-btn">🔍</button>
-                </div>
+    <!-- Search + Grid -->
+    <section class="search-section">
+      <form class="search-bar" id="searchForm">
+        <input type="text" class="search-input" id="q" placeholder="Explore communities"/>
+        <button class="search-btn" type="submit">🔍</button>
+      </form>
 
-                <div class="communities-grid">
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=400&fit=crop" alt="Basket Club">
-                        <div class="community-overlay">
-                            <div class="community-name">Basket Club</div>
-                            <div class="community-members">3000 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
+      <div id="resultTitle" class="empty">Recommendations</div>
+      <div class="communities-grid" id="grid">
+        <!-- cards injected by JS -->
+      </div>
+    </section>
+  </div>
+</div>
 
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1617654112368-307921291f42?w=400&h=400&fit=crop" alt="Car Enthusiasts">
-                        <div class="community-overlay">
-                            <div class="community-name">Car Enthusiasts</div>
-                            <div class="community-members">5200 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
+<script>
+  // ======= Config & Auth guard =======
+  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+  const ACCESS = localStorage.getItem("access");
+  if (!ACCESS) { window.location.href = "/login/"; }
+  const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type":"application/json" };
 
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop" alt="Tech Lovers">
-                        <div class="community-overlay">
-                            <div class="community-name">Tech Lovers</div>
-                            <div class="community-members">8500 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
+  // normalize media/relative url
+  const absUrl = (u) => {
+    if (!u) return "";
+    if (u.startsWith("http")) return u;
+    const root = API_BASE.replace(/\/api\/?$/,"");
+    return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
+  };
 
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop&q=80" alt="Mobile Fans">
-                        <div class="community-overlay">
-                            <div class="community-name">Mobile Fans</div>
-                            <div class="community-members">4100 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
+  const grid = document.getElementById("grid");
+  const resultTitle = document.getElementById("resultTitle");
+  const searchForm = document.getElementById("searchForm");
+  const qInput = document.getElementById("q");
 
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=400&fit=crop" alt="Content Creators">
-                        <div class="community-overlay">
-                            <div class="community-name">Content Creators</div>
-                            <div class="community-members">6700 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
+  // ======= Fetchers =======
+  async function fetchExplore(){
+    const r = await fetch(`${API_BASE}/communities/explore/`, { headers: H });
+    if (!r.ok) throw new Error("Failed to load recommendations");
+    return r.json();
+  }
+  async function fetchSearch(q){
+    const r = await fetch(`${API_BASE}/communities/search/?q=${encodeURIComponent(q)}`, { headers: H });
+    if (!r.ok) throw new Error("Failed to search");
+    return r.json();
+  }
+  async function joinCommunity(id, btn){
+    btn.disabled = true;
+    try{
+      const r = await fetch(`${API_BASE}/communities/${id}/join/`, { method:"POST", headers:H });
+      if (!r.ok) throw new Error("Join failed");
+      btn.textContent = "Joined ✓";
+    }catch(e){
+      btn.disabled = false;
+      alert("Gagal join komunitas.");
+    }
+  }
 
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?w=400&h=400&fit=crop" alt="Smart Home">
-                        <div class="community-overlay">
-                            <div class="community-name">Smart Home</div>
-                            <div class="community-members">3300 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
-
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=400&fit=crop" alt="Developers">
-                        <div class="community-overlay">
-                            <div class="community-name">Developers</div>
-                            <div class="community-members">9200 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
-
-                    <div class="community-card">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" alt="Startup Hub">
-                        <div class="community-overlay">
-                            <div class="community-name">Startup Hub</div>
-                            <div class="community-members">5800 Members</div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  // ======= Renderers =======
+  function renderCommunities(items){
+    if (!Array.isArray(items) || !items.length){
+      grid.innerHTML = `<p class="empty">Tidak ada komunitas.</p>`;
+      return;
+    }
+    grid.innerHTML = items.map(c => `
+      <div class="community-card">
+        <img src="${absUrl(c.profile_pic) || 'https://via.placeholder.com/600x400?text=%20'}" alt="${c.name}"/>
+        <div class="community-overlay">
+          <div class="community-name">${c.name}</div>
+          <div class="community-members">${(c.member_count ?? c.members?.length) || 0} Members</div>
+          <button class="join-btn" data-id="${c.id}">Join</button>
         </div>
-    </div>
+      </div>
+    `).join("");
+  }
 
+  // Delegated click for join
+  grid.addEventListener("click", (e) => {
+    const btn = e.target.closest(".join-btn");
+    if (!btn) return;
+    joinCommunity(btn.dataset.id, btn);
+  });
+
+  // Search handler
+  searchForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = qInput.value.trim();
+    resultTitle.textContent = q ? `Search: "${q}"` : "Recommendations";
+    grid.innerHTML = `<p class="empty">Loading...</p>`;
+    try{
+      const data = q ? await fetchSearch(q) : await fetchExplore();
+      renderCommunities(data || []);
+    }catch(err){
+      grid.innerHTML = `<p class="empty">Gagal memuat data.</p>`;
+      console.warn(err);
+    }
+  });
+
+  // ======= Boot: load recommendations =======
+  (async function init(){
+    grid.innerHTML = `<p class="empty">Loading...</p>`;
+    try{
+      const data = await fetchExplore();
+      renderCommunities(data || []);
+    }catch(err){
+      grid.innerHTML = `<p class="empty">Gagal memuat data.</p>`;
+      console.warn(err);
+    }
+  })();
+</script>
 </body>
 </html>
