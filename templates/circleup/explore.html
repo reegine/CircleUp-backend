@@ -89,11 +89,33 @@
     .preview-image{width:100%;height:100%;object-fit:cover}
     .upload-input{display:none}
 
+    /* Community Detail Popup */
+    .detail-modal{max-width:700px}
+    .detail-banner{width:100%;height:200px;object-fit:cover}
+    .detail-profile-section{display:flex;gap:20px;padding:24px;align-items:flex-start}
+    .detail-profile-pic{width:100px;height:100px;border-radius:50%;object-fit:cover;border:4px solid #fff;margin-top:-50px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+    .detail-info{flex:1}
+    .detail-community-name{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:8px}
+    .detail-stats{display:flex;gap:10px;margin-bottom:12px}
+    .detail-stat{color:#666;font-size:14px}
+    .detail-stat strong{color:#1a1a1a;font-weight:600}
+    .detail-bio{color:#444;font-size:15px;line-height:1.6;margin-bottom:16px}
+    .detail-location{color:#666;font-size:14px;display:flex;align-items:center;gap:6px;margin-bottom:20px}
+    .detail-actions{display:flex;gap:12px}
+    .detail-join-btn,.detail-visit-btn{padding:12px 24px;border:none;border-radius:25px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s}
+    .detail-join-btn{background:#c99746;color:#fff}
+    .detail-join-btn:hover{background:#b8863d}
+    .detail-join-btn.joined{background:#4caf50}
+    .detail-visit-btn{background:#3a3a3a;color:#fff}
+    .detail-visit-btn:hover{background:#2a2a2a}
+
     @media(max-width:768px){
       .main-content{margin-left:0}
       .communities-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
       .hero h1{font-size:32px}
       .hero p{font-size:14px}
+      .detail-profile-section{flex-direction:column;align-items:center;text-align:center}
+      .detail-profile-pic{margin-top:-50px}
     }
   </style>
 </head>
@@ -141,7 +163,7 @@
           <label class="form-label" for="inviteLink">Invite Link</label>
           <input id="inviteLink" type="text" class="form-input" placeholder="Paste invite link here..." required />
         </div>
-        <button type="submit" class="modal-btn">Join Community</button>
+        <button type="submit" class="modal-btn" id="joinLinkSubmitBtn">Join Community</button>
       </form>
     </div>
   </div>
@@ -195,13 +217,26 @@
   </div>
 </div>
 
+<!-- Community Detail Modal -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal detail-modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Community Details</h2>
+      <button class="modal-close" id="closeDetailModal">✕</button>
+    </div>
+    <div id="detailContent">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+  </div>
+</div>
+
 <script>
   // ============= CONFIG & AUTH =============
   const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-  const ACCESS = localStorage.getItem("access");
+  let accessToken = localStorage.getItem("access");
   
   // Auth guard
-  if (!ACCESS) {
+  if (!accessToken) {
     alert("Please login first!");
     window.location.href = "/login/";
   }
@@ -214,34 +249,76 @@
     return `${root}${url.startsWith("/") ? "" : "/"}${url}`;
   }
 
-  // Helper: Make API calls with error handling
+  // 🆕 Token Refresh Function
+  async function refreshAccessToken() {
+    const refreshToken = localStorage.getItem("refresh");
+    
+    if (!refreshToken) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("access", data.access);
+        accessToken = data.access;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Refresh failed:", error);
+      return false;
+    }
+  }
+
+  // 🆕 Logout Handler
+  function handleLogout() {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    alert("Session expired. Please login again.");
+    window.location.href = "/login/";
+  }
+
+  // 🔄 Enhanced API Call with Token Refresh
   async function apiCall(endpoint, options = {}) {
     const headers = {
-      Authorization: `Bearer ${ACCESS}`,
+      Authorization: `Bearer ${accessToken}`,
       ...options.headers
     };
 
-    // Only add Content-Type if not FormData
     if (!(options.body instanceof FormData)) {
       headers["Content-Type"] = "application/json";
     }
 
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, {
+      let response = await fetch(`${API_BASE}${endpoint}`, {
         ...options,
         headers
       });
 
-      // Handle unauthorized
+      // 🔄 Handle 401 with token refresh
       if (response.status === 401) {
-        alert("Session expired. Please login again.");
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
-        window.location.href = "/login/";
-        throw new Error("Unauthorized");
+        const refreshed = await refreshAccessToken();
+        
+        if (refreshed) {
+          // Retry request dengan token baru
+          headers.Authorization = `Bearer ${accessToken}`;
+          response = await fetch(`${API_BASE}${endpoint}`, {
+            ...options,
+            headers
+          });
+        } else {
+          handleLogout();
+          throw new Error("Unauthorized");
+        }
       }
 
-      // Handle other errors
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`);
@@ -264,13 +341,17 @@
   const startCommunityBtn = document.getElementById("startCommunityBtn");
   const joinLinkModal = document.getElementById("joinLinkModal");
   const startCommunityModal = document.getElementById("startCommunityModal");
+  const detailModal = document.getElementById("detailModal");
   const closeJoinModal = document.getElementById("closeJoinModal");
   const closeStartModal = document.getElementById("closeStartModal");
+  const closeDetailModal = document.getElementById("closeDetailModal");
   const saveCommunityBtn = document.getElementById("saveCommunityBtn");
   const profileUpload = document.getElementById("profileUpload");
   const profileInput = document.getElementById("profileInput");
   const bannerUpload = document.getElementById("bannerUpload");
   const bannerInput = document.getElementById("bannerInput");
+  const joinLinkForm = document.getElementById("joinLinkForm");
+  const joinLinkSubmitBtn = document.getElementById("joinLinkSubmitBtn");
 
   // ============= API FUNCTIONS =============
   async function fetchExplore() {
@@ -292,6 +373,28 @@
     });
   }
 
+  async function fetchCommunityDetail(id) {
+    return await apiCall(`/communities/${id}/`);
+  }
+
+  // 🆕 Join via invite link
+  async function joinViaInviteLink(inviteLink) {
+    // Extract community ID or invite code from link
+    // Assuming format: http://domain.com/invite/{invite_code}
+    const linkParts = inviteLink.split('/');
+    const inviteCode = linkParts[linkParts.length - 1] || inviteLink;
+    
+    // Find community by invite_link
+    const communities = await apiCall("/communities/");
+    const community = communities.results.find(c => c.invite_link === inviteCode);
+    
+    if (!community) {
+      throw new Error("Invalid invite link");
+    }
+    
+    return await joinCommunity(community.id);
+  }
+
   // ============= RENDER FUNCTIONS =============
   function renderCommunities(items) {
     if (!Array.isArray(items) || items.length === 0) {
@@ -308,10 +411,10 @@
           <img src="${absUrl(community.profile_pic)}" alt="${community.name}" />
           <div class="community-overlay">
             <div class="community-name">${community.name}</div>
-            <div class="community-members">${memberCount} ${memberCount === 1 ? 'Member' : 'Members'}</div>
+            <div class="community-members">${memberCount} ${memberCount === 1 ? 'Member' :  'Members'}</div>
             ${isJoined 
               ? '<div class="joined-badge">Joined ✓</div>'
-              : `<button class="join-btn" data-id="${community.id}">Join</button>`
+              : `<button class="join-btn" data-id="${community.id}" onclick="event.stopPropagation()">Join</button>`
             }
           </div>
         </div>
@@ -327,36 +430,109 @@
     grid.innerHTML = `<p class="error">⚠️ ${message}</p>`;
   }
 
+  // 🆕 Render Community Detail Popup
+  function renderCommunityDetail(community) {
+    const memberCount = community.member_count || 0;
+    const onlineCount = community.online_count || 0;
+    const isJoined = community.is_member || false;
+    
+    const detailContent = document.getElementById("detailContent");
+    detailContent.innerHTML = `
+      <img src="${absUrl(community.background_banner)}" alt="${community.name}" class="detail-banner" />
+      <div class="detail-profile-section">
+        <img src="${absUrl(community.profile_pic)}" alt="${community.name}" class="detail-profile-pic" />
+        <div class="detail-info">
+          <h2 class="detail-community-name">${community.name}</h2>
+          <div class="detail-stats">
+            <div class="detail-stat"><strong>${memberCount}</strong> Members</div>
+            <div class="detail-stat"><strong>${onlineCount}</strong> Online</div>
+          </div>
+          <p class="detail-bio">${community.bio || 'No description available'}</p>
+          <div class="detail-location">📍 ${community.location || 'Unknown'}</div>
+          <div class="detail-actions">
+            ${isJoined 
+              ? `<button class="detail-visit-btn" onclick="visitCommunity('${community.id}')">Visit Community</button>`
+              : `<button class="detail-join-btn" onclick="joinFromDetail('${community.id}')">Join Community</button>`
+            }
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   // ============= EVENT HANDLERS =============
   
-  // Join community handler
+  // 🆕 Click card to show detail
   grid.addEventListener("click", async (e) => {
+    const card = e.target.closest(".community-card");
     const btn = e.target.closest(".join-btn");
-    if (!btn) return;
+    
+    // If clicking join button, handle join
+    if (btn) {
+      const communityId = btn.dataset.id;
+      const originalText = btn.textContent;
+      
+      btn.disabled = true;
+      btn.textContent = "Joining...";
 
-    const communityId = btn.dataset.id;
-    const originalText = btn.textContent;
+      try {
+        await joinCommunity(communityId);
+        btn.textContent = "Joined ✓";
+        btn.classList.remove("join-btn");
+        btn.classList.add("joined-badge");
+        
+        setTimeout(() => {
+          loadExplore();
+        }, 1000);
+      } catch (error) {
+        alert(`Failed to join community: ${error.message}`);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+      return;
+    }
+    
+    // If clicking card (not button), show detail
+    if (card) {
+      const communityId = card.dataset.id;
+      try {
+        const community = await fetchCommunityDetail(communityId);
+        renderCommunityDetail(community);
+        detailModal.classList.add("active");
+      } catch (error) {
+        alert(`Failed to load community details: ${error.message}`);
+      }
+    }
+  });
+
+  // 🆕 Join from detail popup
+  window.joinFromDetail = async function(communityId) {
+    const btn = document.querySelector('.detail-join-btn');
+    if (!btn) return;
     
     btn.disabled = true;
     btn.textContent = "Joining...";
-
+    
     try {
       await joinCommunity(communityId);
       btn.textContent = "Joined ✓";
-      btn.classList.remove("join-btn");
-      btn.classList.add("joined-badge");
+      btn.classList.add("joined");
       
-      // Optional: Show success message
       setTimeout(() => {
-        // Refresh to update the list
+        detailModal.classList.remove("active");
         loadExplore();
       }, 1000);
     } catch (error) {
       alert(`Failed to join community: ${error.message}`);
       btn.disabled = false;
-      btn.textContent = originalText;
+      btn.textContent = "Join Community";
     }
-  });
+  };
+
+  // 🆕 Visit community (redirect to home/feeds)
+  window.visitCommunity = function(communityId) {
+    window.location.href = `/home/?community=${communityId}`;
+  };
 
   // Search handler
   searchForm.addEventListener("submit", async (e) => {
@@ -380,9 +556,10 @@
   startCommunityBtn?.addEventListener("click", () => startCommunityModal.classList.add("active"));
   closeJoinModal?.addEventListener("click", () => joinLinkModal.classList.remove("active"));
   closeStartModal?.addEventListener("click", () => startCommunityModal.classList.remove("active"));
+  closeDetailModal?.addEventListener("click", () => detailModal.classList.remove("active"));
 
   // Close on overlay click
-  [joinLinkModal, startCommunityModal].forEach(modal => {
+  [joinLinkModal, startCommunityModal, detailModal].forEach(modal => {
     modal?.addEventListener("click", (e) => {
       if (e.target === modal) modal.classList.remove("active");
     });
@@ -393,6 +570,40 @@
     if (e.key === "Escape") {
       joinLinkModal?.classList.remove("active");
       startCommunityModal?.classList.remove("active");
+      detailModal?.classList.remove("active");
+    }
+  });
+
+  // 🆕 Join with Link Form Handler
+  joinLinkForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const inviteLinkInput = document.getElementById("inviteLink");
+    const inviteLink = inviteLinkInput.value.trim();
+    
+    if (!inviteLink) {
+      alert("Please paste an invite link!");
+      return;
+    }
+    
+    joinLinkSubmitBtn.disabled = true;
+    joinLinkSubmitBtn.textContent = "Joining...";
+    
+    try {
+      await joinViaInviteLink(inviteLink);
+      alert("Successfully joined community! 🎉");
+      
+      // Close modal and reset
+      joinLinkModal.classList.remove("active");
+      inviteLinkInput.value = "";
+      
+      // Reload explore
+      loadExplore();
+    } catch (error) {
+      alert(`Failed to join community: ${error.message}`);
+    } finally {
+      joinLinkSubmitBtn.disabled = false;
+      joinLinkSubmitBtn.textContent = "Join Community";
     }
   });
 
@@ -482,8 +693,10 @@
       profileUpload.innerHTML = '<div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Profile</div></div>';
       bannerUpload.innerHTML = '<div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Banner</div></div>';
 
-      // Reload explore page
-      loadExplore();
+      // Redirect to the new community
+      setTimeout(() => {
+        window.location.href = `/home/?community=${newCommunity.id}`;
+      }, 1000);
 
     } catch (error) {
       alert(`Failed to create community: ${error.message}`);
