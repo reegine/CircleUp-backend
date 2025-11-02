@@ -204,7 +204,7 @@
       background:transparent;
       font-size:32px;
       cursor:pointer;
-      padding:4px 8px;
+      padding:2px 4px;
       border-radius:50%;
       transition:all .15s ease;
       display:flex;
@@ -223,25 +223,7 @@
       transform:scale(1.1);
     }
     
-    /* Three dots menu */
-    .more-btn{
-      border:none;
-      background:transparent;
-      font-size:20px;
-      color:#999;
-      cursor:pointer;
-      padding:8px;
-      border-radius:50%;
-      width:40px;
-      height:40px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    
-    .more-btn:hover{
-      background:#f0f0f0;
-    }
+
     
     .post .caption{font-size:14px;margin-top:8px}
 
@@ -360,7 +342,6 @@
     const REACTIONS = [
       { type: 'love', emoji: '❤️', label: 'Love' },
       { type: 'like', emoji: '👍', label: 'Like' },
-      // { type: 'dislike', emoji: '👎', label: 'Dislike' },
       { type: 'laugh', emoji: '😂', label: 'Haha' },
       { type: 'wow', emoji: '😮', label: 'Wow' },
       { type: 'sad', emoji: '😢', label: 'Sad' }
@@ -486,16 +467,13 @@
 
             ${p.image ? `<img class="image" src="${toAbs(p.image)}" alt="">` : ""}
 
-            <div style="display:flex;align-items:center;gap:12px;margin:12px 0">
-              <div class="reaction-wrapper">
-                <button class="main-reaction-btn ${buttonClass}" data-post-id="${p.id}">
-                  ${buttonText}
-                </button>
-                <div class="reaction-picker">
-                  ${reactionOptions}
-                </div>
+            <div class="reaction-wrapper" style="margin:12px 0">
+              <button class="main-reaction-btn ${buttonClass}" data-post-id="${p.id}">
+                ${buttonText}
+              </button>
+              <div class="reaction-picker">
+                ${reactionOptions}
               </div>
-              <button class="more-btn">⋮</button>
             </div>
 
             <div class="caption"><strong>${u.username || "User"}</strong> ${p.caption || ""}</div>
