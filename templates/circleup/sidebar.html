@@ -38,9 +38,13 @@
   .profile:hover { opacity: 0.7; }
   .profile-icon { 
     width:40px; height:40px; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); 
-    border-radius:50%; margin-right:15px; display:flex; align-items:center; justify-content:center; 
+    border-radius:50%; margin-right:15px; display:flex; align-items:center; justify-content:center;
+    overflow: hidden; position: relative;
   }
-  .profile-icon svg { width:24px; height:24px; fill:#fff; }
+  .profile-icon svg { width:24px; height:24px; fill:#fff; z-index: 1; }
+  .profile-icon img {
+    width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2;
+  }
 </style>
 
 {% with current=request.resolver_match.url_name %}
@@ -98,12 +102,12 @@
   <!-- PROFILE SECTION -->
   <div class="profile-section">
     <a href="{% url 'profile' %}" class="profile">
-      <div class="profile-icon">
+      <div class="profile-icon" id="sidebarProfileIcon">
         <svg viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
         </svg>
       </div>
-      Profile
+      <span id="sidebarProfileName">Profile</span>
     </a>
   </div>
 
@@ -131,19 +135,112 @@
     });
   })();
 
-  // Handle logout - FIXED to match token names from login
+  // Load user profile for sidebar
+  async function loadSidebarProfile() {
+    const token = localStorage.getItem('access');
+    if (!token) return;
+
+    // Try to load from cache first
+    const cachedProfile = localStorage.getItem('sidebarProfile');
+    if (cachedProfile) {
+      try {
+        const user = JSON.parse(cachedProfile);
+        updateSidebarProfile(user);
+      } catch (e) {
+        console.error('Error parsing cached profile:', e);
+      }
+    }
+
+    // Then fetch fresh data in background
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/users/profile/', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        // Save to cache
+        localStorage.setItem('sidebarProfile', JSON.stringify(user));
+        updateSidebarProfile(user);
+      }
+    } catch (error) {
+      console.error('Error loading sidebar profile:', error);
+    }
+  }
+
+  // Update sidebar profile display
+  function updateSidebarProfile(user) {
+    const profileIcon = document.getElementById('sidebarProfileIcon');
+    const profileName = document.getElementById('sidebarProfileName');
+    
+    if (!profileIcon || !profileName) return;
+
+    // Update name
+    profileName.textContent = user.first_name || 'Profile';
+
+    // Update profile picture
+    let profilePicUrl = null;
+    if (user.profile_pic) {
+      profilePicUrl = user.profile_pic.startsWith('http') 
+        ? user.profile_pic 
+        : `http://127.0.0.1:8000${user.profile_pic}`;
+    } else {
+      profilePicUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name + ' ' + user.last_name)}&size=80&background=667eea&color=fff`;
+    }
+
+    // Remove existing image if any
+    const existingImg = profileIcon.querySelector('img');
+    if (existingImg) {
+      existingImg.remove();
+    }
+
+    // Add new image
+    const img = document.createElement('img');
+    img.src = profilePicUrl;
+    img.alt = 'Profile';
+    img.onerror = function() {
+      this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name + ' ' + user.last_name)}&size=80&background=667eea&color=fff`;
+    };
+    profileIcon.appendChild(img);
+
+    // Hide the SVG icon when image is loaded
+    const svg = profileIcon.querySelector('svg');
+    if (svg) {
+      svg.style.display = 'none';
+    }
+  }
+
+  // Expose function globally so profile page can call it
+  window.updateSidebarProfile = updateSidebarProfile;
+
+  // Also update cache when profile is updated
+  window.updateSidebarProfileCache = function(user) {
+    localStorage.setItem('sidebarProfile', JSON.stringify(user));
+    updateSidebarProfile(user);
+  };
+
+  // Load profile when page loads
+  (function() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadSidebarProfile);
+    } else {
+      loadSidebarProfile();
+    }
+  })();
+
+  // Handle logout
   async function handleLogout() {
     if (!confirm('Are you sure you want to log out?')) {
       return;
     }
 
     try {
-      // Get the refresh token from localStorage (using correct key name)
       const refreshToken = localStorage.getItem('refresh');
       const accessToken = localStorage.getItem('access');
       
       if (refreshToken && accessToken) {
-        // Try to call the blacklist API
         try {
           await fetch('http://127.0.0.1:8000/api/auth/jwt/blacklist/', {
             method: 'POST',
@@ -157,26 +254,24 @@
           });
         } catch (apiError) {
           console.warn('API blacklist call failed:', apiError);
-          // Continue with logout anyway
         }
       }
 
-      // Clear ALL tokens from localStorage
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('API_BASE');
+      localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
       
-      // Redirect to login page
       window.location.href = "/login/";
       
     } catch (error) {
       console.error('Logout error:', error);
-      // Clear tokens and redirect even if there's an error
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('API_BASE');
+      localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
       window.location.href = "/login/";
     }
   }

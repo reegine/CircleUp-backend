@@ -39,50 +39,84 @@
 
     /* ===== LAYOUT ===== */
     .page{
-      margin-left:var(--sidebar-w);   /* ruang untuk sidebar include */
+      margin-left:var(--sidebar-w);
       min-height:100vh;
-      width:100%;
-      display:grid;
-      grid-template-columns: 1fr minmax(320px,420px); /* feed | right panel */
+      width:calc(100% - var(--sidebar-w));
+      display:flex;
+      justify-content:center;
       gap:var(--gap);
       padding:24px;
     }
 
     /* container kiri (feed) */
     .feed-col{
-      max-width:860px;
-      width:100%;
+      flex:1;
+      max-width:600px;
+      min-width:400px;
     }
 
     /* container kanan (join communities) */
     .right-col{
-      width:100%;
+      width:300px;
+      flex-shrink:0;
       height:max-content;
       position:sticky;
-      top:50px;
+      top:24px;
       align-self:start;
+      margin-left: 80px;
     }
 
-    /* ===== STORIES (ketika sudah join komunitas) ===== */
+    /* ===== STORIES ===== */
     .stories{
       display:flex;
-      gap:14px;
+      gap:16px;
       overflow-x:auto;
-      padding-bottom:8px;
-      margin-bottom:18px;
+      padding-bottom:12px;
+      margin-bottom:20px;
     }
     .stories::-webkit-scrollbar{height:6px}
     .stories::-webkit-scrollbar-thumb{background:#ddd;border-radius:6px}
 
     .story{
       flex:0 0 auto;
-      width:120px;
-      text-align:center;
+      width:160px;
+      cursor:pointer;
+      transition:transform .2s ease;
+      background:#ffffff;
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 3px 10px rgba(0,0,0,.1);
     }
-    .story img{
-      width:120px;height:120px;border-radius:12px;object-fit:cover;margin-bottom:6px;box-shadow:var(--shadow)
+    .story:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow);
     }
-    .story .name{font-size:12px;color:#333;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    
+    .story-container{
+      width:100%;
+      height:100px;
+      overflow:hidden;
+      position:relative;
+    }
+    
+    .story-container img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    
+    .story .name{
+      font-size:14px;
+      color:#333;
+      font-weight:600;
+      padding:12px 14px;
+      background:#ffffff;
+      text-align:left;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
 
     /* ===== POST CARD ===== */
     .post{
@@ -99,16 +133,119 @@
     .post .meta .time{font-size:12px;color:var(--muted)}
     .post .badge{background:#fff3e0;color:var(--brand);font-weight:600;border-radius:20px;padding:6px 12px;font-size:12px}
     .post .image{width:100%;border-radius:10px;margin:10px 0}
-    .post .actions{display:flex;gap:10px;margin:6px 0 8px}
-    .btn-react{
-      border:none;border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer;background:#f1f1f1;
-      transition:transform .15s ease
+    
+    /* ===== REACTION WRAPPER ===== */
+    .post .reaction-wrapper{
+      position:relative;
+      display:inline-block;
+      margin:12px 0;
     }
-    .btn-react.love{background:#ffeaa7}
-    .btn-react:active{transform:scale(0.96)}
-    .post .caption{font-size:14px}
+    
+    /* Main reaction button */
+    .main-reaction-btn{
+      border:none;
+      border-radius:25px;
+      padding:8px 16px;
+      font-size:16px;
+      cursor:pointer;
+      background:#f1f1f1;
+      transition:all .2s ease;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-weight:500;
+      color:#666;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+    }
+    
+    .main-reaction-btn:hover{
+      background:#e8e8e8;
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,.12);
+    }
+    
+    .main-reaction-btn.reacted{
+      background:#ffd93d;
+      color:#333;
+    }
+    
+    /* Reaction Picker Popup */
+    .reaction-picker{
+      position:absolute;
+      bottom:calc(100% + 8px);
+      left:0;
+      background:white;
+      border-radius:30px;
+      padding:8px 12px;
+      box-shadow:0 4px 20px rgba(0,0,0,.15);
+      display:none;
+      gap:6px;
+      z-index:100;
+      animation:popIn .2s ease;
+    }
+    
+    @keyframes popIn{
+      from{
+        opacity:0;
+        transform:scale(0.8) translateY(10px);
+      }
+      to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+      }
+    }
+    
+    .reaction-picker.show{
+      display:flex;
+    }
+    
+    .reaction-option{
+      border:none;
+      background:transparent;
+      font-size:32px;
+      cursor:pointer;
+      padding:4px 8px;
+      border-radius:50%;
+      transition:all .15s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:48px;
+      height:48px;
+    }
+    
+    .reaction-option:hover{
+      transform:scale(1.3);
+      background:#f5f5f5;
+    }
+    
+    .reaction-option:active{
+      transform:scale(1.1);
+    }
+    
+    /* Three dots menu */
+    .more-btn{
+      border:none;
+      background:transparent;
+      font-size:20px;
+      color:#999;
+      cursor:pointer;
+      padding:8px;
+      border-radius:50%;
+      width:40px;
+      height:40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    
+    .more-btn:hover{
+      background:#f0f0f0;
+    }
+    
+    .post .caption{font-size:14px;margin-top:8px}
 
-    /* ===== EMPTY STATE (ketika belum join komunitas) ===== */
+    /* ===== EMPTY STATE ===== */
     .empty{
       background:var(--card);
       border-radius:var(--radius);
@@ -153,9 +290,35 @@
     .show-more{margin-top:6px;font-size:13px;color:#666;text-align:center;cursor:pointer}
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 1100px){
-      .page{grid-template-columns:1fr}
-      .right-col{position:static}
+    @media (max-width: 1200px){
+      .page{
+        flex-direction:column;
+        align-items:center;
+      }
+      .feed-col{
+        width:100%;
+        max-width:600px;
+      }
+      .right-col{
+        position:static;
+        width:100%;
+        max-width:600px;
+      }
+    }
+    
+    @media (max-width: 768px){
+      .page{
+        margin-left:0;
+        width:100%;
+      }
+      .feed-col, .right-col{
+        max-width:100%;
+      }
+      .reaction-option{
+        font-size:28px;
+        width:44px;
+        height:44px;
+      }
     }
   </style>
 </head>
@@ -190,8 +353,18 @@
   <script>
     // Konfigurasi dasar
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS   = localStorage.getItem("access") || ""; // sudah dicek di head; ini aman
+    const ACCESS   = localStorage.getItem("access") || "";
     const authHeaders = { "Authorization": `Bearer ${ACCESS}`, "Content-Type": "application/json" };
+
+    // Definisi reaction types
+    const REACTIONS = [
+      { type: 'love', emoji: '❤️', label: 'Love' },
+      { type: 'like', emoji: '👍', label: 'Like' },
+      // { type: 'dislike', emoji: '👎', label: 'Dislike' },
+      { type: 'laugh', emoji: '😂', label: 'Haha' },
+      { type: 'wow', emoji: '😮', label: 'Wow' },
+      { type: 'sad', emoji: '😢', label: 'Sad' }
+    ];
 
     const toAbs = (u) => {
       if (!u) return "";
@@ -216,13 +389,11 @@
           fetch(`${API_BASE}/home/`,          { headers: authHeaders }),
         ]);
 
-        // kalau token invalid/expired → logout & redirect
         if (meR.status === 401 || homeR.status === 401) throw new Error("Unauthorized");
-
         if (!meR.ok) throw new Error("Unauthorized");
         if (!homeR.ok) throw new Error("Gagal memuat feed");
 
-        const home = await homeR.json(); // { joined_communities, posts, suggestions }
+        const home = await homeR.json();
         const joined = home.joined_communities || [];
         const posts  = home.posts || [];
         const sugg   = home.suggestions || [];
@@ -250,8 +421,10 @@
     /* ===== RENDERERS ===== */
     function renderStories(items){
       storiesEl.innerHTML = items.slice(0,10).map(c=>`
-        <div class="story" title="${c.name||''}">
-          <img src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/120x120?text=%20'}" alt="${c.name||''}">
+        <div class="story" title="${c.name||''}" onclick="window.location.href='/community/${c.id}/'">
+          <div class="story-container">
+            <img src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20'}" alt="${c.name||''}">
+          </div>
           <div class="name">${c.name||''}</div>
         </div>
       `).join("");
@@ -262,12 +435,44 @@
         feedEl.innerHTML = `<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>`;
         return;
       }
+      
       feedEl.innerHTML = list.map(p=>{
         const u = p.posted_by || p.user || {};
         const c = p.community || {};
         const t = p.created_at ? new Date(p.created_at).toLocaleString() : "";
+        
+        // Data dari backend
+        const userReaction = p.user_reaction; // 'love', 'like', dll
+        const userLiked = p.user_liked;
+        
+        // Determine current reaction
+        let currentReaction = null;
+        let buttonText = '😊 React';
+        let buttonClass = '';
+        
+        if (userReaction) {
+          const reaction = REACTIONS.find(r => r.type === userReaction);
+          if (reaction) {
+            currentReaction = reaction;
+            buttonText = `${reaction.emoji} ${reaction.label}`;
+            buttonClass = 'reacted';
+          }
+        } else if (userLiked) {
+          const likeReaction = REACTIONS.find(r => r.type === 'like');
+          if (likeReaction) {
+            currentReaction = likeReaction;
+            buttonText = `${likeReaction.emoji} ${likeReaction.label}`;
+            buttonClass = 'reacted';
+          }
+        }
+        
+        // Generate reaction picker options
+        const reactionOptions = REACTIONS.map(r => 
+          `<button class="reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
+        ).join('');
+        
         return `
-          <article class="post">
+          <article class="post" data-post-id="${p.id}">
             <div class="head">
               <div class="user">
                 <img class="avatar" src="${toAbs(u.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
@@ -281,9 +486,16 @@
 
             ${p.image ? `<img class="image" src="${toAbs(p.image)}" alt="">` : ""}
 
-            <div class="actions">
-              <button class="btn-react love" data-id="${p.id}" data-type="love">❤️</button>
-              <button class="btn-react like" data-id="${p.id}" data-type="like">👍</button>
+            <div style="display:flex;align-items:center;gap:12px;margin:12px 0">
+              <div class="reaction-wrapper">
+                <button class="main-reaction-btn ${buttonClass}" data-post-id="${p.id}">
+                  ${buttonText}
+                </button>
+                <div class="reaction-picker">
+                  ${reactionOptions}
+                </div>
+              </div>
+              <button class="more-btn">⋮</button>
             </div>
 
             <div class="caption"><strong>${u.username || "User"}</strong> ${p.caption || ""}</div>
@@ -291,26 +503,105 @@
         `;
       }).join("");
 
-      // delegasi klik
-      feedEl.addEventListener("click", async (e)=>{
-        const btn = e.target.closest(".btn-react");
-        if(!btn) return;
-        const id   = btn.dataset.id;
-        const type = btn.dataset.type;
-        try{
-          if(type==="like"){
-            await fetch(`${API_BASE}/posts/${id}/like/`, { method:"POST", headers:authHeaders });
-          }else{
-            await fetch(`${API_BASE}/posts/${id}/react/`, {
-              method:"POST", headers:authHeaders, body:JSON.stringify({ reaction_type:type })
-            });
-          }
-          btn.style.transform="scale(1.06)";
-          setTimeout(()=>btn.style.transform="",140);
-        }catch{
-          alert("Gagal mengirim reaksi.");
+      // Setup handlers
+      setupReactionHandlers();
+    }
+
+    // Setup reaction handlers
+    function setupReactionHandlers() {
+      // Main button click - toggle picker
+      feedEl.addEventListener('click', (e) => {
+        const mainBtn = e.target.closest('.main-reaction-btn');
+        if (mainBtn) {
+          e.stopPropagation();
+          const picker = mainBtn.nextElementSibling;
+          
+          // Close all other pickers
+          document.querySelectorAll('.reaction-picker.show').forEach(p => {
+            if (p !== picker) p.classList.remove('show');
+          });
+          
+          // Toggle this picker
+          picker.classList.toggle('show');
+          return;
         }
-      }, { once:true });
+        
+        // Reaction option click
+        const reactionOption = e.target.closest('.reaction-option');
+        if (reactionOption) {
+          e.stopPropagation();
+          handleReactionSelect(reactionOption);
+          return;
+        }
+      });
+      
+      // Close picker when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.reaction-wrapper')) {
+          document.querySelectorAll('.reaction-picker.show').forEach(p => {
+            p.classList.remove('show');
+          });
+        }
+      });
+    }
+
+    // Handle reaction selection
+    let isProcessing = false;
+    async function handleReactionSelect(optionBtn) {
+      if (isProcessing) return;
+      isProcessing = true;
+      
+      const type = optionBtn.dataset.type;
+      const post = optionBtn.closest('.post');
+      const postId = post.dataset.postId;
+      const wrapper = optionBtn.closest('.reaction-wrapper');
+      const mainBtn = wrapper.querySelector('.main-reaction-btn');
+      const picker = wrapper.querySelector('.reaction-picker');
+      
+      // Animation feedback
+      optionBtn.style.transform = 'scale(1.4)';
+      setTimeout(() => optionBtn.style.transform = '', 150);
+      
+      try {
+        let response;
+        
+        if (type === "like") {
+          response = await fetch(`${API_BASE}/posts/${postId}/like/`, {
+            method: "POST",
+            headers: authHeaders
+          });
+        } else {
+          response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
+            method: "POST",
+            headers: authHeaders,
+            body: JSON.stringify({ reaction_type: type })
+          });
+        }
+
+        if (!response.ok) throw new Error('Failed to react');
+        
+        const data = await response.json();
+        console.log('Reaction response:', data);
+        
+        // Update button UI
+        const reaction = REACTIONS.find(r => r.type === type);
+        if (data.message.includes('removed') || data.message.includes('unliked')) {
+          mainBtn.textContent = '😊 React';
+          mainBtn.classList.remove('reacted');
+        } else {
+          mainBtn.textContent = `${reaction.emoji} ${reaction.label}`;
+          mainBtn.classList.add('reacted');
+        }
+        
+        // Close picker
+        picker.classList.remove('show');
+        
+      } catch (err) {
+        console.error('Reaction error:', err);
+        alert("Gagal mengirim reaksi. Coba lagi.");
+      } finally {
+        isProcessing = false;
+      }
     }
 
     function renderSuggestions(sugg){
@@ -335,16 +626,21 @@
 
       joinList.addEventListener("click", async (e)=>{
         const btn = e.target.closest(".btn-join");
-        if(!btn) return;
+        if(!btn || btn.disabled) return;
         btn.disabled = true;
         try{
-          await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, { method:"POST", headers:authHeaders });
+          const response = await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, {
+            method:"POST",
+            headers:authHeaders
+          });
+          if (!response.ok) throw new Error('Failed to join');
           btn.textContent = "Joined ✓";
-        }catch{
+          btn.style.background = "#4caf50";
+        }catch(err){
           btn.disabled = false;
           alert("Gagal join komunitas.");
         }
-      }, { once:true });
+      });
     }
   </script>
 </body>

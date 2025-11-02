@@ -11,11 +11,7 @@
     .container{display:flex;min-height:100vh}
 
     /* Main */
-    :root{--sidebar-width:260px}
-    .main-content{
-      margin-left:200px;
-      flex:1;overflow-y:auto;
-    }
+    .main-content{margin-left:200px;flex:1;overflow-y:auto}
 
     /* Hero */
     .hero{background:linear-gradient(135deg,#c99746 0%,#b8863d 100%);padding:60px 40px;text-align:center;position:relative;overflow:hidden}
@@ -30,7 +26,7 @@
     .hero h1{color:#fff;font-size:42px;font-weight:700;margin-bottom:16px;position:relative;z-index:1}
     .hero p{color:#fff;font-size:16px;max-width:650px;margin:0 auto 20px;line-height:1.6;position:relative;z-index:1}
     .hero-buttons{display:flex;gap:12px;justify-content:center;position:relative;z-index:1}
-    .btn{padding:12px 22px;border:none;border-radius:25px;font-size:14px;font-weight:600;cursor:pointer}
+    .btn{padding:12px 22px;border:none;border-radius:25px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s}
     .btn-light{background:#fff;color:#333}.btn-light:hover{background:#f0f0f0}
     .btn-dark{background:#3a3a3a;color:#fff}.btn-dark:hover{background:#2a2a2a}
 
@@ -38,83 +34,53 @@
     .search-section{padding:28px 40px;max-width:1200px;margin:0 auto}
     .search-bar{display:flex;gap:10px;margin-bottom:24px}
     .search-input{flex:1;padding:14px 16px;border:none;background:#e8e8e8;border-radius:8px;font-size:15px;color:#444}
-    .search-btn{padding:14px 18px;background:#c99746;border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:16px}
+    .search-btn{padding:14px 18px;background:#c99746;border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:16px;transition:background 0.3s}
     .search-btn:hover{background:#b8863d}
 
     /* Grid */
-    .communities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-    .community-card{position:relative;border-radius:10px;overflow:hidden;height:230px;background:#ddd}
+    .communities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .community-card{position:relative;border-radius:10px;overflow:hidden;height:230px;background:#ddd;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:transform 0.3s,box-shadow 0.3s}
+    .community-card:hover{transform:translateY(-4px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
     .community-card img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
-    .community-overlay{position:absolute;left:0;right:0;bottom:0;padding:20px;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,.35) 60%,transparent);opacity:0;transition:opacity .3s ease}
+    .community-card:hover img{transform:scale(1.05)}
+    .community-overlay{position:absolute;left:0;right:0;bottom:0;padding:20px;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.4) 60%,transparent);opacity:0;transition:opacity .3s ease}
     .community-card:hover .community-overlay{opacity:1}
-    .community-name{color:#fff;font-size:20px;font-weight:700;margin-bottom:6px}
+    .community-name{color:#fff;font-size:20px;font-weight:700;margin-bottom:6px;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
     .community-members{color:rgba(255,255,255,.9);font-size:13px;margin-bottom:10px}
-    .join-btn{background:#fff;color:#333;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:transform .2s}
-    .join-btn:hover{transform:scale(1.05)}
-    .empty{color:#666;padding:8px 2px}
+    .join-btn{background:#fff;color:#333;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .join-btn:hover{transform:scale(1.05);background:#f0f0f0}
+    .join-btn:disabled{background:#ccc;cursor:not-allowed;transform:scale(1)}
+    .joined-badge{background:#4caf50;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600}
+    .empty{color:#666;padding:40px;text-align:center;font-size:16px}
+    .error{color:#d32f2f;padding:40px;text-align:center;font-size:16px}
 
-    /* === Modal Styles (required) === */
-    .modal-overlay{
-      display:none;
-      position:fixed;
-      top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.5);
-      z-index:1000;
-      align-items:center;
-      justify-content:center;
-    }
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
     .modal-overlay.active{display:flex}
-    .modal{
-      background:#fff;
-      border-radius:12px;
-      width:90%;
-      max-width:540px;
-      max-height:90vh;
-      overflow:auto;
-      position:relative;
-    }
-    .modal-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:20px 24px;
-      border-bottom:1px solid #e0e0e0;
-    }
+    .modal{background:#fff;border-radius:12px;width:90%;max-width:540px;max-height:90vh;overflow:auto;position:relative}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e0e0e0}
     .modal-title{font-size:20px;font-weight:600;color:#1a1a1a}
-    .modal-close{
-      background:none;border:none;font-size:24px;cursor:pointer;color:#666;
-      width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;
-    }
+    .modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:#666;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%}
     .modal-close:hover{background:#f0f0f0}
     .modal-body{padding:24px}
     .form-group{margin-bottom:20px}
     .form-label{display:block;font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
-    .form-input{
-      width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;
-      font-family:'Poppins',sans-serif;background:#f8f8f8;
-    }
-    .form-input:focus{outline:none;border-color:#c99746;background:#fff}
-    .form-textarea{
-      width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;
-      font-family:'Poppins',sans-serif;background:#f8f8f8;min-height:120px;resize:vertical;
-    }
-    .form-textarea:focus{outline:none;border-color:#c99746;background:#fff}
-    .modal-btn{
-      width:100%;padding:14px;background:#3a3a3a;color:#fff;border:none;border-radius:25px;
-      font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;
-    }
+    .form-input,.form-textarea{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:'Poppins',sans-serif;background:#f8f8f8}
+    .form-input:focus,.form-textarea:focus{outline:none;border-color:#c99746;background:#fff}
+    .form-textarea{min-height:120px;resize:vertical}
+    .modal-btn,.save-btn{padding:12px 24px;border:none;border-radius:25px;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.3s}
+    .modal-btn{width:100%;background:#3a3a3a;color:#fff;margin-top:8px}
     .modal-btn:hover{background:#2a2a2a}
-    .save-btn{
-      background:#3a3a3a;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;
-    }
+    .modal-btn:disabled{background:#999;cursor:not-allowed}
+    .save-btn{background:#3a3a3a;color:#fff}
     .save-btn:hover{background:#2a2a2a}
+    .save-btn:disabled{background:#999;cursor:not-allowed}
 
-    /* Upload (opsional) */
+    /* Upload */
     .image-upload-section{margin-bottom:24px}
     .image-upload-grid{display:flex;gap:12px;align-items:flex-start}
-    .profile-upload,.banner-upload{
-      position:relative;background:#f0f0f0;border-radius:8px;overflow:hidden;cursor:pointer;border:2px dashed #ccc;
-    }
+    .profile-upload,.banner-upload{position:relative;background:#f0f0f0;border-radius:8px;overflow:hidden;cursor:pointer;border:2px dashed #ccc;transition:border-color 0.3s}
+    .profile-upload:hover,.banner-upload:hover{border-color:#c99746}
     .profile-upload{width:120px;height:120px;flex-shrink:0}
     .banner-upload{flex:1;height:180px}
     .upload-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#666}
@@ -123,18 +89,19 @@
     .preview-image{width:100%;height:100%;object-fit:cover}
     .upload-input{display:none}
 
-    @media(max-width:640px){
-      .modal{width:95%;max-width:none}
-      .image-upload-grid{flex-direction:column}
-      .banner-upload{width:100%;height:160px}
+    @media(max-width:768px){
+      .main-content{margin-left:0}
+      .communities-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+      .hero h1{font-size:32px}
+      .hero p{font-size:14px}
     }
-
-    @media(max-width:1024px){.main-content{margin-left:var(--sidebar-width)}}
   </style>
 </head>
 <body>
+  
+  {% include "circleup/sidebar.html" %}
+
 <div class="container">
-  {% include 'circleup/sidebar.html' %}
   <div class="main-content">
     <!-- Hero -->
     <section class="hero">
@@ -145,7 +112,6 @@
       <h1>FIND YOUR COMMUNITY</h1>
       <p>Looking for a place to belong? Search for a community that fits you, join instantly with a link, or start your own community and bring people together on CircleUP.</p>
       <div class="hero-buttons">
-        <!-- Tambahkan ID di sini -->
         <button class="btn btn-light" id="joinLinkBtn">Join with Link</button>
         <button class="btn btn-dark" id="startCommunityBtn">Start New Community</button>
       </div>
@@ -154,7 +120,7 @@
     <!-- Search + Grid -->
     <section class="search-section">
       <form class="search-bar" id="searchForm">
-        <input type="text" class="search-input" id="q" placeholder="Explore communities"/>
+        <input type="text" class="search-input" id="q" placeholder="Search communities..."/>
         <button class="search-btn" type="submit">🔍</button>
       </form>
       <div class="communities-grid" id="grid"></div>
@@ -167,13 +133,13 @@
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title">Join Community</h2>
-      <button class="modal-close" id="closeJoinModal" aria-label="Close">✕</button>
+      <button class="modal-close" id="closeJoinModal">✕</button>
     </div>
     <div class="modal-body">
       <form id="joinLinkForm">
         <div class="form-group">
           <label class="form-label" for="inviteLink">Invite Link</label>
-          <input id="inviteLink" type="url" class="form-input" placeholder="https://contoh.com/invite/abc" required />
+          <input id="inviteLink" type="text" class="form-input" placeholder="Paste invite link here..." required />
         </div>
         <button type="submit" class="modal-btn">Join Community</button>
       </form>
@@ -185,7 +151,7 @@
 <div class="modal-overlay" id="startCommunityModal">
   <div class="modal">
     <div class="modal-header">
-      <button class="modal-close" id="closeStartModal" aria-label="Close">✕</button>
+      <button class="modal-close" id="closeStartModal">✕</button>
       <h2 class="modal-title">Start New Community</h2>
       <button class="save-btn" id="saveCommunityBtn">Save</button>
     </div>
@@ -194,18 +160,24 @@
         <div class="image-upload-section">
           <div class="image-upload-grid">
             <div class="profile-upload" id="profileUpload">
-              <div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Upload Profile</div></div>
+              <div class="upload-placeholder">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Profile</div>
+              </div>
               <input type="file" class="upload-input" id="profileInput" accept="image/*" />
             </div>
             <div class="banner-upload" id="bannerUpload">
-              <div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Upload Banner</div></div>
+              <div class="upload-placeholder">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Banner</div>
+              </div>
               <input type="file" class="upload-input" id="bannerInput" accept="image/*" />
             </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="communityName">Community Name</label>
+          <label class="form-label" for="communityName">Community Name *</label>
           <input id="communityName" type="text" class="form-input" placeholder="Enter community name" required />
         </div>
 
@@ -213,180 +185,328 @@
           <label class="form-label" for="communityBio">Bio</label>
           <textarea id="communityBio" class="form-textarea" placeholder="Describe your community..."></textarea>
         </div>
+
+        <div class="form-group">
+          <label class="form-label" for="communityLocation">Location</label>
+          <input id="communityLocation" type="text" class="form-input" placeholder="e.g., Indonesia, Global" value="Indonesia" />
+        </div>
       </form>
     </div>
   </div>
 </div>
 
 <script>
-  // ======= Config & Auth guard =======
+  // ============= CONFIG & AUTH =============
   const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
   const ACCESS = localStorage.getItem("access");
-  if (!ACCESS) { window.location.href = "/login/"; }
-  const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type":"application/json" };
+  
+  // Auth guard
+  if (!ACCESS) {
+    alert("Please login first!");
+    window.location.href = "/login/";
+  }
 
-  const absUrl = (u) => {
-    if (!u) return "";
-    if (u.startsWith("http")) return u;
-    const root = API_BASE.replace(/\/api\/?$/,"");
-    return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
-  };
+  // Helper: Build full URL for images
+  function absUrl(url) {
+    if (!url) return "https://via.placeholder.com/600x400?text=No+Image";
+    if (url.startsWith("http")) return url;
+    const root = API_BASE.replace(/\/api\/?$/, "");
+    return `${root}${url.startsWith("/") ? "" : "/"}${url}`;
+  }
 
+  // Helper: Make API calls with error handling
+  async function apiCall(endpoint, options = {}) {
+    const headers = {
+      Authorization: `Bearer ${ACCESS}`,
+      ...options.headers
+    };
+
+    // Only add Content-Type if not FormData
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers
+      });
+
+      // Handle unauthorized
+      if (response.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        window.location.href = "/login/";
+        throw new Error("Unauthorized");
+      }
+
+      // Handle other errors
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
+  // ============= DOM ELEMENTS =============
   const grid = document.getElementById("grid");
   const searchForm = document.getElementById("searchForm");
   const qInput = document.getElementById("q");
+  
+  // Modal elements
+  const joinLinkBtn = document.getElementById("joinLinkBtn");
+  const startCommunityBtn = document.getElementById("startCommunityBtn");
+  const joinLinkModal = document.getElementById("joinLinkModal");
+  const startCommunityModal = document.getElementById("startCommunityModal");
+  const closeJoinModal = document.getElementById("closeJoinModal");
+  const closeStartModal = document.getElementById("closeStartModal");
+  const saveCommunityBtn = document.getElementById("saveCommunityBtn");
+  const profileUpload = document.getElementById("profileUpload");
+  const profileInput = document.getElementById("profileInput");
+  const bannerUpload = document.getElementById("bannerUpload");
+  const bannerInput = document.getElementById("bannerInput");
 
-  // ======= Fetchers =======
-  async function fetchExplore(){
-    const r = await fetch(`${API_BASE}/communities/explore/`, { headers: H });
-    if (!r.ok) throw new Error("Failed to load recommendations");
-    return r.json();
-  }
-  async function fetchSearch(q){
-    const r = await fetch(`${API_BASE}/communities/search/?q=${encodeURIComponent(q)}`, { headers: H });
-    if (!r.ok) throw new Error("Failed to search");
-    return r.json();
-  }
-  async function joinCommunity(id, btn){
-    btn.disabled = true;
-    try{
-      const r = await fetch(`${API_BASE}/communities/${id}/join/`, { method:"POST", headers:H });
-      if (!r.ok) throw new Error("Join failed");
-      btn.textContent = "Joined ✓";
-    }catch(e){
-      btn.disabled = false;
-      alert("Gagal join komunitas.");
-    }
+  // ============= API FUNCTIONS =============
+  async function fetchExplore() {
+    return await apiCall("/communities/explore/");
   }
 
-  // ======= Renderers =======
-  function renderCommunities(items){
-    if (!Array.isArray(items) || !items.length){
-      grid.innerHTML = `<p class="empty">Tidak ada komunitas.</p>`;
+  async function fetchSearch(query) {
+    return await apiCall(`/communities/search/?q=${encodeURIComponent(query)}`);
+  }
+
+  async function joinCommunity(id) {
+    return await apiCall(`/communities/${id}/join/`, { method: "POST" });
+  }
+
+  async function createCommunity(formData) {
+    return await apiCall("/communities/", {
+      method: "POST",
+      body: formData
+    });
+  }
+
+  // ============= RENDER FUNCTIONS =============
+  function renderCommunities(items) {
+    if (!Array.isArray(items) || items.length === 0) {
+      grid.innerHTML = '<p class="empty">No communities found. Try a different search or create your own!</p>';
       return;
     }
-    grid.innerHTML = items.map(c => `
-      <div class="community-card">
-        <img src="${absUrl(c.profile_pic) || 'https://via.placeholder.com/600x400?text=%20'}" alt="${c.name}"/>
-        <div class="community-overlay">
-          <div class="community-name">${c.name}</div>
-          <div class="community-members">${(c.member_count ?? c.members?.length) || 0} Members</div>
-          <button class="join-btn" data-id="${c.id}">Join</button>
+
+    grid.innerHTML = items.map(community => {
+      const memberCount = community.member_count || 0;
+      const isJoined = community.is_member || false;
+      
+      return `
+        <div class="community-card" data-id="${community.id}">
+          <img src="${absUrl(community.profile_pic)}" alt="${community.name}" />
+          <div class="community-overlay">
+            <div class="community-name">${community.name}</div>
+            <div class="community-members">${memberCount} ${memberCount === 1 ? 'Member' : 'Members'}</div>
+            ${isJoined 
+              ? '<div class="joined-badge">Joined ✓</div>'
+              : `<button class="join-btn" data-id="${community.id}">Join</button>`
+            }
+          </div>
         </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
-  // Delegated click for join
-  grid.addEventListener("click", (e) => {
+  function showLoading() {
+    grid.innerHTML = '<p class="empty">Loading communities...</p>';
+  }
+
+  function showError(message) {
+    grid.innerHTML = `<p class="error">⚠️ ${message}</p>`;
+  }
+
+  // ============= EVENT HANDLERS =============
+  
+  // Join community handler
+  grid.addEventListener("click", async (e) => {
     const btn = e.target.closest(".join-btn");
     if (!btn) return;
-    joinCommunity(btn.dataset.id, btn);
+
+    const communityId = btn.dataset.id;
+    const originalText = btn.textContent;
+    
+    btn.disabled = true;
+    btn.textContent = "Joining...";
+
+    try {
+      await joinCommunity(communityId);
+      btn.textContent = "Joined ✓";
+      btn.classList.remove("join-btn");
+      btn.classList.add("joined-badge");
+      
+      // Optional: Show success message
+      setTimeout(() => {
+        // Refresh to update the list
+        loadExplore();
+      }, 1000);
+    } catch (error) {
+      alert(`Failed to join community: ${error.message}`);
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
   });
 
   // Search handler
   searchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    grid.innerHTML = `<p class="empty">Loading...</p>`;
-    try{
-      const q = qInput.value.trim();
-      const data = q ? await fetchSearch(q) : await fetchExplore();
-      renderCommunities(data || []);
-    }catch(err){
-      grid.innerHTML = `<p class="empty">Gagal memuat data.</p>`;
-      console.warn(err);
+    const query = qInput.value.trim();
+    
+    showLoading();
+    
+    try {
+      const data = query ? await fetchSearch(query) : await fetchExplore();
+      renderCommunities(data);
+    } catch (error) {
+      showError(`Failed to load communities: ${error.message}`);
     }
   });
 
-  // ======= Boot: load recommendations =======
-  (async function init(){
-    grid.innerHTML = `<p class="empty">Loading...</p>`;
-    try{
+  // ============= MODAL HANDLERS =============
+  
+  // Open/close modals
+  joinLinkBtn?.addEventListener("click", () => joinLinkModal.classList.add("active"));
+  startCommunityBtn?.addEventListener("click", () => startCommunityModal.classList.add("active"));
+  closeJoinModal?.addEventListener("click", () => joinLinkModal.classList.remove("active"));
+  closeStartModal?.addEventListener("click", () => startCommunityModal.classList.remove("active"));
+
+  // Close on overlay click
+  [joinLinkModal, startCommunityModal].forEach(modal => {
+    modal?.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("active");
+    });
+  });
+
+  // Close on ESC key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      joinLinkModal?.classList.remove("active");
+      startCommunityModal?.classList.remove("active");
+    }
+  });
+
+  // ============= IMAGE UPLOAD HANDLERS =============
+  
+  profileUpload?.addEventListener("click", () => profileInput?.click());
+  bannerUpload?.addEventListener("click", () => bannerInput?.click());
+
+  function handleImagePreview(input, container) {
+    input?.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image size must be less than 5MB");
+        input.value = "";
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        input.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        container.innerHTML = `<img src="${ev.target.result}" class="preview-image" alt="Preview" />`;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  handleImagePreview(profileInput, profileUpload);
+  handleImagePreview(bannerInput, bannerUpload);
+
+  // ============= CREATE COMMUNITY HANDLER =============
+  
+  saveCommunityBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    const nameInput = document.getElementById("communityName");
+    const bioInput = document.getElementById("communityBio");
+    const locationInput = document.getElementById("communityLocation");
+    const profileFile = profileInput?.files[0];
+    const bannerFile = bannerInput?.files[0];
+
+    // Validation
+    if (!nameInput?.value?.trim()) {
+      alert("Community name is required!");
+      nameInput.focus();
+      return;
+    }
+
+    if (!profileFile) {
+      alert("Profile picture is required!");
+      return;
+    }
+
+    if (!bannerFile) {
+      alert("Banner image is required!");
+      return;
+    }
+
+    // Disable button
+    saveCommunityBtn.disabled = true;
+    saveCommunityBtn.textContent = "Creating...";
+
+    try {
+      const formData = new FormData();
+      formData.append("name", nameInput.value.trim());
+      formData.append("bio", bioInput?.value?.trim() || "No description yet");
+      formData.append("location", locationInput?.value?.trim() || "Indonesia");
+      formData.append("profile_pic", profileFile);
+      formData.append("background_banner", bannerFile);
+      formData.append("is_public", "true");
+
+      const newCommunity = await createCommunity(formData);
+      
+      alert(`Community "${newCommunity.name}" created successfully! 🎉`);
+
+      // Close modal and reset form
+      startCommunityModal.classList.remove("active");
+      document.getElementById("startCommunityForm").reset();
+      profileUpload.innerHTML = '<div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Profile</div></div>';
+      bannerUpload.innerHTML = '<div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Banner</div></div>';
+
+      // Reload explore page
+      loadExplore();
+
+    } catch (error) {
+      alert(`Failed to create community: ${error.message}`);
+    } finally {
+      saveCommunityBtn.disabled = false;
+      saveCommunityBtn.textContent = "Save";
+    }
+  });
+
+  // ============= INIT =============
+  
+  async function loadExplore() {
+    showLoading();
+    try {
       const data = await fetchExplore();
-      renderCommunities(data || []);
-    }catch(err){
-      grid.innerHTML = `<p class="empty">Gagal memuat data.</p>`;
-      console.warn(err);
+      renderCommunities(data);
+    } catch (error) {
+      showError(`Failed to load communities: ${error.message}`);
     }
-  })();
+  }
 
-  // ======= Modal Controls =======
-  const joinLinkBtn = document.getElementById('joinLinkBtn');
-  const startCommunityBtn = document.getElementById('startCommunityBtn');
-  const joinLinkModal = document.getElementById('joinLinkModal');
-  const startCommunityModal = document.getElementById('startCommunityModal');
-  const closeJoinModal = document.getElementById('closeJoinModal');
-  const closeStartModal = document.getElementById('closeStartModal'); // baru
-  const saveCommunityBtn = document.getElementById('saveCommunityBtn');
-
-  // Open modals
-  joinLinkBtn?.addEventListener('click', () => joinLinkModal.classList.add('active'));
-  startCommunityBtn?.addEventListener('click', () => startCommunityModal.classList.add('active'));
-
-  // Close buttons
-  closeJoinModal?.addEventListener('click', () => joinLinkModal.classList.remove('active'));
-  closeStartModal?.addEventListener('click', () => startCommunityModal.classList.remove('active'));
-
-  // Save new community (contoh)
-  saveCommunityBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    alert('Community saved!');
-    startCommunityModal.classList.remove('active');
-  });
-
-  // Close jika klik overlay
-  joinLinkModal?.addEventListener('click', (e) => {
-    if (e.target === joinLinkModal) joinLinkModal.classList.remove('active');
-  });
-  startCommunityModal?.addEventListener('click', (e) => {
-    if (e.target === startCommunityModal) startCommunityModal.classList.remove('active');
-  });
-
-  // Close dengan ESC
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      joinLinkModal?.classList.remove('active');
-      startCommunityModal?.classList.remove('active');
-    }
-  });
-
-  // Join with link submit (contoh)
-  document.getElementById('joinLinkForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const link = (document.getElementById('inviteLink') || {}).value?.trim();
-    if (!link) return;
-    alert(`Joining via link: ${link}`);
-    joinLinkModal.classList.remove('active');
-  });
-
-  // Upload handlers (opsional)
-  const profileUpload = document.getElementById('profileUpload');
-  const profileInput = document.getElementById('profileInput');
-  const bannerUpload = document.getElementById('bannerUpload');
-  const bannerInput = document.getElementById('bannerInput');
-
-  profileUpload?.addEventListener('click', () => profileInput?.click());
-  bannerUpload?.addEventListener('click', () => bannerInput?.click());
-
-  profileInput?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      profileUpload.innerHTML = `<img src="${ev.target.result}" class="preview-image" alt="Profile"/>`;
-    };
-    reader.readAsDataURL(file);
-  });
-
-  bannerInput?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      bannerUpload.innerHTML = `<img src="${ev.target.result}" class="preview-image" alt="Banner"/>`;
-    };
-    reader.readAsDataURL(file);
-  });
+  // Boot app
+  loadExplore();
 </script>
 </body>
 </html>
