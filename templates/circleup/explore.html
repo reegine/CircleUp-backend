@@ -43,7 +43,7 @@
 
     /* Grid */
     .communities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-    .community-card{position:relative;border-radius:10px;overflow:hidden;height:260px;background:#ddd}
+    .community-card{position:relative;border-radius:10px;overflow:hidden;height:230px;background:#ddd}
     .community-card img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
     .community-overlay{position:absolute;left:0;right:0;bottom:0;padding:20px;background:linear-gradient(to top,rgba(0,0,0,.8),rgba(0,0,0,.35) 60%,transparent);opacity:0;transition:opacity .3s ease}
     .community-card:hover .community-overlay{opacity:1}
@@ -185,8 +185,8 @@
 <div class="modal-overlay" id="startCommunityModal">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title">Start New Community</h2>
       <button class="modal-close" id="closeStartModal" aria-label="Close">✕</button>
+      <h2 class="modal-title">Start New Community</h2>
       <button class="save-btn" id="saveCommunityBtn">Save</button>
     </div>
     <div class="modal-body">
@@ -194,7 +194,7 @@
         <div class="image-upload-section">
           <div class="image-upload-grid">
             <div class="profile-upload" id="profileUpload">
-              <div class="upload-placeholder"><div class="upload-icon">📷</div></div>
+              <div class="upload-placeholder"><div class="upload-icon">📷</div><div class="upload-text">Upload Profile</div></div>
               <input type="file" class="upload-input" id="profileInput" accept="image/*" />
             </div>
             <div class="banner-upload" id="bannerUpload">

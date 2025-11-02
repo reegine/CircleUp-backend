@@ -7,434 +7,382 @@
     <title>CircleUP - Profile</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            height: 100vh;
-            background-color: #f5f5f5;
-            overflow: hidden;
-        }
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f5f5f5;
+    overflow: hidden;
+}
 
-        /* Sidebar */
-        .sidebar {
-            width: 240px;
-            background-color: #e8e8e8;
-            display: flex;
-            flex-direction: column;
-            padding: 30px 0;
-            z-index: 1;
-        }
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    margin-left: 200px;
+    padding-top: 135px !important;  /* Force dengan !important */
+    padding-left: 24px;
+    padding-right: 24px;
+    position: relative;
+    z-index: 1;
+}
 
-        .logo {
-            padding: 0 30px;
-            margin-bottom: 40px;
-        }
+.profile-header {
+    max-width: 1100px;
+    margin: 80px auto 24px;  /* Naikkan margin-top */
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
 
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a1a1a;
-            font-style: italic;
-        }
+.cover-image {
+    width: 100%;
+    height: 250px;  /* Kurangi dari 350px ke 250px */
+    object-fit: cover;
+    display: block;
+    background-color: #e0e0e0;
+}
 
-        .nav-menu {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
+.profile-info {
+    padding: 0 60px 60px;
+    position: relative;
+    background: linear-gradient(to bottom, white 0%, #f5f5f5 100%);
+}
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 30px;
-            color: #666;
-            text-decoration: none;
-            font-size: 16px;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
+.profile-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 8px solid white;
+    margin-top: -100px;  /* Sudah pas */
+    object-fit: cover;
+    background-color: #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
-        .nav-item:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
+.edit-profile-btn {
+    position: absolute;
+    right: 60px;
+    top: 40px;
+    padding: 14px 40px;
+    background-color: #5a5a5a;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
 
-        .nav-item svg {
-            width: 24px;
-            height: 24px;
-            margin-right: 16px;
-        }
+.edit-profile-btn:hover {
+    background-color: #4a4a4a;
+}
 
-        .nav-item.active {
-            background-color: #d4a044;
-            color: white;
-            border-radius: 0;
-        }
+.profile-details {
+    margin-top: 30px;
+}
 
-        .profile-nav {
-            margin-top: auto;
-        }
+.profile-name {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            margin-left: 200px;
-        }
+.profile-username {
+    font-size: 20px;
+    color: #999;
+    margin-bottom: 25px;
+    font-weight: 400;
+}
 
-        .profile-header {
-            position: relative;
-            background-color: white;
-        }
+.profile-bio {
+    font-size: 17px;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 35px;
+    white-space: pre-wrap;
+}
 
-        .cover-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            display: block;
-        }
+.profile-meta {
+    display: flex;
+    gap: 35px;
+    color: #777;
+    font-size: 16px;
+    font-weight: 400;
+}
 
-        .profile-info {
-            padding: 0 60px 40px;
-            position: relative;
-        }
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .profile-avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 6px solid white;
-            margin-top: -90px;
-            object-fit: cover;
-            background-color: white;
-        }
+.meta-item svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
 
-        .edit-profile-btn {
-            position: absolute;
-            right: 60px;
-            top: 30px;
-            padding: 12px 32px;
-            background-color: #4a4a4a;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+/* Loading State */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    font-size: 18px;
+    color: #666;
+}
 
-        .edit-profile-btn:hover {
-            background-color: #3a3a3a;
-        }
+/* Error State */
+.error-message {
+    background-color: #fee;
+    color: #c33;
+    padding: 16px;
+    margin: 20px auto;
+    max-width: 1140px;
+    border-radius: 8px;
+    border: 1px solid #fcc;
+}
 
-        .profile-details {
-            margin-top: 20px;
-        }
+/* Success Message */
+.success-message {
+    background-color: #efe;
+    color: #3c3;
+    padding: 16px;
+    margin: 20px auto;
+    max-width: 1140px;
+    border-radius: 8px;
+    border: 1px solid #cfc;
+}
 
-        .profile-name {
-            font-size: 36px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
+/* Modal Overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 
-        .profile-username {
-            font-size: 18px;
-            color: #888;
-            margin-bottom: 20px;
-        }
+.modal-overlay.active {
+    display: flex;
+}
 
-        .profile-bio {
-            font-size: 16px;
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
+/* Edit Profile Modal */
+.edit-modal {
+    background-color: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
 
-        .profile-meta {
-            display: flex;
-            gap: 30px;
-            color: #666;
-            font-size: 15px;
-        }
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+}
 
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
 
-        .meta-item svg {
-            width: 18px;
-            height: 18px;
-        }
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        /* Modal Overlay */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+.close-btn:hover {
+    color: #1a1a1a;
+}
 
-        .modal-overlay.active {
-            display: flex;
-        }
+.save-btn {
+    padding: 8px 24px;
+    background-color: #4a4a4a;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-        /* Edit Profile Modal */
-        .edit-modal {
-            background-color: white;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 540px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
+.save-btn:hover:not(:disabled) {
+    background-color: #3a3a3a;
+}
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 24px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+.save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
-        .modal-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
+.modal-body {
+    padding: 24px;
+}
 
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.image-upload-section {
+    position: relative;
+    margin-bottom: 32px;
+}
 
-        .close-btn:hover {
-            color: #1a1a1a;
-        }
+.cover-upload {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
 
-        .save-btn {
-            padding: 8px 24px;
-            background-color: #4a4a4a;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
 
-        .save-btn:hover {
-            background-color: #3a3a3a;
-        }
+.cover-upload:hover .upload-overlay,
+.avatar-upload:hover .upload-overlay {
+    opacity: 1;
+}
 
-        .modal-body {
-            padding: 24px;
-        }
+.upload-icon {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .image-upload-section {
-            position: relative;
-            margin-bottom: 32px;
-        }
+.upload-icon svg {
+    width: 24px;
+    height: 24px;
+}
 
-        .cover-upload {
-            width: 100%;
-            height: 180px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            background-color: #f0f0f0;
-        }
+.avatar-upload {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    position: absolute;
+    bottom: -20px;  /* Ubah dari -60px ke -50px (lebih ke atas) */
+    left: 24px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    overflow: hidden;
+    background-color: #ddd;
+}
 
-        .upload-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            cursor: pointer;
-        }
+.form-group {
+    margin-bottom: 24px;
+}
 
-        .cover-upload:hover .upload-overlay {
-            opacity: 1;
-        }
+.form-group:first-of-type {
+    margin-top: 100px;
+}
 
-        .upload-icon {
-            width: 48px;
-            height: 48px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
 
-        .upload-icon svg {
-            width: 24px;
-            height: 24px;
-        }
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
 
-        .avatar-upload {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid white;
-            position: absolute;
-            bottom: -60px;
-            left: 24px;
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-            overflow: hidden;
-        }
+.form-input:focus,
+.form-textarea:focus {
+    border-color: #d4a044;
+}
 
-        .avatar-upload .upload-overlay {
-            opacity: 0;
-        }
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
 
-        .avatar-upload:hover .upload-overlay {
-            opacity: 1;
-        }
+.file-input {
+    display: none;
+}
 
-        .form-group {
-            margin-bottom: 24px;
-            margin-top: 70px;
-        }
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 80px;
+    }
 
-        .form-group:first-of-type {
-            margin-top: 70px;
-        }
+    .profile-info {
+        padding: 0 30px 30px;
+    }
 
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .form-input,
-        .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            font-size: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            outline: none;
-            font-family: inherit;
-            transition: border-color 0.2s;
-        }
-
-        .form-input:focus,
-        .form-textarea:focus {
-            border-color: #d4a044;
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .logo h1,
-            .nav-item span {
-                display: none;
-            }
-
-            .nav-item {
-                justify-content: center;
-                padding: 16px;
-            }
-
-            .nav-item svg {
-                margin-right: 0;
-            }
-
-            .profile-info {
-                padding: 0 30px 30px;
-            }
-
-            .edit-profile-btn {
-                right: 30px;
-            }
-        }
+    .edit-profile-btn {
+        right: 30px;
+    }
+}
     </style>
 </head>
 <body>
-  {% include "circleup/sidebar.html" %}
+    {% include "circleup/sidebar.html" %}
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="profile-header">
-            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&h=300&fit=crop" alt="Cover" class="cover-image">
-            
-            <div class="profile-info">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop" alt="Profile" class="profile-avatar">
-                
-                <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>
-
-                <div class="profile-details">
-                    <h2 class="profile-name">Luka MOD</h2>
-                    <p class="profile-username">@LukaMOD</p>
-                    <p class="profile-bio">HIIIIIIIII</p>
-
-                    <div class="profile-meta">
-                        <div class="meta-item">
-                            <svg fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                            </svg>
-                            <span>Indonesia</span>
-                        </div>
-                        <div class="meta-item">
-                            <svg fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                            </svg>
-                            <span>Joined September 2011</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="profileContent" class="loading">Loading profile...</div>
     </main>
 
     <!-- Edit Profile Modal -->
@@ -445,60 +393,323 @@
                     <button class="close-btn" onclick="closeEditModal()">✕</button>
                     <span>Edit Profile</span>
                 </div>
-                <button class="save-btn" onclick="saveProfile()">Save</button>
+                <button class="save-btn" id="saveBtn" onclick="saveProfile()">Save</button>
             </div>
 
             <div class="modal-body">
-                <div class="image-upload-section">
-                    <div class="cover-upload" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=200&fit=crop');">
-                        <div class="upload-overlay">
-                            <div class="upload-icon">
-                                <svg fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
-                                </svg>
+                <form id="editProfileForm">
+                    <div class="image-upload-section">
+                        <div class="cover-upload" id="coverPreview">
+                            <div class="upload-overlay" onclick="document.getElementById('coverInput').click()">
+                                <div class="upload-icon">
+                                    <svg fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="avatar-upload" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop');">
-                        <div class="upload-overlay">
-                            <div class="upload-icon">
-                                <svg fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
-                                </svg>
+                        <div class="avatar-upload" id="avatarPreview" onclick="document.getElementById('avatarInput').click()">
+                            <div class="upload-overlay">
+                                <div class="upload-icon">
+                                    <svg fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M3 4V1h2v3h3v2H5v3H3V6H0V4h3zm3 6V7h3V4h7l1.83 2H21c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10h3zm7 9c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.2-5c0 1.77 1.43 3.2 3.2 3.2s3.2-1.43 3.2-3.2-1.43-3.2-3.2-3.2-3.2 1.43-3.2 3.2z"/>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
+                        <input type="file" id="coverInput" class="file-input" accept="image/*" onchange="previewCover(event)">
+                        <input type="file" id="avatarInput" class="file-input" accept="image/*" onchange="previewAvatar(event)">
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-input" value="Luka MOD" placeholder="Your name">
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Your username" readonly style="background-color: #f5f5f5;">
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Bio</label>
-                    <textarea class="form-textarea" placeholder="Tell us about yourself">hee
-hee</textarea>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" id="firstName" class="form-input" placeholder="Your first name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" id="lastName" class="form-input" placeholder="Your last name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <textarea id="bio" class="form-textarea" placeholder="Tell us about yourself"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" id="location" class="form-input" placeholder="Your location">
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let currentUser = null;
+        let coverFile = null;
+        let avatarFile = null;
+
+        // Get token from localStorage (matching sidebar.html token names)
+        function getToken() {
+            return localStorage.getItem('access');
+        }
+
+        // Check if user is authenticated
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '/login/';
+                return false;
+            }
+            return true;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        // Get full image URL
+        function getImageUrl(path) {
+            if (!path) return null;
+            if (path.startsWith('http')) return path;
+            return `http://127.0.0.1:8000${path}`;
+        }
+
+        // Load user profile
+        async function loadProfile() {
+            if (!checkAuth()) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/users/profile/`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('access');
+                    localStorage.removeItem('refresh');
+                    window.location.href = '/login/';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to load profile');
+                }
+
+                currentUser = await response.json();
+                displayProfile(currentUser);
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('profileContent').innerHTML = `
+                    <div class="error-message">
+                        Failed to load profile. Please try again later.
+                    </div>
+                `;
+            }
+        }
+
+        // Display profile
+        function displayProfile(user) {
+            const profilePic = getImageUrl(user.profile_pic) || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.first_name + ' ' + user.last_name) + '&size=400&background=d4a044&color=fff';
+            const backgroundPic = getImageUrl(user.background_pic) || 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&h=300&fit=crop';
+
+            document.getElementById('profileContent').innerHTML = `
+                <div class="profile-header">
+                    <img src="${backgroundPic}" alt="Cover" class="cover-image" onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&h=300&fit=crop'">
+                    
+                    <div class="profile-info">
+                        <img src="${profilePic}" alt="Profile" class="profile-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name + ' ' + user.last_name)}&size=400&background=d4a044&color=fff'">
+                        
+                        <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>
+
+                        <div class="profile-details">
+                            <h2 class="profile-name">${user.first_name} ${user.last_name}</h2>
+                            <p class="profile-username">@${user.username}</p>
+                            <p class="profile-bio">${user.bio || 'No bio yet'}</p>
+
+                            <div class="profile-meta">
+                                ${user.location ? `
+                                <div class="meta-item">
+                                    <svg fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                    </svg>
+                                    <span>${user.location}</span>
+                                </div>
+                                ` : ''}
+                                <div class="meta-item">
+                                    <svg fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                    </svg>
+                                    <span>Joined ${formatDate(user.date_joined)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Open edit modal
         function openEditModal() {
+            if (!currentUser) return;
+
+            // Populate form with current data
+            document.getElementById('username').value = currentUser.username || '';
+            document.getElementById('firstName').value = currentUser.first_name || '';
+            document.getElementById('lastName').value = currentUser.last_name || '';
+            document.getElementById('bio').value = currentUser.bio || '';
+            document.getElementById('location').value = currentUser.location || '';
+
+            // Set preview images
+            const profilePic = getImageUrl(currentUser.profile_pic) || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(currentUser.first_name + ' ' + currentUser.last_name) + '&size=200&background=d4a044&color=fff';
+            const backgroundPic = getImageUrl(currentUser.background_pic) || '';
+
+            if (backgroundPic) {
+                document.getElementById('coverPreview').style.backgroundImage = `url('${backgroundPic}')`;
+            }
+            document.getElementById('avatarPreview').style.backgroundImage = `url('${profilePic}')`;
+
             document.getElementById('editModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
+        // Close edit modal
         function closeEditModal() {
             document.getElementById('editModal').classList.remove('active');
             document.body.style.overflow = 'auto';
+            coverFile = null;
+            avatarFile = null;
         }
 
-        function saveProfile() {
-            // Here you would typically save the profile data
-            alert('Profile saved!');
-            closeEditModal();
+        // Preview cover image
+        function previewCover(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert('Cover image must be less than 5MB');
+                    event.target.value = '';
+                    return;
+                }
+                coverFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('coverPreview').style.backgroundImage = `url('${e.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Preview avatar image
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert('Profile picture must be less than 5MB');
+                    event.target.value = '';
+                    return;
+                }
+                avatarFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarPreview').style.backgroundImage = `url('${e.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Save profile
+        async function saveProfile() {
+            if (!currentUser) return;
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            try {
+                const formData = new FormData();
+                
+                // Add text fields (only if changed)
+                const firstName = document.getElementById('firstName').value.trim();
+                const lastName = document.getElementById('lastName').value.trim();
+                const bio = document.getElementById('bio').value.trim();
+                const location = document.getElementById('location').value.trim();
+
+                if (firstName && firstName !== currentUser.first_name) {
+                    formData.append('first_name', firstName);
+                }
+                if (lastName && lastName !== currentUser.last_name) {
+                    formData.append('last_name', lastName);
+                }
+                if (bio !== currentUser.bio) {
+                    formData.append('bio', bio);
+                }
+                if (location !== currentUser.location) {
+                    formData.append('location', location);
+                }
+
+                // Add image files if selected
+                if (avatarFile) {
+                    formData.append('profile_pic', avatarFile);
+                }
+                if (coverFile) {
+                    formData.append('background_pic', coverFile);
+                }
+
+                // Check if there's anything to update
+                if (!formData.entries().next().done) {
+                    const response = await fetch(`${API_BASE}/users/${currentUser.id}/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || JSON.stringify(error));
+                    }
+
+                    const updatedUser = await response.json();
+                    currentUser = updatedUser;
+                    displayProfile(updatedUser);
+                    
+                    closeEditModal();
+                    
+                    // Show success message
+                    // Show success message
+const successDiv = document.createElement('div');
+successDiv.className = 'success-message';
+successDiv.textContent = 'Profile updated successfully!';
+successDiv.style.position = 'fixed';
+successDiv.style.top = '20px';
+successDiv.style.left = '50%';
+successDiv.style.transform = 'translateX(-50%)';
+successDiv.style.zIndex = '9999';
+successDiv.style.minWidth = '300px';
+successDiv.style.textAlign = 'center';
+document.body.appendChild(successDiv);
+setTimeout(() => successDiv.remove(), 3000);
+                } else {
+                    closeEditModal();
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('Failed to save profile: ' + error.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save';
+            }
         }
 
         // Close modal when clicking outside
@@ -507,6 +718,16 @@ hee</textarea>
                 closeEditModal();
             }
         });
+
+        // Handle escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEditModal();
+            }
+        });
+
+        // Load profile on page load
+        window.addEventListener('DOMContentLoaded', loadProfile);
     </script>
 </body>
 </html>
