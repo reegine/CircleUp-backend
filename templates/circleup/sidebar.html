@@ -115,6 +115,7 @@
 {% endwith %}
 
 <script>
+  let isLoggingOut = false;
   // Dropdown toggle
   (function() {
     const moreBtn = document.getElementById('moreBtn');
@@ -231,10 +232,62 @@
   })();
 
   // Handle logout
-  async function handleLogout() {
+  // async function handleLogout() {
+  //   if (!confirm('Are you sure you want to log out?')) {
+  //     return;
+  //   }
+
+  //   try {
+  //     const refreshToken = localStorage.getItem('refresh');
+  //     const accessToken = localStorage.getItem('access');
+      
+  //     if (refreshToken && accessToken) {
+  //       try {
+  //         await fetch('http://127.0.0.1:8000/api/auth/jwt/blacklist/', {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': `Bearer ${accessToken}`
+  //           },
+  //           body: JSON.stringify({
+  //             refresh: refreshToken
+  //           })
+  //         });
+  //       } catch (apiError) {
+  //         console.warn('API blacklist call failed:', apiError);
+  //       }
+  //     }
+
+  //     localStorage.removeItem('access');
+  //     localStorage.removeItem('refresh');
+  //     localStorage.removeItem('currentUser');
+  //     localStorage.removeItem('API_BASE');
+  //     localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
+      
+  //     window.location.href = "/login/";
+      
+  //   } catch (error) {
+  //     console.error('Logout error:', error);
+  //     localStorage.removeItem('access');
+  //     localStorage.removeItem('refresh');
+  //     localStorage.removeItem('currentUser');
+  //     localStorage.removeItem('API_BASE');
+  //     localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
+  //     window.location.href = "/login/";
+  //   }
+  // }
+   async function handleLogout() {
+    // Prevent multiple simultaneous logout calls
+    if (isLoggingOut) {
+      console.log('Logout already in progress...');
+      return;
+    }
+
     if (!confirm('Are you sure you want to log out?')) {
       return;
     }
+
+    isLoggingOut = true; // Set flag
 
     try {
       const refreshToken = localStorage.getItem('refresh');
@@ -261,7 +314,7 @@
       localStorage.removeItem('refresh');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('API_BASE');
-      localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
+      localStorage.removeItem('sidebarProfile');
       
       window.location.href = "/login/";
       
@@ -271,8 +324,12 @@
       localStorage.removeItem('refresh');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('API_BASE');
-      localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
+      localStorage.removeItem('sidebarProfile');
       window.location.href = "/login/";
+    } finally {
+      isLoggingOut = false; // Reset flag
     }
   }
+
+  window.handleLogout = handleLogout;
 </script>

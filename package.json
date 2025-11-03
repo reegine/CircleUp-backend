@@ -1,0 +1,15 @@
+{
+  "name": "circleup-backend",
+  "version": "1.0.0",
+  "description": "<think>\r The user wants me to format this into a README format so they can copy-paste it. The content is about the CircleUp Backend, a Django project.",
+  "main": "websocketService.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^15.5.0"
+  }
+}
