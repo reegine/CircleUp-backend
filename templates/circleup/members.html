@@ -1,57 +1,85 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tennis Prasmul - Members</title>
+  <title>Community Members</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Poppins',sans-serif;background:#f5f5f5;display:flex;overflow:hidden}
-    #sidebar-container{flex-shrink:0}
-    .main-container{display:flex;flex:1;height:100vh;overflow:hidden}
+    
+    /* Left Sidebar */
+    .left-sidebar{
+      width:260px;height:100vh;background:#fff;border-right:1px solid #e0e0e0;
+      display:flex;flex-direction:column;position:fixed;left:0;top:0;
+    }
+    .sidebar-header{padding:20px;border-bottom:1px solid #e0e0e0}
+    .sidebar-logo{font-size:24px;font-weight:700;color:#e59d2c}
+    .sidebar-nav{flex:1;overflow-y:auto;padding:10px 0}
+    .nav-item{
+      display:flex;align-items:center;gap:12px;padding:12px 20px;
+      color:#666;cursor:pointer;transition:all .2s;
+    }
+    .nav-item:hover,.nav-item.active{background:#f5f5f5;color:#e59d2c}
+    .nav-item svg{width:20px;height:20px;fill:currentColor}
+    .community-list{padding:0 10px}
+    .community-card{
+      display:flex;align-items:center;gap:10px;padding:10px;
+      margin:8px 0;border-radius:10px;background:#f9f9f9;
+      cursor:pointer;transition:all .2s;
+    }
+    .community-card:hover,.community-card.active{background:#fff3e0;border-left:3px solid #e59d2c}
+    .community-thumb{width:40px;height:40px;border-radius:8px;object-fit:cover}
+    .community-info{flex:1;min-width:0}
+    .community-title{font-size:14px;font-weight:600;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .community-subtitle{font-size:11px;color:#666}
+
+    /* Main Container */
+    .main-container{display:flex;flex:1;height:100vh;margin-left:260px}
 
     .members-container{
       flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;
     }
 
-    /* ===== NEW: dua kolom (Left Rail + konten members) ===== */
+    /* Header */
+    .members-header{
+      padding:20px 40px;background:#f5f5f5;border-bottom:1px solid #e0e0e0;
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .header-left{flex:1}
+    .header-title{font-size:24px;font-weight:600;color:#333}
+    .header-stats{font-size:14px;color:#666;margin-top:4px}
+
+    /* Two Column Layout */
     .members-body{
       flex:1;display:flex;min-height:0;background:#fff;
     }
 
-    /* Left Media Rail — Opsi “Large” */
+    /* Left Rail - Media Gallery */
     .left-rail{
-      width:140px;                 /* ukuran besar seperti mockup */
-      padding:16px 10px;
-      border-right:1px solid #eee;
-      background:#fff;
-      overflow-y:auto;
-      flex-shrink:0;
+      width:140px;padding:16px 10px;border-right:1px solid #eee;
+      background:#fff;overflow-y:auto;flex-shrink:0;
     }
     .left-rail::-webkit-scrollbar{width:8px}
     .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
     .rail-item{
       display:flex;align-items:center;gap:10px;
       padding:10px;margin-bottom:16px;border-radius:16px;background:#f6f6f6;
-      cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s
+      cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s;
     }
-    .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .rail-item:hover{
+      transform:translateY(-1px);background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,.06);
+    }
     .rail-thumb{
       width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0;
     }
-    .rail-label{display:none;font-size:12px;color:#333} /* set ke block kalau mau tampilkan teks */
 
-    /* Kolom kanan (header + list members) */
+    /* Members List */
     .members-main{
       flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;
     }
-
-    .members-header{
-      padding:30px 40px;background:#f5f5f5;border-bottom:1px solid #e0e0e0;
-    }
-
     .members-content{padding:30px 40px;flex:1;overflow:auto}
 
     .member-item{
@@ -65,16 +93,20 @@
     .member-avatar{width:45px;height:45px;border-radius:50%;object-fit:cover}
     .member-details{display:flex;flex-direction:column}
     .member-name{
-      font-size:15px;font-weight:600;color:#333;display:flex;align-items:center;gap:8px;
+      font-size:15px;font-weight:600;color:#333;
+      display:flex;align-items:center;gap:8px;
     }
     .member-badge{
-      font-size:12px;font-weight:600;color:#e59d2c;background:#fff3e0;padding:3px 10px;border-radius:12px;
+      font-size:12px;font-weight:600;color:#e59d2c;
+      background:#fff3e0;padding:3px 10px;border-radius:12px;
     }
+    .member-badge.creator{background:#ffe5e5;color:#e74c3c}
 
     .member-actions{display:flex;gap:10px}
     .action-button{
-      padding:8px 20px;border:none;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:.3s;
-      font-family:'Poppins',sans-serif;
+      padding:8px 20px;border:none;border-radius:20px;
+      font-size:13px;font-weight:500;cursor:pointer;
+      transition:.3s;font-family:'Poppins',sans-serif;
     }
     .action-button.admin{background:#e59d2c;color:#fff}
     .action-button.admin:hover{background:#d48b1f}
@@ -82,136 +114,446 @@
     .action-button.kick:hover{background:#555}
     .action-button.remove{background:#f5f5f5;color:#e74c3c}
     .action-button.remove:hover{background:#ffe5e5}
+    .action-button:disabled{opacity:0.5;cursor:not-allowed}
 
+    /* Right Sidebar */
+    .right-sidebar{
+      width:280px;background:#fff;border-left:1px solid #e0e0e0;
+      display:flex;flex-direction:column;overflow-y:auto;
+    }
+    .sidebar-section{padding:20px;border-bottom:1px solid #e0e0e0}
+    .section-title{font-size:14px;font-weight:600;color:#666;margin-bottom:12px}
+    
+    .community-header{text-align:center}
+    .community-banner{width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:12px}
+    .community-name{font-size:18px;font-weight:600;margin-bottom:4px}
+    .community-stats{font-size:12px;color:#666}
 
+    .channel-item, .event-item{
+      display:flex;align-items:center;gap:10px;padding:10px;
+      border-radius:8px;color:#333;text-decoration:none;
+      transition:background .2s;margin-bottom:4px;
+    }
+    .channel-item:hover, .event-item:hover{background:#f5f5f5}
+    .channel-item svg, .event-item svg{width:18px;height:18px;fill:#666}
 
-    #right-sidebar-container{flex-shrink:0}
+    .loading{text-align:center;padding:40px;color:#666}
+    .error{text-align:center;padding:40px;color:#e74c3c}
+
+    @media (max-width: 1024px){
+      .left-sidebar{display:none}
+      .main-container{margin-left:0}
+      .left-rail{display:none}
+    }
   </style>
 </head>
 <body>
-  {% include "circleup/sidebar.html" %}
+
+  <!-- Left Sidebar -->
+  <aside class="left-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">CircleUP</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span>Communities</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <span>Members</span>
+      </div>
+    </nav>
+    <div class="community-list" id="sidebarCommunities">
+      <!-- Communities will be loaded here -->
+    </div>
+  </aside>
 
   <div class="main-container">
     <div class="members-container">
-      <!-- NEW: dua kolom -->
+      <!-- Header -->
+      <div class="members-header">
+        <div class="header-left">
+          <div class="header-title" id="communityName">Loading...</div>
+          <div class="header-stats" id="memberStats"></div>
+        </div>
+      </div>
+
+      <!-- Body: Left Rail + Members List -->
       <div class="members-body">
-        <!-- LEFT RAIL (Opsi Large) -->
-        <aside class="left-rail">
-          <!-- ganti src sesuai asetmu -->
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1517495306984-9133a0b411c7?q=80&w=600&auto=format&fit=crop" alt=""></div>
+        <!-- Left Rail: Media Gallery -->
+        <aside class="left-rail" id="leftRail">
+          <!-- Media thumbnails will be injected here -->
         </aside>
 
+        <!-- Members List -->
+        <div class="members-main">
+          <div class="members-content" id="membersContent">
+            <div class="loading">Loading members...</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Right Sidebar -->
+    <aside class="right-sidebar">
+      <div class="sidebar-section community-header">
+        <img class="community-banner" id="communityBanner" src="" alt="">
+        <div class="community-name" id="sidebarCommunityName"></div>
+        <div class="community-stats" id="sidebarStats"></div>
+      </div>
 
-          <div class="members-content">
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe <span class="member-badge">Creator</span></div>
-                </div>
-              </div>
-            </div>
+      <div class="sidebar-section">
+        <div class="section-title">CHANNELS</div>
+        <div id="channelsList"></div>
+      </div>
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=12" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe <span class="member-badge">Admin</span></div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button remove" onclick="removeAdmin(2)">Remove Admin</button>
-                <button class="action-button kick" onclick="kickMember(2)">Kick</button>
-              </div>
-            </div>
+      <div class="sidebar-section">
+        <div class="section-title">EVENTS</div>
+        <div id="eventsList"></div>
+      </div>
+    </aside>
+  </div>
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=13" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe</div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button admin" onclick="makeAdmin(3)">Make Admin</button>
-                <button class="action-button kick" onclick="kickMember(3)">Kick</button>
-              </div>
-            </div>
+<script>
+(function(){
+  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+  const ACCESS = localStorage.getItem("access");
+  
+  if (!ACCESS) {
+    window.location.href = "/login/";
+    return;
+  }
+  
+  const H = { 
+    Authorization: `Bearer ${ACCESS}`,
+    "Content-Type": "application/json"
+  };
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=14" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe</div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button admin" onclick="makeAdmin(4)">Make Admin</button>
-                <button class="action-button kick" onclick="kickMember(4)">Kick</button>
-              </div>
-            </div>
+  const params = new URLSearchParams(location.search);
+  let COMMUNITY_ID = params.get("community");
+  
+  let currentUser = null;
+  let communityData = null;
+  let isCurrentUserAdmin = false;
+  let allMembers = [];
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=15" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe</div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button admin" onclick="makeAdmin(5)">Make Admin</button>
-                <button class="action-button kick" onclick="kickMember(5)">Kick</button>
-              </div>
-            </div>
+  // Helper: absolute URL for media
+  const abs = (u) => {
+    if (!u) return "https://via.placeholder.com/150?text=No+Image";
+    if (u.startsWith("http")) return u;
+    const root = API_BASE.replace(/\/api\/?$/, "");
+    return root + (u.startsWith("/") ? "" : "/") + u;
+  };
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=16" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe</div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button admin" onclick="makeAdmin(6)">Make Admin</button>
-                <button class="action-button kick" onclick="kickMember(6)">Kick</button>
-              </div>
-            </div>
+  // Get current user
+  async function getCurrentUser() {
+    try {
+      const r = await fetch(`${API_BASE}/users/profile/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to get current user");
+      currentUser = await r.json();
+      return currentUser;
+    } catch (e) {
+      console.error("Get current user error:", e);
+      return null;
+    }
+  }
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=17" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe</div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button admin" onclick="makeAdmin(7)">Make Admin</button>
-                <button class="action-button kick" onclick="kickMember(7)">Kick</button>
-              </div>
-            </div>
+  // Get community details
+  async function getCommunity(commId) {
+    try {
+      const r = await fetch(`${API_BASE}/communities/${commId}/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to get community");
+      communityData = await r.json();
+      
+      // Check if current user is admin or creator
+      if (currentUser && communityData.created_by) {
+        isCurrentUserAdmin = String(currentUser.id) === String(communityData.created_by.id);
+      }
+      
+      if (communityData.user_role === 'admin') {
+        isCurrentUserAdmin = true;
+      }
+      
+      return communityData;
+    } catch (e) {
+      console.error("Get community error:", e);
+      return null;
+    }
+  }
 
-            <div class="member-item">
-              <div class="member-info">
-                <img src="https://i.pravatar.cc/150?img=18" alt="Peppe" class="member-avatar">
-                <div class="member-details">
-                  <div class="member-name">Peppe</div>
-                </div>
-              </div>
-              <div class="member-actions">
-                <button class="action-button admin" onclick="makeAdmin(8)">Make Admin</button>
-                <button class="action-button kick" onclick="kickMember(8)">Kick</button>
+  // Get all users (simulate getting members)
+  async function getAllUsers() {
+    try {
+      const r = await fetch(`${API_BASE}/users/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to get users");
+      const data = await r.json();
+      return Array.isArray(data) ? data : (data.results || []);
+    } catch (e) {
+      console.error("Get users error:", e);
+      return [];
+    }
+  }
+
+  // Load joined communities for sidebar
+  async function loadSidebarCommunities() {
+    try {
+      const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
+      if (!r.ok) return;
+      const communities = await r.json();
+      
+      const box = document.getElementById("sidebarCommunities");
+      if (!communities || !communities.length) return;
+      
+      box.innerHTML = communities.map(c => `
+        <div class="community-card ${String(c.id) === String(COMMUNITY_ID) ? 'active' : ''}" 
+             data-id="${c.id}" onclick="switchCommunity('${c.id}')">
+          <img class="community-thumb" src="${abs(c.profile_pic)}" alt="${c.name}">
+          <div class="community-info">
+            <div class="community-title">${c.name}</div>
+            <div class="community-subtitle">${c.member_count || 0} members</div>
+          </div>
+        </div>
+      `).join("");
+    } catch (e) {
+      console.error("Load sidebar communities error:", e);
+    }
+  }
+
+  // Switch community
+  window.switchCommunity = function(communityId) {
+    window.location.href = `?community=${communityId}`;
+  };
+
+  // Render header
+  function renderHeader(community) {
+    document.getElementById("communityName").textContent = community.name || "Community";
+    document.getElementById("memberStats").textContent = 
+      `${community.member_count || 0} Members · ${community.online_count || 0} Online`;
+  }
+
+  // Render right sidebar
+  function renderRightSidebar(community) {
+    const banner = document.getElementById("communityBanner");
+    const name = document.getElementById("sidebarCommunityName");
+    const stats = document.getElementById("sidebarStats");
+    
+    banner.src = abs(community.background_banner || community.profile_pic);
+    name.textContent = community.name || "Community";
+    stats.textContent = `${community.member_count || 0} Members · ${community.online_count || 0} Online`;
+  }
+
+  // Render channels
+  async function renderChannels() {
+    try {
+      const r = await fetch(`${API_BASE}/channels/`, { headers: H });
+      const data = await r.json();
+      const channels = Array.isArray(data) ? data : (data.results || []);
+      
+      const communityChannels = channels.filter(c => 
+        String(c.community) === String(COMMUNITY_ID)
+      );
+      
+      const box = document.getElementById("channelsList");
+      if (!communityChannels.length) {
+        box.innerHTML = '<div style="color:#888;padding:6px;font-size:12px">No channels</div>';
+        return;
+      }
+      
+      box.innerHTML = communityChannels.map(c => `
+        <a href="/chat/?community=${COMMUNITY_ID}&channel=${c.id}" class="channel-item">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+          <span>${c.name}</span>
+        </a>
+      `).join("");
+    } catch (e) {
+      console.error("Render channels error:", e);
+    }
+  }
+
+  // Render events
+  async function renderEvents() {
+    try {
+      const r = await fetch(`${API_BASE}/events/`, { headers: H });
+      const events = await r.json();
+      
+      const communityEvents = (Array.isArray(events) ? events : []).filter(e => 
+        e.community && String(e.community.id) === String(COMMUNITY_ID)
+      );
+      
+      const box = document.getElementById("eventsList");
+      if (!communityEvents.length) {
+        box.innerHTML = '<div style="color:#888;padding:6px;font-size:12px">No events</div>';
+        return;
+      }
+      
+      box.innerHTML = communityEvents.map(ev => `
+        <a href="/event-info/?community=${COMMUNITY_ID}#${ev.id}" class="event-item">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
+          <span>${ev.name}</span>
+        </a>
+      `).join("");
+    } catch (e) {
+      console.error("Render events error:", e);
+    }
+  }
+
+  // Render left rail - get images from community posts
+  async function renderLeftRail() {
+    const rail = document.getElementById("leftRail");
+    
+    try {
+      // Get posts from this community
+      const r = await fetch(`${API_BASE}/posts/?community=${COMMUNITY_ID}`, { headers: H });
+      const data = await r.json();
+      const posts = Array.isArray(data) ? data : (data.results || []);
+      
+      // Filter posts with images from this community
+      const postsWithImages = posts
+        .filter(p => p.image && p.community && String(p.community.id) === String(COMMUNITY_ID))
+        .slice(0, 8);
+      
+      if (!postsWithImages.length) {
+        rail.innerHTML = '<div style="color:#888;padding:10px;font-size:12px">No media yet</div>';
+        return;
+      }
+      
+      rail.innerHTML = postsWithImages.map(p => `
+        <div class="rail-item">
+          <img class="rail-thumb" src="${abs(p.image)}" alt="">
+        </div>
+      `).join("");
+    } catch (e) {
+      console.error("Render left rail error:", e);
+      // Fallback to placeholder images
+      rail.innerHTML = `
+        <div class="rail-item">
+          <img class="rail-thumb" src="https://images.unsplash.com/photo-1461897104016-0b3b00cc81ee?w=600" alt="">
+        </div>
+        <div class="rail-item">
+          <img class="rail-thumb" src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600" alt="">
+        </div>
+      `;
+    }
+  }
+
+  // Render members list
+  async function renderMembers() {
+    const content = document.getElementById("membersContent");
+    
+    // Get all users and filter to show creator + current user + sample members
+    const allUsers = await getAllUsers();
+    
+    // Build member list: creator first
+    const members = [];
+    
+    // Add creator
+    if (communityData.created_by) {
+      members.push({
+        user: communityData.created_by,
+        role: 'creator',
+        is_online: true
+      });
+    }
+    
+    // Add current user if not creator
+    if (currentUser && String(currentUser.id) !== String(communityData.created_by?.id)) {
+      members.push({
+        user: currentUser,
+        role: communityData.user_role || 'member',
+        is_online: true
+      });
+    }
+    
+    // Add some other users as members (sample)
+    const otherUsers = allUsers
+      .filter(u => 
+        String(u.id) !== String(communityData.created_by?.id) && 
+        String(u.id) !== String(currentUser?.id)
+      )
+      .slice(0, 6);
+    
+    otherUsers.forEach(u => {
+      members.push({
+        user: u,
+        role: Math.random() > 0.7 ? 'admin' : 'member',
+        is_online: Math.random() > 0.5
+      });
+    });
+    
+    allMembers = members;
+    
+    content.innerHTML = members.map((m, idx) => {
+      const user = m.user;
+      const role = m.role;
+      const isCreator = role === 'creator';
+      const isAdmin = role === 'admin';
+      const isCurrentUserMember = String(user.id) === String(currentUser?.id);
+      
+      let badge = '';
+      if (isCreator) badge = '<span class="member-badge creator">Creator</span>';
+      else if (isAdmin) badge = '<span class="member-badge">Admin</span>';
+      
+      let actions = '';
+      // Only show actions if current user is admin AND target is not creator or self
+      if (!isCreator && !isCurrentUserMember && isCurrentUserAdmin) {
+        if (isAdmin) {
+          actions = `
+            <button class="action-button remove" onclick="handleRemoveAdmin(${idx})">Remove Admin</button>
+            <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
+          `;
+        } else {
+          actions = `
+            <button class="action-button admin" onclick="handleMakeAdmin(${idx})">Make Admin</button>
+            <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
+          `;
+        }
+      }
+      
+      return `
+        <div class="member-item" data-member-idx="${idx}">
+          <div class="member-info">
+            <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar">
+            <div class="member-details">
+              <div class="member-name">
+                ${user.username || user.first_name || user.email}
+                ${badge}
               </div>
             </div>
           </div>
-        </div><!-- /members-main -->
-      </div><!-- /members-body -->
-    </div>
+          ${actions ? `<div class="member-actions">${actions}</div>` : ''}
+        </div>
+      `;
+    }).join("");
+  }
 
+<<<<<<< HEAD
+  // Handle make admin (client-side simulation)
+  window.handleMakeAdmin = function(idx) {
+    if (!confirm('Make this member an admin?')) return;
+    
+    const member = allMembers[idx];
+    member.role = 'admin';
+    
+    alert('Member promoted to admin successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/make_admin/');
+    renderMembers();
+  };
+
+  // Handle remove admin (client-side simulation)
+  window.handleRemoveAdmin = function(idx) {
+    if (!confirm('Remove admin privileges from this member?')) return;
+    
+    const member = allMembers[idx];
+    member.role = 'member';
+    
+    alert('Admin privileges removed successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/remove_admin/');
+    renderMembers();
+  };
+=======
     <div id="right-sidebar-container"></div>
   </div>
   {% include "circleup/right-sidebar.html" %}
@@ -298,41 +640,66 @@
     }
     boot().catch(e => console.warn("[right-sidebar] boot error", e));
   })();
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 
-    function makeAdmin(memberId){
-      if(confirm('Make this member an admin?')){
-        const memberItem=event.target.closest('.member-item');
-        const memberName=memberItem.querySelector('.member-name');
-        const badge=document.createElement('span');
-        badge.className='member-badge'; badge.textContent='Admin';
-        memberName.appendChild(badge);
-        const actions=memberItem.querySelector('.member-actions');
-        actions.innerHTML=`
-          <button class="action-button remove" onclick="removeAdmin(${memberId})">Remove Admin</button>
-          <button class="action-button kick" onclick="kickMember(${memberId})">Kick</button>
-        `;
-        alert('Member promoted to admin successfully');
+  // Handle kick (client-side simulation)
+  window.handleKick = function(idx) {
+    if (!confirm('Are you sure you want to kick this member from the community?')) return;
+    
+    allMembers.splice(idx, 1);
+    
+    alert('Member kicked successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/kick_member/');
+    renderMembers();
+  };
+
+  // Initialize
+  async function init() {
+    try {
+      // Get current user first
+      await getCurrentUser();
+      
+      // If no community ID, try to get first joined community
+      if (!COMMUNITY_ID) {
+        const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
+        const communities = await r.json();
+        if (communities && communities.length > 0) {
+          COMMUNITY_ID = communities[0].id;
+          const url = new URL(window.location);
+          url.searchParams.set('community', COMMUNITY_ID);
+          window.history.replaceState({}, '', url);
+        } else {
+          document.getElementById("membersContent").innerHTML = 
+            '<div class="error">No communities found. Please join a community first.</div>';
+          return;
+        }
       }
-    }
-    function removeAdmin(memberId){
-      if(confirm('Remove admin privileges from this member?')){
-        const memberItem=event.target.closest('.member-item');
-        const badge=memberItem.querySelector('.member-badge'); if(badge) badge.remove();
-        const actions=memberItem.querySelector('.member-actions');
-        actions.innerHTML=`
-          <button class="action-button admin" onclick="makeAdmin(${memberId})">Make Admin</button>
-          <button class="action-button kick" onclick="kickMember(${memberId})">Kick</button>
-        `;
-        alert('Admin privileges removed successfully');
+      
+      const community = await getCommunity(COMMUNITY_ID);
+      
+      if (!community) {
+        document.getElementById("membersContent").innerHTML = 
+          '<div class="error">Failed to load community</div>';
+        return;
       }
+      
+      renderHeader(community);
+      renderRightSidebar(community);
+      await renderLeftRail();
+      await renderMembers();
+      await renderChannels();
+      await renderEvents();
+      await loadSidebarCommunities();
+      
+    } catch (e) {
+      console.error("Init error:", e);
+      document.getElementById("membersContent").innerHTML = 
+        '<div class="error">Failed to load page: ' + e.message + '</div>';
     }
-    function kickMember(memberId){
-      if(confirm('Are you sure you want to kick this member from the community?')){
-        const memberItem=event.target.closest('.member-item');
-        memberItem.style.transition='opacity .3s ease'; memberItem.style.opacity='0';
-        setTimeout(()=>{ memberItem.remove(); alert('Member kicked successfully'); },300);
-      }
-    }
-  </script>
+  }
+
+  init();
+})();
+</script>
+
 </body>
 </html>

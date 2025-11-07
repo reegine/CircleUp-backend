@@ -4,6 +4,81 @@
   <meta charset="utf-8"/>
   <title>CircleUP – Feeds</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<<<<<<< HEAD
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f9f9fb;--bd:#ececec;--text:#1f2937;--muted:#6b7280;--brand:#e59d2c;--card:#ffffff}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;color:var(--text);background:var(--bg)}
+    a{color:inherit;text-decoration:none}
+    .layout{display:flex;min-height:100vh}
+    .main{flex:1;display:flex;gap:20px;padding:20px;margin-left:260px}
+    .content{flex:1;max-width:920px}
+    .page-head{margin-bottom:20px}
+    .page-head h2{margin:0 0 6px 0;font-size:24px;font-weight:600}
+    .page-head .meta{color:var(--muted);font-size:14px}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px}
+    .toolbar-left{display:flex;gap:12px;flex:1}
+    .post-btn{background:var(--brand);color:#fff;border:none;border-radius:25px;padding:12px 24px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s}
+    .post-btn:hover{background:#d48d1f;transform:translateY(-1px)}
+    .search{flex:1;max-width:400px}
+    .search input{width:100%;border:1px solid var(--bd);border-radius:25px;padding:10px 20px;background:#fff;font-size:14px}
+    .sort-btn{border:1px solid var(--bd);background:#fff;border-radius:25px;padding:10px 20px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;transition:all 0.2s}
+    .sort-btn:hover{background:#f5f5f5}
+    .feeds-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:24px}
+    .feed-card{background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
+    .feed-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+    .feed-card-img{width:100%;aspect-ratio:1;object-fit:cover}
+    .feed-card-content{padding:12px}
+    .feed-card-author{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .feed-card-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover}
+    .feed-card-name{font-weight:600;font-size:13px}
+    .feed-card-time{font-size:11px;color:var(--muted);margin-left:auto}
+    .feed-card-caption{font-size:13px;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .feed-card-reactions{display:flex;gap:6px;margin-top:8px;font-size:12px}
+    .reaction-badge{background:#f5f5f5;padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px}
+    .empty{color:#94a3b8;padding:40px;text-align:center;background:#fff;border-radius:14px}
+    .warn{background:#fff8e1;border:1px solid #ffe08a;color:#6b5b00;border-radius:10px;padding:12px;margin-bottom:12px}
+    .spinner{width:40px;height:40px;border-radius:50%;border:4px solid #e5e7eb;border-top-color:var(--brand);animation:spin .8s linear infinite;margin:40px auto}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.active{display:flex}
+    .modal-content{background:#fff;border-radius:20px;max-width:900px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modalIn 0.3s ease}
+    @keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--bd)}
+    .modal-header h3{font-size:18px;font-weight:600}
+    .modal-close{background:none;border:none;font-size:28px;cursor:pointer;color:var(--muted);line-height:1;padding:0;width:32px;height:32px}
+    .modal-close:hover{color:var(--text)}
+    .modal-body{padding:24px;overflow-y:auto;flex:1}
+    .post-detail{display:flex;gap:24px}
+    .post-image-large{flex:1;max-width:500px}
+    .post-image-large img{width:100%;border-radius:14px;display:block}
+    .post-info{flex:1;display:flex;flex-direction:column}
+    .post-author-detail{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+    .post-avatar-large{width:42px;height:42px;border-radius:50%;object-fit:cover}
+    .post-author-name{font-weight:600;font-size:15px}
+    .post-author-time{font-size:12px;color:var(--muted);margin-top:2px}
+    .post-caption-full{font-size:14px;line-height:1.6;margin-bottom:20px}
+    .post-reactions-full{display:flex;gap:12px;flex-wrap:wrap;padding:16px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:16px}
+    .reaction-btn{background:#f5f5f5;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;transition:all 0.2s}
+    .reaction-btn:hover{background:#e5e5e5;transform:scale(1.05)}
+    .reaction-btn.active{background:#fff3e0;border:1px solid var(--brand)}
+    .create-post-body{padding:24px}
+    .upload-area{border:2px dashed var(--bd);border-radius:14px;padding:60px 40px;text-align:center;margin-bottom:20px;cursor:pointer;transition:all 0.2s}
+    .upload-area:hover{border-color:var(--brand);background:#fafafa}
+    .upload-area.has-image{padding:0;border:none}
+    .upload-icon{font-size:48px;margin-bottom:12px;color:var(--muted)}
+    .upload-text{color:var(--muted);margin-bottom:16px;font-size:14px}
+    .upload-btn{background:#333;color:#fff;border:none;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:14px}
+    .preview-image{width:100%;border-radius:14px;display:block}
+    .caption-area{width:100%;border:1px solid var(--bd);border-radius:14px;padding:16px;font-size:14px;font-family:'Poppins',sans-serif;resize:vertical;min-height:120px;margin-bottom:16px}
+    .post-submit-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:14px;border-radius:25px;font-weight:600;cursor:pointer;font-size:15px}
+    .post-submit-btn:hover{background:#d48d1f}
+    .post-submit-btn:disabled{background:#ccc;cursor:not-allowed}
+    .right-sidebar{flex:0 0 320px;width:320px;max-height:100vh;overflow:auto;background:var(--bg);border-left:1px solid var(--bd);padding:16px}
+    .right-sidebar::-webkit-scrollbar{width:8px}
+    .right-sidebar::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
+=======
   <style>
     :root{--bg:#f9f9fb;--bd:#ececec;--text:#1f2937;--muted:#6b7280;--brand:#e59d2c;--card:#ffffff}
     *{box-sizing:border-box}
@@ -39,10 +114,28 @@
 
     /* Right sidebar */
     .right-sidebar{flex:0 0 320px;width:320px;max-height:100vh;overflow:auto;background:var(--bg);border-left:1px solid var(--bd);padding:16px}
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
     .community-cover{width:100%;height:150px;object-fit:cover;border-radius:12px;background:#eaeaea}
     .community-name{font-weight:700;font-size:18px;margin-top:10px}
     .community-stats{font-size:13px;color:var(--muted);margin-top:4px}
     .sidebar-menu{list-style:none;margin:12px 0 8px 0;padding:0}
+<<<<<<< HEAD
+    .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text)}
+    .sidebar-menu-item:hover{background:#fff}
+    .sidebar-menu-item.active{background:#fff3e0;border:1px solid var(--brand)}
+    .sidebar-section{margin-top:14px}
+    .section-title{color:var(--muted);font-size:12px;margin:8px 0;font-weight:600;letter-spacing:0.5px}
+    .channel-item,.event-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;color:var(--text);font-size:13px;margin-bottom:4px}
+    .channel-item:hover,.event-item:hover{background:#fff}
+    .sort-dropdown{position:relative}
+    .sort-menu{display:none;position:absolute;top:100%;right:0;background:#fff;border:1px solid var(--bd);border-radius:12px;margin-top:8px;min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100}
+    .sort-menu.active{display:block}
+    .sort-option{padding:12px 16px;cursor:pointer;font-size:14px;transition:background 0.2s}
+    .sort-option:hover{background:#f5f5f5}
+    .sort-option.active{background:#fff3e0;color:var(--brand);font-weight:600}
+    @media (max-width: 1200px){.feeds-grid{grid-template-columns:repeat(2, 1fr)}}
+    @media (max-width: 768px){.main{margin-left:0;padding:12px}.feeds-grid{grid-template-columns:1fr}.right-sidebar{display:none}.post-detail{flex-direction:column}.post-image-large{max-width:100%}}
+=======
     .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--text)}
     .sidebar-menu-item:hover{background:#fff}
     .sidebar-menu-item.active{background:#fff3e0;border:1px solid var(--brand)}
@@ -51,20 +144,423 @@
     #channels-list,#events-list{margin-top:6px}
     .channel-item,.event-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--text)}
     .channel-item:hover,.event-item:hover{background:#fff}
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   </style>
 </head>
 <body>
   <div class="layout">
     <main class="main">
       <section class="content">
+<<<<<<< HEAD
+        <div id="needCommunity" class="warn" style="display:none">
+          Tambahkan parameter <code>?community=&lt;uuid&gt;</code> pada URL untuk memuat Feeds komunitas.
+        </div>
+=======
         <div id="needCommunity" class="warn" role="alert" style="display:none">
           Tambahkan parameter <code>?community=&lt;uuid&gt;</code> pada URL untuk memuat Feeds komunitas.
         </div>
 
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         <header class="page-head">
           <h2 data-page="name">Community Feeds</h2>
           <div data-page="counts" class="meta">0 Members, 0 Online</div>
         </header>
+<<<<<<< HEAD
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button id="createPostBtn" class="post-btn"><span>+</span> Post</button>
+            <div class="search">
+              <input id="q" type="search" placeholder="Cari posting…"/>
+            </div>
+          </div>
+          <div class="sort-dropdown">
+            <button id="sortBtn" class="sort-btn"><span>≡</span> Sort</button>
+            <div id="sortMenu" class="sort-menu">
+              <div class="sort-option active" data-sort="newest">Newest First</div>
+              <div class="sort-option" data-sort="oldest">Oldest First</div>
+              <div class="sort-option" data-sort="popular">Most Popular</div>
+            </div>
+          </div>
+        </div>
+        <div id="feed" class="feeds-grid"></div>
+        <div id="loading" class="spinner" style="display:none"></div>
+      </section>
+      <aside id="rightSidebar" class="right-sidebar">
+        <div class="community-header">
+          <img data-rs="image" class="community-cover" alt="Community banner">
+          <div data-rs="name" class="community-name">Community</div>
+          <div data-rs="counts" class="community-stats"></div>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="/about/" class="sidebar-menu-item">About</a></li>
+          <li><a href="/event-info/" class="sidebar-menu-item">Event Info</a></li>
+          <li><a href="/feeds/" class="sidebar-menu-item active">Feeds</a></li>
+          <li><a href="/members/" class="sidebar-menu-item">Members</a></li>
+        </ul>
+        <div class="sidebar-section">
+          <div class="section-title">CHANNELS</div>
+          <div id="channels-list" class="empty">Loading…</div>
+        </div>
+        <div class="sidebar-section">
+          <div class="section-title">EVENTS</div>
+          <div id="events-list" class="empty">Loading…</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+  <div id="postModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Post Details</h3>
+        <button class="modal-close" onclick="closePostModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="postDetailContent" class="post-detail"></div>
+      </div>
+    </div>
+  </div>
+  <div id="createPostModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create new post</h3>
+        <button class="modal-close" onclick="closeCreatePostModal()">&times;</button>
+      </div>
+      <div class="create-post-body">
+        <div id="uploadArea" class="upload-area">
+          <div class="upload-icon">🖼️ 🎥</div>
+          <div class="upload-text">Drag photos and videos here</div>
+          <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Select from computer</button>
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+        </div>
+        <textarea id="captionInput" class="caption-area" placeholder="Type something here!"></textarea>
+        <button id="submitPost" class="post-submit-btn">Post</button>
+      </div>
+    </div>
+  </div>
+<script>
+(function(){
+  const API_BASE = (localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api").replace(/\/$/,"");
+  const ACCESS = localStorage.getItem("access");
+  const HEADERS = ACCESS ? {Authorization:`Bearer ${ACCESS}`} : {};
+  const q = new URLSearchParams(location.search);
+  const COMM_ID = q.get("community");
+  const feedEl = document.getElementById('feed');
+  const spinner = document.getElementById('loading');
+  let allPosts = [];
+  let currentSort = 'newest';
+  let selectedFile = null;
+
+  if(!COMM_ID){
+    document.getElementById('needCommunity').style.display = 'block';
+    return;
+  }
+
+  document.querySelectorAll('.sidebar-menu a').forEach(a=>{
+    const url = new URL(a.getAttribute('href'), location.origin);
+    url.searchParams.set('community', COMM_ID);
+    a.setAttribute('href', url.pathname + '?' + url.searchParams.toString());
+  });
+
+  const abs = (u) => {
+    if(!u) return "";
+    if(/^https?:\/\//i.test(u)) return u;
+    const root = API_BASE.replace(/\/api$/,'');
+    return root + (u.startsWith('/') ? '' : '/') + u;
+  };
+
+  function escapeHtml(text){
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  async function fetchJSON(url, options = {}){
+    const r = await fetch(url, {headers: HEADERS, ...options});
+    if(!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+    return r.json();
+  }
+
+  async function loadCommunity(){
+    try{
+      const c = await fetchJSON(`${API_BASE}/communities/${COMM_ID}/`);
+      const pageName = document.querySelector('[data-page="name"]');
+      const pageCnts = document.querySelector('[data-page="counts"]');
+      const sImg = document.querySelector('[data-rs="image"]');
+      const sNm = document.querySelector('[data-rs="name"]');
+      const sCt = document.querySelector('[data-rs="counts"]');
+      if(pageName) pageName.textContent = c.name || 'Community Feeds';
+      const counts = `${c.member_count||0} Members, ${c.online_count||0} Online`;
+      if(pageCnts) pageCnts.textContent = counts;
+      if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
+      if(sNm) sNm.textContent = c.name || 'Community';
+      if(sCt) sCt.textContent = counts;
+    }catch(e){console.warn('Community load failed', e);}
+  }
+
+  async function loadChannels(){
+    const list = document.getElementById('channels-list');
+    try{
+      const data = await fetchJSON(`${API_BASE}/channels/`);
+      const allChannels = Array.isArray(data) ? data : (data.results||[]);
+      const items = allChannels.filter(c => String(c.community) === String(COMM_ID));
+      list.innerHTML = items.length
+        ? items.map(c=>`<a class="channel-item" href="/chat/?channel=${encodeURIComponent(c.id)}&community=${encodeURIComponent(COMM_ID)}">💬 ${escapeHtml(c.name)}</a>`).join('')
+        : '<div class="empty">No channels</div>';
+    }catch(e){
+      console.warn('Channels load failed', e);
+      list.innerHTML = '<div class="empty">Gagal memuat channels</div>';
+    }
+  }
+
+  async function loadEvents(){
+    const list = document.getElementById('events-list');
+    try{
+      const data = await fetchJSON(`${API_BASE}/events/`);
+      const items = Array.isArray(data) ? data : (data.results||data||[]);
+      const events = items.filter(e => (e.community && (String(e.community.id||e.community) === String(COMM_ID))));
+      list.innerHTML = events.length
+        ? events.map(e=>`<a class="event-item" href="/event-info/?community=${encodeURIComponent(COMM_ID)}#${e.id}">📅 ${escapeHtml(e.name)}</a>`).join('')
+        : '<div class="empty">No events</div>';
+    }catch(e){
+      console.warn('Events load failed', e);
+      list.innerHTML = '<div class="empty">Gagal memuat events</div>';
+    }
+  }
+
+  async function loadPosts(){
+    spinner.style.display = 'block';
+    try{
+      const url = `${API_BASE}/posts/?community=${encodeURIComponent(COMM_ID)}`;
+      const data = await fetchJSON(url);
+      const posts = Array.isArray(data) ? data : (data.results || []);
+      allPosts = posts.filter(p => {
+        if(p.community){
+          const commId = p.community.id || p.community;
+          return String(commId) === String(COMM_ID);
+        }
+        return false;
+      });
+      renderPosts();
+    }catch(e){
+      feedEl.innerHTML = '<div class="empty">Gagal memuat posts.</div>';
+      console.warn('Posts load failed', e);
+    }finally{
+      spinner.style.display = 'none';
+    }
+  }
+
+  function sortPosts(posts, sortType){
+    const sorted = [...posts];
+    if(sortType === 'newest'){
+      sorted.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if(sortType === 'oldest'){
+      sorted.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+    } else if(sortType === 'popular'){
+      sorted.sort((a,b) => (b.like_count||0) - (a.like_count||0));
+    }
+    return sorted;
+  }
+
+  function renderPosts(){
+    const sorted = sortPosts(allPosts, currentSort);
+    if(!sorted.length){
+      feedEl.innerHTML = '<div class="empty">Belum ada posting.</div>';
+      return;
+    }
+    feedEl.innerHTML = sorted.map(p => {
+      const author = p.posted_by?.username || p.posted_by?.email || 'Anon';
+      const avatar = abs(p.posted_by?.profile_pic);
+      const when = p.created_at ? new Date(p.created_at).toLocaleDateString() : '';
+      const img = abs(p.image);
+      const caption = p.caption || '';
+      return `
+        <article class="feed-card" onclick="openPostModal('${p.id}')">
+          ${img ? `<img class="feed-card-img" src="${img}" alt="post">` : ''}
+          <div class="feed-card-content">
+            <div class="feed-card-author">
+              <img class="feed-card-avatar" src="${avatar||'https://via.placeholder.com/28'}" alt="${escapeHtml(author)}">
+              <span class="feed-card-name">${escapeHtml(author)}</span>
+              <span class="feed-card-time">${when}</span>
+            </div>
+            ${caption ? `<div class="feed-card-caption">${escapeHtml(caption)}</div>` : ''}
+            <div class="feed-card-reactions">
+              <span class="reaction-badge">❤️ ${p.like_count||0}</span>
+              <span class="reaction-badge">💬 ${p.reaction_count||0}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  // === POST DETAIL MODAL ===
+  window.openPostModal = function(postId){
+    const post = allPosts.find(p => String(p.id) === String(postId));
+    if(!post) return;
+    const author = post.posted_by?.username || post.posted_by?.email || 'Anon';
+    const avatar = abs(post.posted_by?.profile_pic);
+    const when = post.created_at ? new Date(post.created_at).toLocaleString() : '';
+    const img = abs(post.image);
+    const caption = post.caption || 'No caption';
+    document.getElementById('postDetailContent').innerHTML = `
+      ${img ? `<div class="post-image-large"><img src="${img}" alt="post"></div>` : ''}
+      <div class="post-info">
+        <div class="post-author-detail">
+          <img class="post-avatar-large" src="${avatar||'https://via.placeholder.com/42'}" alt="${escapeHtml(author)}">
+          <div>
+            <div class="post-author-name">${escapeHtml(author)}</div>
+            <div class="post-author-time">${when}</div>
+          </div>
+        </div>
+        <div class="post-caption-full">${escapeHtml(caption)}</div>
+        <div class="post-reactions-full">
+          <button class="reaction-btn ${post.user_liked?'active':''}" onclick="likePost('${post.id}')">❤️ ${post.like_count||0}</button>
+          <button class="reaction-btn">👍 Like</button>
+          <button class="reaction-btn">😂 Haha</button>
+          <button class="reaction-btn">😮 Wow</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('postModal').classList.add('active');
+  };
+
+  window.closePostModal = function(){
+    document.getElementById('postModal').classList.remove('active');
+  };
+
+  window.likePost = async function(postId){
+    try{
+      await fetchJSON(`${API_BASE}/posts/${postId}/like/`, {method:'POST'});
+      await loadPosts();
+      closePostModal();
+    }catch(e){
+      console.warn('Like failed', e);
+      alert('Failed to like post');
+    }
+  };
+
+  document.getElementById('createPostBtn').addEventListener('click', ()=>{
+    document.getElementById('createPostModal').classList.add('active');
+  });
+
+  window.closeCreatePostModal = function(){
+    document.getElementById('createPostModal').classList.remove('active');
+    document.getElementById('captionInput').value = '';
+    document.getElementById('uploadArea').classList.remove('has-image');
+    document.getElementById('uploadArea').innerHTML = `
+      <div class="upload-icon">🖼️ 🎥</div>
+      <div class="upload-text">Drag photos and videos here</div>
+      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Select from computer</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    `;
+    selectedFile = null;
+    document.getElementById('fileInput').addEventListener('change', handleFileChange);
+  };
+
+  function handleFileChange(e){
+    const file = e.target.files[0];
+    if(file){
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        const area = document.getElementById('uploadArea');
+        area.classList.add('has-image');
+        area.innerHTML = `<img class="preview-image" src="${ev.target.result}" alt="preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  document.getElementById('fileInput').addEventListener('change', handleFileChange);
+
+  document.getElementById('submitPost').addEventListener('click', async ()=>{
+    const caption = document.getElementById('captionInput').value.trim();
+    if(!caption && !selectedFile){
+      alert('Tambahkan caption atau gambar!');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('community_uuid', COMM_ID);
+    formData.append('caption', caption);
+    if(selectedFile) formData.append('image', selectedFile);
+    try{
+      const headers = ACCESS ? {Authorization:`Bearer ${ACCESS}`} : {};
+      const r = await fetch(`${API_BASE}/posts/`, {
+        method: 'POST',
+        headers: headers,
+        body: formData
+      });
+      if(!r.ok){
+        const err = await r.json();
+        throw new Error(JSON.stringify(err));
+      }
+      closeCreatePostModal();
+      await loadPosts();
+    }catch(e){
+      console.error('Post creation failed', e);
+      alert('Gagal membuat post: ' + e.message);
+    }
+  });
+
+  document.getElementById('sortBtn').addEventListener('click', ()=>{
+    document.getElementById('sortMenu').classList.toggle('active');
+  });
+
+  document.querySelectorAll('.sort-option').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      document.querySelectorAll('.sort-option').forEach(o=>o.classList.remove('active'));
+      opt.classList.add('active');
+      currentSort = opt.getAttribute('data-sort');
+      renderPosts();
+      document.getElementById('sortMenu').classList.remove('active');
+    });
+  });
+
+  document.getElementById('q').addEventListener('input', (e)=>{
+    const query = e.target.value.toLowerCase();
+    if(!query){
+      renderPosts();
+      return;
+    }
+    const filtered = allPosts.filter(p => 
+      (p.caption||'').toLowerCase().includes(query) ||
+      (p.posted_by?.username||'').toLowerCase().includes(query) ||
+      (p.posted_by?.email||'').toLowerCase().includes(query)
+    );
+    const sorted = sortPosts(filtered, currentSort);
+    feedEl.innerHTML = sorted.length ? sorted.map(p => {
+      const author = p.posted_by?.username || p.posted_by?.email || 'Anon';
+      const avatar = abs(p.posted_by?.profile_pic);
+      const when = p.created_at ? new Date(p.created_at).toLocaleDateString() : '';
+      const img = abs(p.image);
+      const caption = p.caption || '';
+      return `
+        <article class="feed-card" onclick="openPostModal('${p.id}')">
+          ${img ? `<img class="feed-card-img" src="${img}" alt="post">` : ''}
+          <div class="feed-card-content">
+            <div class="feed-card-author">
+              <img class="feed-card-avatar" src="${avatar||'https://via.placeholder.com/28'}" alt="${escapeHtml(author)}">
+              <span class="feed-card-name">${escapeHtml(author)}</span>
+              <span class="feed-card-time">${when}</span>
+            </div>
+            ${caption ? `<div class="feed-card-caption">${escapeHtml(caption)}</div>` : ''}
+            <div class="feed-card-reactions">
+              <span class="reaction-badge">❤️ ${p.like_count||0}</span>
+              <span class="reaction-badge">💬 ${p.reaction_count||0}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('') : '<div class="empty">Tidak ada hasil pencarian.</div>';
+  });
+
+  // Jalankan semua loader
+  Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
+    loadPosts();
+  });
+})();
+</script>
+=======
 
         <div class="toolbar">
           <div class="search" role="search">
@@ -260,5 +756,6 @@
       });
     })();
   </script>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 </body>
 </html>

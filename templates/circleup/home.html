@@ -360,28 +360,12 @@
   </div>
 
   <script>
-    // ===== AUTH CHECK & INITIALIZATION =====
-    console.log("Home page loaded");
-    
+    // Konfigurasi dasar
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS = localStorage.getItem("access");
+    const ACCESS   = localStorage.getItem("access") || "";
+    const authHeaders = { "Authorization": `Bearer ${ACCESS}`, "Content-Type": "application/json" };
 
-    console.log("Access token exists:", !!ACCESS);
-    console.log("API Base:", API_BASE);
-
-    // Check authentication FIRST
-    if (!ACCESS) {
-      console.log("No access token found, redirecting to login");
-      window.location.replace("/login/");
-      throw new Error("Not authenticated"); // Stop script execution
-    }
-
-    const authHeaders = { 
-      "Authorization": `Bearer ${ACCESS}`, 
-      "Content-Type": "application/json" 
-    };
-
-    // Reaction types definition
+    // Definisi reaction types
     const REACTIONS = [
       { type: 'love', emoji: '❤️', label: 'Love' },
       { type: 'like', emoji: '👍', label: 'Like' },
@@ -397,50 +381,30 @@
       return `${root}${u.startsWith("/")?"":"/"}${u}`;
     };
 
-    // DOM Elements
-    const loadingScreen = document.getElementById("loadingScreen");
-    const mainContent = document.getElementById("mainContent");
+    // Elemen
     const storiesEl = document.getElementById("stories");
-    const feedEl = document.getElementById("feed");
-    const emptyEl = document.getElementById("empty");
-    const joinList = document.getElementById("joinList");
-    const joinMore = document.getElementById("joinMore");
-    const joinLoad = document.getElementById("joinLoading");
+    const feedEl    = document.getElementById("feed");
+    const emptyEl   = document.getElementById("empty");
+    const joinList  = document.getElementById("joinList");
+    const joinMore  = document.getElementById("joinMore");
+    const joinLoad  = document.getElementById("joinLoading");
 
-    // ===== BOOT FUNCTION =====
+    // Boot
     (async function boot(){
-      console.log("Starting boot sequence...");
-      
-      try {
-        console.log("Fetching user profile and home data...");
-        
+      try{
         const [meR, homeR] = await Promise.all([
           fetch(`${API_BASE}/users/profile/`, { headers: authHeaders }),
-          fetch(`${API_BASE}/home/`, { headers: authHeaders }),
+          fetch(`${API_BASE}/home/`,          { headers: authHeaders }),
         ]);
 
-        console.log("Profile response:", meR.status);
-        console.log("Home response:", homeR.status);
+        if (meR.status === 401 || homeR.status === 401) throw new Error("Unauthorized");
+        if (!meR.ok) throw new Error("Unauthorized");
+        if (!homeR.ok) throw new Error("Gagal memuat feed");
 
-        if (meR.status === 401 || homeR.status === 401) {
-          throw new Error("Unauthorized - token invalid");
-        }
-        
-        if (!meR.ok || !homeR.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const me = await meR.json();
         const home = await homeR.json();
-
-        console.log("User data:", me);
-        console.log("Home data:", home);
-
         const joined = home.joined_communities || [];
-        const posts = home.posts || [];
-        const sugg = home.suggestions || [];
-
-        console.log(`Found ${joined.length} communities, ${posts.length} posts, ${sugg.length} suggestions`);
+        const posts  = home.posts || [];
+        const sugg   = home.suggestions || [];
 
         if (joined.length > 0) {
           renderStories(joined);
@@ -454,23 +418,16 @@
         }
 
         renderSuggestions(sugg);
-
-        // Hide loading, show content
-        console.log("Boot complete, showing content");
-        loadingScreen.style.display = "none";
-        mainContent.style.display = "flex";
-
-      } catch (e) {
-        console.error("Boot error:", e);
-        
-        // Clear invalid tokens
+      } catch (e){
+        console.warn(e);
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
-        localStorage.removeItem("currentUser");
-        
-        alert("Session expired. Please login again.");
         window.location.replace("/login/");
       }
+<<<<<<< HEAD
+    });    
+  }
+=======
     })();
 
     /* ===== RENDER FUNCTIONS ===== */
@@ -683,6 +640,7 @@
         }
       };
     }
+    
   </script>
 </body>
 </html>
