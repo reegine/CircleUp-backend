@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tennis Prasmul - Event Info</title>
+  <title>CircleUP - Event Info</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
@@ -14,10 +14,10 @@
 
     .event-container{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden}
 
-    /* ====== Body 2 kolom ====== */
+    /* Body 2 kolom */
     .event-body{flex:1;display:flex;min-height:0;background:#fff}
 
-    /* Left Rail — Opsi Large */
+    /* Left Rail */
     .left-rail{
       width:140px;padding:16px 10px;border-right:1px solid #eee;background:#fff;
       overflow-y:auto;flex-shrink:0;
@@ -26,16 +26,18 @@
     .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
     .rail-item{
       display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:16px;border-radius:16px;
-      background:#f6f6f6;cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s
+      background:#f6f6f6;cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s;
+      position:relative;
     }
     .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .rail-item.active{outline:2px solid #e59d2c}
     .rail-thumb{width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0}
     .rail-label{display:none;font-size:12px;color:#333}
 
-    /* Kolom kanan (header + tabel) */
+    /* Kolom kanan */
     .events-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
 
-    /* Header SEKARANG di kolom kanan */
+    /* Header */
     .event-header{
       padding:30px 40px;background:#ffffff;border-bottom:1px solid #e0e0e0;
       display:flex;align-items:center;justify-content:space-between
@@ -87,34 +89,48 @@
 
     #right-sidebar-container{flex-shrink:0}
 
-    /* ===== Modal Add Event (tambahan) ===== */
+    /* Modal Add Event */
     .modal{
       display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.35);
       align-items:center;justify-content:center;padding:24px
     }
+    .modal.show{display:flex}
     .modal-content{
       width:100%;max-width:560px;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.18);
-      overflow:hidden
+      overflow:hidden;animation:slideIn .3s ease
+    }
+    @keyframes slideIn{
+      from{transform:translateY(-20px);opacity:0}
+      to{transform:translateY(0);opacity:1}
     }
     .modal-header{
       display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eee
     }
-    .modal-header h2{font-size:18px}
+    .modal-header h2{font-size:18px;margin:0 auto}
     .close-modal{
-      font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px
+      font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px;
+      position:absolute;left:20px
     }
     .close-modal:hover{background:#f5f5f5}
     .add-btn{
       padding:8px 16px;border:none;border-radius:10px;background:#e59d2c;color:#fff;font-weight:600;cursor:pointer
     }
     .add-btn:hover{background:#d48b1f}
+    .add-btn:disabled{background:#ccc;cursor:not-allowed}
     .modal-body{padding:18px 20px}
     .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-    .form-group label{font-size:13px;color:#333}
-    .form-group input{
-      padding:10px 12px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;outline:none
+    .form-group label{font-size:13px;color:#333;font-weight:500}
+    .form-group input, .form-group textarea, .form-group select{
+      padding:10px 12px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;outline:none;
+      font-family:'Poppins',sans-serif
     }
-    .form-group input:focus{border-color:#e59d2c;box-shadow:0 0 0 3px rgba(229,157,44,.15)}
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus{
+      border-color:#e59d2c;box-shadow:0 0 0 3px rgba(229,157,44,.15)
+    }
+    .form-group textarea{resize:vertical;min-height:80px}
+    
+    .loading{text-align:center;padding:40px;color:#888}
+    .error-message{background:#fee;color:#c33;padding:12px;border-radius:8px;margin-bottom:16px}
   </style>
 </head>
 <body>
@@ -122,29 +138,23 @@
 
   <div class="main-container">
     <div class="event-container">
-
-      <!-- BODY 2 kolom: rail nempel paling atas -->
       <div class="event-body">
         <!-- LEFT RAIL -->
-        <aside class="left-rail">
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt=""></div>
-          <div class="rail-item"><img class="rail-thumb" src="https://images.unsplash.com/photo-1517495306984-9133a0b411c7?q=80&w=600&auto=format&fit=crop" alt=""></div>
+        <aside class="left-rail" id="leftRail">
+          <div class="loading">Loading...</div>
         </aside>
 
         <!-- KANAN: header + tabel -->
         <div class="events-main">
-          <!-- HEADER dipindah ke sini -->
+          <!-- HEADER -->
           <div class="event-header">
             <div class="header-left">
-              <button class="add-event-btn" onclick="addEvent()">
+              <button class="add-event-btn" onclick="openAddEventModal()">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 Add event
               </button>
             </div>
-            <button class="sort-btn" onclick="sortEvents()">
+            <button class="sort-btn" onclick="toggleSort()">
               <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
               Sort
             </button>
@@ -157,169 +167,424 @@
                   <th>Event</th><th>Date</th><th>Time</th><th>Location</th><th>Participation</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><div class="event-name">Workshop on Web Development
-                    <span class="edit-icon" onclick="editEvent(1)">
-                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </span></div></td>
-                  <td class="event-date">2024-03-15</td>
-                  <td class="event-time">10:00 AM - 2:00 PM</td>
-                  <td class="event-location">Tech Hub Room 101</td>
-                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
-                </tr>
-
-                <tr>
-                  <td><div class="event-name">Art Exhibition - "Expressions of Color"
-                    <span class="edit-icon" onclick="editEvent(2)">
-                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </span></div></td>
-                  <td class="event-date">2024-04-05</td>
-                  <td class="event-time">6:00 PM - 8:00 PM</td>
-                  <td class="event-location">Art Gallery Hall</td>
-                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
-                </tr>
-
-                <tr class="highlighted">
-                  <td><div class="event-name">Tech Conference - Future Tech Trends
-                    <span class="edit-icon" onclick="editEvent(3)">
-                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </span></div></td>
-                  <td class="event-date">2024-05-20</td>
-                  <td class="event-time">9:00 AM - 5:00 PM</td>
-                  <td class="event-location">Convention Center</td>
-                  <td><button class="participation-btn cancel" onclick="toggleParticipation(this)">Cancel</button></td>
-                </tr>
-
-                <tr>
-                  <td><div class="event-name">Fitness Challenge - 5K Run
-                    <span class="edit-icon" onclick="editEvent(4)">
-                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </span></div></td>
-                  <td class="event-date">2024-06-08</td>
-                  <td class="event-time">7:30 AM - 11:00 AM</td>
-                  <td class="event-location">City Park</td>
-                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
-                </tr>
-
-                <tr>
-                  <td><div class="event-name">Music Festival - Harmony Fest
-                    <span class="edit-icon" onclick="editEvent(5)">
-                      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </span></div></td>
-                  <td class="event-date">2024-07-15</td>
-                  <td class="event-time">3:00 PM - 10:00 PM</td>
-                  <td class="event-location">Outdoor Amphitheater</td>
-                  <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
-                </tr>
+              <tbody id="eventsTableBody">
+                <tr><td colspan="5" class="loading">Loading events...</td></tr>
               </tbody>
             </table>
           </div>
-        </div><!-- /events-main -->
-      </div><!-- /event-body -->
+        </div>
+      </div>
     </div>
 
     <div id="right-sidebar-container"></div>
   </div>
 
-  <!-- ===== Modal Add Event (ditambahkan) ===== -->
+  <!-- Modal Add Event -->
   <div id="addEventModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2>Add Event</h2>
-        <button class="add-btn" onclick="saveNewEvent()">Add</button>
+        <button class="add-btn" onclick="saveNewEvent()" id="saveEventBtn">Add</button>
       </div>
       <div class="modal-body">
+        <div id="modalError" style="display:none" class="error-message"></div>
+        
         <div class="form-group">
-          <label>Event</label>
-          <input type="text" id="eventName" placeholder="Enter event name">
+          <label>Event Name *</label>
+          <input type="text" id="eventName" placeholder="Enter event name" required>
         </div>
+        
         <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="eventDate">
+          <label>Description</label>
+          <textarea id="eventDescription" placeholder="Enter event description"></textarea>
         </div>
+        
         <div class="form-group">
-          <label>Time</label>
-          <input type="text" id="eventTime" placeholder="e.g., 10:00 AM - 2:00 PM">
+          <label>Date *</label>
+          <input type="date" id="eventDate" required>
         </div>
+        
         <div class="form-group">
-          <label>Location</label>
-          <input type="text" id="eventLocation" placeholder="Enter location">
+          <label>Time *</label>
+          <input type="time" id="eventTime" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Location *</label>
+          <input type="text" id="eventLocation" placeholder="Enter location" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Channel *</label>
+          <select id="eventChannel" required>
+            <option value="">Select a channel</option>
+          </select>
         </div>
       </div>
     </div>
   </div>
-  <!-- ===== /Modal ===== -->
+
   {% include "circleup/right-sidebar.html" %}
+  
   <script>
+    const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+    const ACCESS = localStorage.getItem("access");
+    if (!ACCESS) { window.location.href = "/login/"; }
+    const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type": "application/json" };
 
+    const params = new URLSearchParams(location.search);
+    let COMMUNITY_ID = params.get("community");
+    
+    let COMMUNITIES_CACHE = [];
+    let CHANNELS_CACHE = [];
+    let EVENTS_CACHE = [];
+    let sortAscending = true;
 
-    // === Functions dari snippet kamu + integrasi modal ===
-    function addEvent(){ 
-      document.getElementById('addEventModal').style.display='flex';
-    }
-    
-    function closeModal(){
-      document.getElementById('addEventModal').style.display='none';
-      // Clear form
-      document.getElementById('eventName').value='';
-      document.getElementById('eventDate').value='';
-      document.getElementById('eventTime').value='';
-      document.getElementById('eventLocation').value='';
-    }
-    
-    function saveNewEvent(){
-      const name = document.getElementById('eventName').value.trim();
-      const date = document.getElementById('eventDate').value.trim();
-      const time = document.getElementById('eventTime').value.trim();
-      const location = document.getElementById('eventLocation').value.trim();
+    const absUrl = (u) => {
+      if (!u) return "";
+      if (u.startsWith("http")) return u;
+      const root = API_BASE.replace(/\/api\/?$/,"");
+      return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
+    };
+
+    // Fetch functions
+    async function fetchCommunities(){
+      const r = await fetch(`${API_BASE}/home/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to load communities");
+      const home = await r.json();
+      COMMUNITIES_CACHE = Array.isArray(home.joined_communities) ? home.joined_communities : [];
       
-      if(!name || !date || !time || !location){
-        alert('Please fill all fields');
+      // Set default community if not specified
+      if (!COMMUNITY_ID && COMMUNITIES_CACHE.length > 0) {
+        COMMUNITY_ID = COMMUNITIES_CACHE[0].id;
+        const url = new URL(location.href);
+        url.searchParams.set("community", COMMUNITY_ID);
+        history.replaceState(null, "", url);
+      }
+      
+      return COMMUNITIES_CACHE;
+    }
+
+    async function fetchChannels(){
+      const r = await fetch(`${API_BASE}/channels/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to load channels");
+      const data = await r.json();
+      CHANNELS_CACHE = Array.isArray(data) ? data : (data.results || []);
+      return CHANNELS_CACHE;
+    }
+
+    async function fetchEvents(){
+      const r = await fetch(`${API_BASE}/events/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to load events");
+      const data = await r.json();
+      EVENTS_CACHE = Array.isArray(data) ? data : (data.results || []);
+      return EVENTS_CACHE;
+    }
+
+    // Render left rail (communities)
+    function renderLeftRail(){
+      const rail = document.getElementById("leftRail");
+      if (!rail) return;
+
+      if (!COMMUNITIES_CACHE.length){
+        rail.innerHTML = `<div style="color:#888;padding:6px">No communities</div>`;
         return;
       }
-      
-      // Add new row to table (prepend)
-      const tbody = document.querySelector('.event-table tbody');
-      const newRow = tbody.insertRow(0);
-      newRow.innerHTML = `
-        <td><div class="event-name">${name}
-          <span class="edit-icon" onclick="editEvent('new')">
-            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-          </span></div></td>
-        <td class="event-date">${date}</td>
-        <td class="event-time">${time}</td>
-        <td class="event-location">${location}</td>
-        <td><button class="participation-btn join" onclick="toggleParticipation(this)">Join</button></td>
-      `;
-      
-      closeModal();
+
+      rail.innerHTML = COMMUNITIES_CACHE.map(comm => {
+        const thumb = absUrl(comm.profile_pic || comm.background_banner || '');
+        const isActive = String(comm.id) === String(COMMUNITY_ID);
+        return `
+          <div class="rail-item ${isActive ? 'active' : ''}" data-comm-id="${comm.id}" 
+               onclick="selectCommunity('${comm.id}')"
+               title="${comm.name || 'Community'}">
+            <img class="rail-thumb" src="${thumb || 'https://via.placeholder.com/112x72?text=Community'}" 
+                 alt="${comm.name||''}" style="width:112px;height:72px;object-fit:cover;border-radius:12px">
+          </div>
+        `;
+      }).join("");
     }
-    
-    function editEvent(id){ alert('Edit event '+id); }
-    function sortEvents(){ alert('Sort events functionality'); }
-    function toggleParticipation(button){
-      const row=button.closest('tr');
-      if(button.classList.contains('join')){
-        button.textContent='Cancel';
-        button.classList.remove('join'); button.classList.add('cancel');
-        row.classList.add('highlighted');
-      }else{
-        button.textContent='Join';
-        button.classList.remove('cancel'); button.classList.add('join');
-        row.classList.remove('highlighted');
+
+    // Select community
+    function selectCommunity(commId){
+      COMMUNITY_ID = commId;
+      const url = new URL(location.href);
+      url.searchParams.set("community", COMMUNITY_ID);
+      history.replaceState(null, "", url);
+      
+      renderLeftRail();
+      syncRightSidebar();
+      renderEvents();
+      populateChannelDropdown();
+    }
+
+    // Render events table
+    function renderEvents(){
+      const tbody = document.getElementById("eventsTableBody");
+      if (!tbody) return;
+
+      const filteredEvents = EVENTS_CACHE.filter(e => 
+        e.community && String(e.community.id) === String(COMMUNITY_ID)
+      );
+
+      if (!filteredEvents.length){
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:40px">No events yet. Click "Add event" to create one!</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredEvents.map(ev => {
+        const isParticipant = ev.is_participant;
+        return `
+          <tr class="${isParticipant ? 'highlighted' : ''}" data-event-id="${ev.id}">
+            <td>
+              <div class="event-name">${ev.name || 'Untitled Event'}
+                <span class="edit-icon" onclick="editEvent('${ev.id}')">
+                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </span>
+              </div>
+            </td>
+            <td class="event-date">${ev.date || ''}</td>
+            <td class="event-time">${ev.time || ''}</td>
+            <td class="event-location">${ev.location || ''}</td>
+            <td>
+              <button class="participation-btn ${isParticipant ? 'cancel' : 'join'}" 
+                      onclick="toggleParticipation('${ev.id}', ${isParticipant})">
+                ${isParticipant ? 'Cancel' : 'Join'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Toggle participation
+    async function toggleParticipation(eventId, isCurrentlyParticipant){
+      try {
+        const endpoint = isCurrentlyParticipant ? 'cancel' : 'join';
+        const r = await fetch(`${API_BASE}/events/${eventId}/${endpoint}/`, {
+          method: 'POST',
+          headers: H
+        });
+        
+        if (!r.ok) throw new Error(`Failed to ${endpoint} event`);
+        
+        // Refresh events
+        await fetchEvents();
+        renderEvents();
+      } catch(e){
+        console.error(e);
+        alert(`Failed to update participation: ${e.message}`);
       }
     }
 
-    // Close modal when clicking outside
-    window.addEventListener('click', function(e){
+    // Sort events
+    function toggleSort(){
+      sortAscending = !sortAscending;
+      EVENTS_CACHE.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return sortAscending ? dateA - dateB : dateB - dateA;
+      });
+      renderEvents();
+    }
+
+    // Modal functions
+    function openAddEventModal(){
+      document.getElementById('addEventModal').classList.add('show');
+      populateChannelDropdown();
+    }
+
+    function closeModal(){
+      document.getElementById('addEventModal').classList.remove('show');
+      clearModalForm();
+    }
+
+    function clearModalForm(){
+      document.getElementById('eventName').value = '';
+      document.getElementById('eventDescription').value = '';
+      document.getElementById('eventDate').value = '';
+      document.getElementById('eventTime').value = '';
+      document.getElementById('eventLocation').value = '';
+      document.getElementById('eventChannel').value = '';
+      document.getElementById('modalError').style.display = 'none';
+    }
+
+    function showModalError(msg){
+      const el = document.getElementById('modalError');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function populateChannelDropdown(){
+      const select = document.getElementById('eventChannel');
+      if (!select) return;
+      
+      const channels = CHANNELS_CACHE.filter(c => String(c.community) === String(COMMUNITY_ID));
+      
+      select.innerHTML = '<option value="">Select a channel</option>' + 
+        channels.map(ch => `<option value="${ch.id}">${ch.name}</option>`).join('');
+    }
+
+    async function saveNewEvent(){
+      const name = document.getElementById('eventName').value.trim();
+      const description = document.getElementById('eventDescription').value.trim();
+      const date = document.getElementById('eventDate').value;
+      const time = document.getElementById('eventTime').value;
+      const location = document.getElementById('eventLocation').value.trim();
+      const channelId = document.getElementById('eventChannel').value;
+
+      if (!name || !date || !time || !location || !channelId){
+        showModalError('Please fill all required fields');
+        return;
+      }
+
+      const btn = document.getElementById('saveEventBtn');
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      try {
+        // Format time properly (ensure HH:MM:SS format)
+        const formattedTime = time.includes(':') ? `${time}:00` : time;
+        
+        const payload = {
+          community_uuid: COMMUNITY_ID,
+          channel_uuid: channelId,
+          name,
+          description,
+          date,
+          time: formattedTime,
+          location
+        };
+
+        console.log('Sending payload:', payload); // Debug log
+
+        const r = await fetch(`${API_BASE}/events/`, {
+          method: 'POST',
+          headers: H,
+          body: JSON.stringify(payload)
+        });
+
+        const responseText = await r.text();
+        console.log('Response:', responseText); // Debug log
+
+        if (!r.ok) {
+          let errorMsg = 'Failed to create event';
+          try {
+            const error = JSON.parse(responseText);
+            errorMsg = error.detail || error.message || JSON.stringify(error);
+          } catch(parseError) {
+            // If response is HTML (error page), show status
+            errorMsg = `Server error (${r.status}): ${r.statusText}`;
+          }
+          throw new Error(errorMsg);
+        }
+
+        // Parse successful response
+        const newEvent = JSON.parse(responseText);
+        console.log('Created event:', newEvent);
+
+        // Refresh events
+        await fetchEvents();
+        renderEvents();
+        closeModal();
+        
+        // Show success message
+        alert('Event created successfully!');
+      } catch(e){
+        console.error('Error creating event:', e);
+        showModalError(e.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add';
+      }
+    }
+
+    function editEvent(id){
+      alert('Edit event functionality coming soon!');
+    }
+
+    // Right sidebar sync
+    function syncRightSidebar(){
+      const comm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
+      if (!comm) return;
+
+      const img = document.querySelector('[data-rs="image"]');
+      const name = document.querySelector('[data-rs="name"]');
+      const counts = document.querySelector('[data-rs="counts"]');
+      
+      if (img) img.src = absUrl(comm.background_banner || comm.profile_pic) || "";
+      if (name) name.textContent = comm.name || "Community";
+      if (counts) counts.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
+
+      renderRightSidebarChannels();
+      renderRightSidebarEvents();
+    }
+
+    function renderRightSidebarChannels(){
+      const box = document.getElementById("channels-list");
+      if (!box) return;
+
+      const channels = CHANNELS_CACHE.filter(c => String(c.community) === String(COMMUNITY_ID));
+      
+      if (!channels.length){
+        box.innerHTML = `<div style="color:#888;padding:6px">No channels</div>`;
+        return;
+      }
+
+      box.innerHTML = channels.map(c => `
+        <a href="/chat/?community=${encodeURIComponent(COMMUNITY_ID)}&channel=${encodeURIComponent(c.id)}"
+           class="channel-item" data-channel="${c.id}">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+          <span>${c.name}</span>
+        </a>
+      `).join("");
+    }
+
+    function renderRightSidebarEvents(){
+      const box = document.getElementById("events-list");
+      if (!box) return;
+
+      const events = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
+      
+      if (!events.length){
+        box.innerHTML = `<div style="color:#888;padding:6px">No events</div>`;
+        return;
+      }
+
+      box.innerHTML = events.map(ev => `
+        <a href="/event-info/?community=${encodeURIComponent(COMMUNITY_ID)}#${ev.id}" class="event-item">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
+          <span>${ev.name}</span>
+        </a>
+      `).join("");
+    }
+
+    // Boot
+    async function boot(){
+      try {
+        await Promise.all([fetchCommunities(), fetchChannels(), fetchEvents()]);
+        renderLeftRail();
+        renderEvents();
+        syncRightSidebar();
+      } catch(e){
+        console.error('Boot error:', e);
+        const tbody = document.getElementById("eventsTableBody");
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="color:#c33;text-align:center;padding:40px">Failed to load data. Please refresh the page.</td></tr>`;
+      }
+    }
+
+    boot();
+
+    // Close modal on outside click
+    window.addEventListener('click', (e) => {
       const modal = document.getElementById('addEventModal');
       if (e.target === modal) closeModal();
     });
-    // Esc to close
-    window.addEventListener('keydown', function(e){
-      if(e.key==='Escape'){ closeModal(); }
+
+    // Close modal on Esc
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
     });
   </script>
 </body>

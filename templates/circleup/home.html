@@ -333,293 +333,217 @@
 
   <!-- ===== SCRIPT ===== -->
   <script>
-    // Konfigurasi dasar
-    const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS   = localStorage.getItem("access") || "";
-    const authHeaders = { "Authorization": `Bearer ${ACCESS}`, "Content-Type": "application/json" };
+     /* ===== RENDERERS ===== */
+  function renderStories(items){
+    storiesEl.innerHTML = items.slice(0,10).map(c=>`
+      <div class="story" title="${c.name||''}" onclick="window.location.href='/community/${c.id}/'">
+        <div class="story-container">
+          <img src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20'}" alt="${c.name||''}">
+        </div>
+        <div class="name">${c.name||''}</div>
+      </div>
+    `).join("");
+  }
 
-    // Definisi reaction types
-    const REACTIONS = [
-      { type: 'love', emoji: '❤️', label: 'Love' },
-      { type: 'like', emoji: '👍', label: 'Like' },
-      { type: 'laugh', emoji: '😂', label: 'Haha' },
-      { type: 'wow', emoji: '😮', label: 'Wow' },
-      { type: 'sad', emoji: '😢', label: 'Sad' }
-    ];
+  function renderPosts(list){
+    if(!list.length){
+      feedEl.innerHTML = `<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>`;
+      return;
+    }
+    
+    feedEl.innerHTML = list.map(p=>{
+      const u = p.posted_by || p.user || {};
+      const c = p.community || {};
+      const t = p.created_at ? new Date(p.created_at).toLocaleString() : "";
+      
+      const userReaction = p.user_reaction; // 'love', 'like', dll
+      const userLiked = p.user_liked;
 
-    const toAbs = (u) => {
-      if (!u) return "";
-      if (u.startsWith("http")) return u;
-      const root = API_BASE.replace(/\/api\/?$/,"");
-      return `${root}${u.startsWith("/")?"":"/"}${u}`;
-    };
+      let buttonText = '😊 React';
+      let buttonClass = '';
 
-    // Elemen
-    const storiesEl = document.getElementById("stories");
-    const feedEl    = document.getElementById("feed");
-    const emptyEl   = document.getElementById("empty");
-    const joinList  = document.getElementById("joinList");
-    const joinMore  = document.getElementById("joinMore");
-    const joinLoad  = document.getElementById("joinLoading");
+      if (userReaction) {
+        const reaction = REACTIONS.find(r => r.type === userReaction);
+        if (reaction) {
+          buttonText = `${reaction.emoji} ${reaction.label}`;
+          buttonClass = 'reacted';
+        }
+      } else if (userLiked) {
+        const likeReaction = REACTIONS.find(r => r.type === 'like');
+        if (likeReaction) {
+          buttonText = `${likeReaction.emoji} ${likeReaction.label}`;
+          buttonClass = 'reacted';
+        }
+      }
+      
+      const reactionOptions = REACTIONS.map(r => 
+        `<button class="reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
+      ).join('');
+      
+      return `
+        <article class="post" data-post-id="${p.id}">
+          <div class="head">
+            <div class="user">
+              <img class="avatar" src="${toAbs(u.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
+              <div class="meta">
+                <h4>${u.username || u.email || "User"}</h4>
+                <div class="time">${t}</div>
+              </div>
+            </div>
+            <div class="badge">${c.name || "Community"}</div>
+          </div>
 
-    // Boot
-    (async function boot(){
+          ${p.image ? `<img class="image" src="${toAbs(p.image)}" alt="">` : ""}
+
+          <div class="reaction-wrapper" style="margin:12px 0">
+            <button class="main-reaction-btn ${buttonClass}" data-post-id="${p.id}">
+              ${buttonText}
+            </button>
+            <div class="reaction-picker">
+              ${reactionOptions}
+            </div>
+          </div>
+
+          <div class="caption"><strong>${u.username || "User"}</strong> ${p.caption || ""}</div>
+        </article>
+      `;
+    }).join("");
+
+    setupReactionHandlers();
+  }
+
+  // Avoid attaching duplicate listeners on re-render
+  let reactionHandlersSetup = false;
+
+  function setupReactionHandlers() {
+    if (reactionHandlersSetup) return;
+    reactionHandlersSetup = true;
+
+    // Toggle picker
+    feedEl.addEventListener('click', (e) => {
+      const mainBtn = e.target.closest('.main-reaction-btn');
+      if (mainBtn) {
+        e.stopPropagation();
+        const picker = mainBtn.nextElementSibling;
+
+        document.querySelectorAll('.reaction-picker.show').forEach(p => {
+          if (p !== picker) p.classList.remove('show');
+        });
+
+        picker.classList.toggle('show');
+        return;
+      }
+
+      // Pick a reaction
+      const reactionOption = e.target.closest('.reaction-option');
+      if (reactionOption) {
+        e.stopPropagation();
+        handleReactionSelect(reactionOption);
+      }
+    });
+
+    // Close picker when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.reaction-wrapper')) {
+        document.querySelectorAll('.reaction-picker.show').forEach(p => {
+          p.classList.remove('show');
+        });
+      }
+    });
+  }
+
+  // Single, global in-flight guard
+  let isProcessing = false;
+
+  async function handleReactionSelect(optionBtn) {
+    if (isProcessing) return;
+    isProcessing = true;
+    
+    const type = optionBtn.dataset.type;
+    const post = optionBtn.closest('.post');
+    const postId = post.dataset.postId;
+    const wrapper = optionBtn.closest('.reaction-wrapper');
+    const mainBtn = wrapper.querySelector('.main-reaction-btn');
+    const picker = wrapper.querySelector('.reaction-picker');
+
+    optionBtn.style.transform = 'scale(1.4)';
+    setTimeout(() => optionBtn.style.transform = '', 150);
+    
+    try {
+      let response;
+      if (type === "like") {
+        response = await fetch(`${API_BASE}/posts/${postId}/like/`, {
+          method: "POST",
+          headers: authHeaders
+        });
+      } else {
+        response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({ reaction_type: type })
+        });
+      }
+
+      if (!response.ok) throw new Error('Failed to react');
+      const data = await response.json();
+
+      const reaction = REACTIONS.find(r => r.type === type);
+      if (data.message.includes('removed') || data.message.includes('unliked')) {
+        mainBtn.textContent = '😊 React';
+        mainBtn.classList.remove('reacted');
+      } else {
+        mainBtn.textContent = `${reaction.emoji} ${reaction.label}`;
+        mainBtn.classList.add('reacted');
+      }
+
+      picker.classList.remove('show');
+    } catch (err) {
+      console.error('Reaction error:', err);
+      alert("Gagal mengirim reaksi. Coba lagi.");
+    } finally {
+      isProcessing = false;
+    }
+  }
+
+  function renderSuggestions(sugg){
+    joinLoad.style.display = "none";
+    if(!sugg.length){
+      joinList.innerHTML = `<p style="color:#666">Tidak ada saran komunitas.</p>`;
+      return;
+    }
+    joinList.innerHTML = sugg.slice(0,5).map(c=>`
+      <div class="c-item">
+        <div class="c-info">
+          <img class="c-avatar" src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
+          <div>
+            <div class="c-name">${c.name||''}</div>
+            <div class="c-members">${(c.member_count ?? c.members?.length) || 0} members</div>
+          </div>
+        </div>
+        <button class="btn-join" data-id="${c.id}">Join</button>
+      </div>
+    `).join("");
+    joinMore.style.display = "block";
+
+    // Join button handler (single delegated listener)
+    joinList.addEventListener("click", async (e)=>{
+      const btn = e.target.closest(".btn-join");
+      if(!btn || btn.disabled) return;
+      btn.disabled = true;
       try{
-        const [meR, homeR] = await Promise.all([
-          fetch(`${API_BASE}/users/profile/`, { headers: authHeaders }),
-          fetch(`${API_BASE}/home/`,          { headers: authHeaders }),
-        ]);
-
-        if (meR.status === 401 || homeR.status === 401) throw new Error("Unauthorized");
-        if (!meR.ok) throw new Error("Unauthorized");
-        if (!homeR.ok) throw new Error("Gagal memuat feed");
-
-        const home = await homeR.json();
-        const joined = home.joined_communities || [];
-        const posts  = home.posts || [];
-        const sugg   = home.suggestions || [];
-
-        if (joined.length > 0) {
-          renderStories(joined);
-          renderPosts(posts);
-          emptyEl.style.display = "none";
-          storiesEl.style.display = "flex";
-        } else {
-          storiesEl.style.display = "none";
-          feedEl.innerHTML = "";
-          emptyEl.style.display = "flex";
-        }
-
-        renderSuggestions(sugg);
-      } catch (e){
-        console.warn(e);
-        localStorage.removeItem("access");
-        localStorage.removeItem("refresh");
-        window.location.replace("/login/");
+        const response = await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, {
+          method:"POST",
+          headers:authHeaders
+        });
+        if (!response.ok) throw new Error('Failed to join');
+        btn.textContent = "Joined ✓";
+        btn.style.background = "#4caf50";
+      }catch(err){
+        btn.disabled = false;
+        alert("Gagal join komunitas.");
       }
-    })();
-
-    /* ===== RENDERERS ===== */
-    function renderStories(items){
-      storiesEl.innerHTML = items.slice(0,10).map(c=>`
-        <div class="story" title="${c.name||''}" onclick="window.location.href='/community/${c.id}/'">
-          <div class="story-container">
-            <img src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20'}" alt="${c.name||''}">
-          </div>
-          <div class="name">${c.name||''}</div>
-        </div>
-      `).join("");
-    }
-
-    function renderPosts(list){
-      if(!list.length){
-        feedEl.innerHTML = `<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>`;
-        return;
-      }
-      
-      feedEl.innerHTML = list.map(p=>{
-        const u = p.posted_by || p.user || {};
-        const c = p.community || {};
-        const t = p.created_at ? new Date(p.created_at).toLocaleString() : "";
-        
-        // Data dari backend
-        const userReaction = p.user_reaction; // 'love', 'like', dll
-        const userLiked = p.user_liked;
-        
-        // Determine current reaction
-        let currentReaction = null;
-        let buttonText = '😊 React';
-        let buttonClass = '';
-        
-        if (userReaction) {
-          const reaction = REACTIONS.find(r => r.type === userReaction);
-          if (reaction) {
-            currentReaction = reaction;
-            buttonText = `${reaction.emoji} ${reaction.label}`;
-            buttonClass = 'reacted';
-          }
-        } else if (userLiked) {
-          const likeReaction = REACTIONS.find(r => r.type === 'like');
-          if (likeReaction) {
-            currentReaction = likeReaction;
-            buttonText = `${likeReaction.emoji} ${likeReaction.label}`;
-            buttonClass = 'reacted';
-          }
-        }
-        
-        // Generate reaction picker options
-        const reactionOptions = REACTIONS.map(r => 
-          `<button class="reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
-        ).join('');
-        
-        return `
-          <article class="post" data-post-id="${p.id}">
-            <div class="head">
-              <div class="user">
-                <img class="avatar" src="${toAbs(u.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
-                <div class="meta">
-                  <h4>${u.username || u.email || "User"}</h4>
-                  <div class="time">${t}</div>
-                </div>
-              </div>
-              <div class="badge">${c.name || "Community"}</div>
-            </div>
-
-            ${p.image ? `<img class="image" src="${toAbs(p.image)}" alt="">` : ""}
-
-            <div class="reaction-wrapper" style="margin:12px 0">
-              <button class="main-reaction-btn ${buttonClass}" data-post-id="${p.id}">
-                ${buttonText}
-              </button>
-              <div class="reaction-picker">
-                ${reactionOptions}
-              </div>
-            </div>
-
-            <div class="caption"><strong>${u.username || "User"}</strong> ${p.caption || ""}</div>
-          </article>
-        `;
-      }).join("");
-
-      // Setup handlers
-      setupReactionHandlers();
-    }
-
-    // Setup reaction handlers
-    function setupReactionHandlers() {
-      // Main button click - toggle picker
-      feedEl.addEventListener('click', (e) => {
-        const mainBtn = e.target.closest('.main-reaction-btn');
-        if (mainBtn) {
-          e.stopPropagation();
-          const picker = mainBtn.nextElementSibling;
-          
-          // Close all other pickers
-          document.querySelectorAll('.reaction-picker.show').forEach(p => {
-            if (p !== picker) p.classList.remove('show');
-          });
-          
-          // Toggle this picker
-          picker.classList.toggle('show');
-          return;
-        }
-        
-        // Reaction option click
-        const reactionOption = e.target.closest('.reaction-option');
-        if (reactionOption) {
-          e.stopPropagation();
-          handleReactionSelect(reactionOption);
-          return;
-        }
-      });
-      
-      // Close picker when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.reaction-wrapper')) {
-          document.querySelectorAll('.reaction-picker.show').forEach(p => {
-            p.classList.remove('show');
-          });
-        }
-      });
-    }
-
-    // Handle reaction selection
-    let isProcessing = false;
-    async function handleReactionSelect(optionBtn) {
-      if (isProcessing) return;
-      isProcessing = true;
-      
-      const type = optionBtn.dataset.type;
-      const post = optionBtn.closest('.post');
-      const postId = post.dataset.postId;
-      const wrapper = optionBtn.closest('.reaction-wrapper');
-      const mainBtn = wrapper.querySelector('.main-reaction-btn');
-      const picker = wrapper.querySelector('.reaction-picker');
-      
-      // Animation feedback
-      optionBtn.style.transform = 'scale(1.4)';
-      setTimeout(() => optionBtn.style.transform = '', 150);
-      
-      try {
-        let response;
-        
-        if (type === "like") {
-          response = await fetch(`${API_BASE}/posts/${postId}/like/`, {
-            method: "POST",
-            headers: authHeaders
-          });
-        } else {
-          response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
-            method: "POST",
-            headers: authHeaders,
-            body: JSON.stringify({ reaction_type: type })
-          });
-        }
-
-        if (!response.ok) throw new Error('Failed to react');
-        
-        const data = await response.json();
-        console.log('Reaction response:', data);
-        
-        // Update button UI
-        const reaction = REACTIONS.find(r => r.type === type);
-        if (data.message.includes('removed') || data.message.includes('unliked')) {
-          mainBtn.textContent = '😊 React';
-          mainBtn.classList.remove('reacted');
-        } else {
-          mainBtn.textContent = `${reaction.emoji} ${reaction.label}`;
-          mainBtn.classList.add('reacted');
-        }
-        
-        // Close picker
-        picker.classList.remove('show');
-        
-      } catch (err) {
-        console.error('Reaction error:', err);
-        alert("Gagal mengirim reaksi. Coba lagi.");
-      } finally {
-        isProcessing = false;
-      }
-    }
-
-    function renderSuggestions(sugg){
-      joinLoad.style.display = "none";
-      if(!sugg.length){
-        joinList.innerHTML = `<p style="color:#666">Tidak ada saran komunitas.</p>`;
-        return;
-      }
-      joinList.innerHTML = sugg.slice(0,5).map(c=>`
-        <div class="c-item">
-          <div class="c-info">
-            <img class="c-avatar" src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
-            <div>
-              <div class="c-name">${c.name||''}</div>
-              <div class="c-members">${(c.member_count ?? c.members?.length) || 0} members</div>
-            </div>
-          </div>
-          <button class="btn-join" data-id="${c.id}">Join</button>
-        </div>
-      `).join("");
-      joinMore.style.display = "block";
-
-      joinList.addEventListener("click", async (e)=>{
-        const btn = e.target.closest(".btn-join");
-        if(!btn || btn.disabled) return;
-        btn.disabled = true;
-        try{
-          const response = await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, {
-            method:"POST",
-            headers:authHeaders
-          });
-          if (!response.ok) throw new Error('Failed to join');
-          btn.textContent = "Joined ✓";
-          btn.style.background = "#4caf50";
-        }catch(err){
-          btn.disabled = false;
-          alert("Gagal join komunitas.");
-        }
-      });
-    }
+    });    
+  }
   </script>
 </body>
 </html>
