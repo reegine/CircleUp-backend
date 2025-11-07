@@ -228,7 +228,6 @@
   {% include "circleup/right-sidebar.html" %}
   
   <script>
-<<<<<<< HEAD
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
     const ACCESS = localStorage.getItem("access");
     if (!ACCESS) { window.location.href = "/login/"; }
@@ -241,90 +240,6 @@
     let CHANNELS_CACHE = [];
     let EVENTS_CACHE = [];
     let sortAscending = true;
-=======
- (function(){
-    const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS   = localStorage.getItem("access");
-    const H        = ACCESS ? {Authorization: `Bearer ${ACCESS}`} : {};
-
-    // Ambil community UUID dari query string
-    const params = new URLSearchParams(location.search);
-    const COMMUNITY_ID = params.get("community");
-    if (!COMMUNITY_ID){
-      console.warn("[right-sidebar] ?community=<uuid> tidak ditemukan");
-      return;
-    }
-
-    // Helper URL absolut utk gambar file field
-    const abs = (u) => {
-      if (!u) return "";
-      if (u.startsWith("http")) return u;
-      const root = API_BASE.replace(/\/api\/?$/,"");
-      return root + (u.startsWith("/") ? "" : "/") + u;
-    };
-
-    // Render header sidebar (cover+nama+counts)
-    function renderSidebarHeader(comm){
-      const img = document.querySelector('[data-rs="image"]');
-      const nm  = document.querySelector('[data-rs="name"]');
-      const ct  = document.querySelector('[data-rs="counts"]');
-      if (img) img.src = abs(comm.background_banner || comm.profile_pic) || "";
-      if (nm)  nm.textContent = comm.name || "Community";
-      if (ct)  ct.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
-    }
-
-    // Isi daftar channels
-    function renderChannels(channels){
-      const box = document.getElementById("channels-list");
-      if (!box) return;
-      if (!channels.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No channels</div>`;
-        return;
-      }
-      box.innerHTML = channels.map(c => `
-        <a href="/chat/?community=${encodeURIComponent(COMMUNITY_ID)}&channel=${encodeURIComponent(c.id)}"
-           class="channel-item" data-channel="${c.id}">
-          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          <span>${c.name}</span>
-        </a>
-      `).join("");
-    }
-
-    // Isi daftar events
-    function renderEvents(events){
-      const box = document.getElementById("events-list");
-      if (!box) return;
-      if (!events.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No events</div>`;
-        return;
-      }
-      box.innerHTML = events.map(ev => `
-        <a href="/event-info/?community=${encodeURIComponent(COMMUNITY_ID)}#${ev.id}" class="event-item">
-          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
-          <span>${ev.name}</span>
-        </a>
-      `).join("");
-    }
-
-    // Fetch data
-    async function boot(){
-      // 1) Community detail
-      const commRes = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/`, {headers: H});
-      const community = await commRes.json();
-      renderSidebarHeader(community);   // header sidebar
-      // 2) Channels (user-scoped), filter by community
-      const chRes = await fetch(`${API_BASE}/channels/`, {headers: H});
-      const chData = await chRes.json();
-      const channels = Array.isArray(chData) ? chData : (chData.results||[]);
-      renderChannels(channels.filter(c => String(c.community) === String(COMMUNITY_ID)));
-      // 3) Events, filter by community
-      const evRes = await fetch(`${API_BASE}/events/`, {headers: H});
-      const events = await evRes.json(); // array
-      renderEvents((Array.isArray(events)?events:[]).filter(e => (e.community && String(e.community.id)===String(COMMUNITY_ID))));
-    }
-    boot().catch(e => console.warn("[right-sidebar] boot error", e));
-  })();
->>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 
     const absUrl = (u) => {
       if (!u) return "";

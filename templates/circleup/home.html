@@ -325,13 +325,11 @@
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div id="loadingScreen">
     <div class="spinner"></div>
     <p>Loading CircleUP...</p>
   </div>
 
-  <!-- Main Content (hidden initially) -->
   <div id="mainContent">
     {% include "circleup/sidebar.html" %}
 
@@ -360,12 +358,25 @@
   </div>
 
   <script>
-    // Konfigurasi dasar
+    console.log("Home page loaded");
+    
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS   = localStorage.getItem("access") || "";
-    const authHeaders = { "Authorization": `Bearer ${ACCESS}`, "Content-Type": "application/json" };
+    const ACCESS = localStorage.getItem("access");
 
-    // Definisi reaction types
+    console.log("Access token exists:", !!ACCESS);
+    console.log("API Base:", API_BASE);
+
+    if (!ACCESS) {
+      console.log("No access token found, redirecting to login");
+      window.location.replace("/login/");
+      throw new Error("Not authenticated");
+    }
+
+    const authHeaders = { 
+      "Authorization": "Bearer " + ACCESS, 
+      "Content-Type": "application/json" 
+    };
+
     const REACTIONS = [
       { type: 'love', emoji: '❤️', label: 'Love' },
       { type: 'like', emoji: '👍', label: 'Like' },
@@ -378,33 +389,51 @@
       if (!u) return "";
       if (u.startsWith("http")) return u;
       const root = API_BASE.replace(/\/api\/?$/,"");
-      return `${root}${u.startsWith("/")?"":"/"}${u}`;
+      return root + (u.startsWith("/")?"":"/") + u;
     };
 
-    // Elemen
+    const loadingScreen = document.getElementById("loadingScreen");
+    const mainContent = document.getElementById("mainContent");
     const storiesEl = document.getElementById("stories");
-    const feedEl    = document.getElementById("feed");
-    const emptyEl   = document.getElementById("empty");
-    const joinList  = document.getElementById("joinList");
-    const joinMore  = document.getElementById("joinMore");
-    const joinLoad  = document.getElementById("joinLoading");
+    const feedEl = document.getElementById("feed");
+    const emptyEl = document.getElementById("empty");
+    const joinList = document.getElementById("joinList");
+    const joinMore = document.getElementById("joinMore");
+    const joinLoad = document.getElementById("joinLoading");
 
-    // Boot
     (async function boot(){
-      try{
+      console.log("Starting boot sequence...");
+      
+      try {
+        console.log("Fetching user profile and home data...");
+        
         const [meR, homeR] = await Promise.all([
-          fetch(`${API_BASE}/users/profile/`, { headers: authHeaders }),
-          fetch(`${API_BASE}/home/`,          { headers: authHeaders }),
+          fetch(API_BASE + "/users/profile/", { headers: authHeaders }),
+          fetch(API_BASE + "/home/", { headers: authHeaders }),
         ]);
 
-        if (meR.status === 401 || homeR.status === 401) throw new Error("Unauthorized");
-        if (!meR.ok) throw new Error("Unauthorized");
-        if (!homeR.ok) throw new Error("Gagal memuat feed");
+        console.log("Profile response:", meR.status);
+        console.log("Home response:", homeR.status);
 
+        if (meR.status === 401 || homeR.status === 401) {
+          throw new Error("Unauthorized - token invalid");
+        }
+        
+        if (!meR.ok || !homeR.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const me = await meR.json();
         const home = await homeR.json();
+
+        console.log("User data:", me);
+        console.log("Home data:", home);
+
         const joined = home.joined_communities || [];
-        const posts  = home.posts || [];
-        const sugg   = home.suggestions || [];
+        const posts = home.posts || [];
+        const sugg = home.suggestions || [];
+
+        console.log("Found " + joined.length + " communities, " + posts.length + " posts, " + sugg.length + " suggestions");
 
         if (joined.length > 0) {
           renderStories(joined);
@@ -418,40 +447,44 @@
         }
 
         renderSuggestions(sugg);
-      } catch (e){
-        console.warn(e);
+
+        console.log("Boot complete, showing content");
+        loadingScreen.style.display = "none";
+        mainContent.style.display = "flex";
+
+      } catch (e) {
+        console.error("Boot error:", e);
+        
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
+        localStorage.removeItem("currentUser");
+        
+        alert("Session expired. Please login again.");
         window.location.replace("/login/");
       }
-<<<<<<< HEAD
-    });    
-  }
-=======
     })();
 
-    /* ===== RENDER FUNCTIONS ===== */
     function renderStories(items){
       console.log("Rendering", items.length, "stories");
-      storiesEl.innerHTML = items.slice(0,10).map(c=>`
-        <div class="story" title="${c.name||''}" onclick="window.location.href='/community/${c.id}/'">
-          <div class="story-container">
-            <img src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20'}" alt="${c.name||''}">
-          </div>
-          <div class="name">${c.name||''}</div>
-        </div>
-      `).join("");
+      storiesEl.innerHTML = items.slice(0,10).map(c => 
+        '<div class="story" title="' + (c.name || '') + '" onclick="window.location.href=\'/community/' + c.id + '/\'">' +
+          '<div class="story-container">' +
+            '<img src="' + (toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20') + '" alt="' + (c.name || '') + '">' +
+          '</div>' +
+          '<div class="name">' + (c.name || '') + '</div>' +
+        '</div>'
+      ).join("");
     }
 
     function renderPosts(list){
       console.log("Rendering", list.length, "posts");
       
       if(!list.length){
-        feedEl.innerHTML = `<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>`;
+        feedEl.innerHTML = '<p style="color:#666">Belum ada post dari komunitas yang kamu ikuti.</p>';
         return;
       }
       
-      feedEl.innerHTML = list.map(p=>{
+      feedEl.innerHTML = list.map(p => {
         const u = p.posted_by || p.user || {};
         const c = p.community || {};
         const t = p.created_at ? new Date(p.created_at).toLocaleString() : "";
@@ -467,49 +500,49 @@
           const reaction = REACTIONS.find(r => r.type === userReaction);
           if (reaction) {
             currentReaction = reaction;
-            buttonText = `${reaction.emoji} ${reaction.label}`;
+            buttonText = reaction.emoji + ' ' + reaction.label;
             buttonClass = 'reacted';
           }
         } else if (userLiked) {
           const likeReaction = REACTIONS.find(r => r.type === 'like');
           if (likeReaction) {
             currentReaction = likeReaction;
-            buttonText = `${likeReaction.emoji} ${likeReaction.label}`;
+            buttonText = likeReaction.emoji + ' ' + likeReaction.label;
             buttonClass = 'reacted';
           }
         }
         
         const reactionOptions = REACTIONS.map(r => 
-          `<button class="reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
+          '<button class="reaction-option" data-type="' + r.type + '" title="' + r.label + '">' + r.emoji + '</button>'
         ).join('');
         
-        return `
-          <article class="post" data-post-id="${p.id}">
-            <div class="head">
-              <div class="user">
-                <img class="avatar" src="${toAbs(u.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
-                <div class="meta">
-                  <h4>${u.username || u.email || "User"}</h4>
-                  <div class="time">${t}</div>
-                </div>
-              </div>
-              <div class="badge">${c.name || "Community"}</div>
-            </div>
+        return (
+          '<article class="post" data-post-id="' + p.id + '">' +
+            '<div class="head">' +
+              '<div class="user">' +
+                '<img class="avatar" src="' + (toAbs(u.profile_pic) || 'https://via.placeholder.com/90?text=%20') + '" alt="">' +
+                '<div class="meta">' +
+                  '<h4>' + (u.username || u.email || "User") + '</h4>' +
+                  '<div class="time">' + t + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="badge">' + (c.name || "Community") + '</div>' +
+            '</div>' +
 
-            ${p.image ? `<img class="image" src="${toAbs(p.image)}" alt="">` : ""}
+            (p.image ? '<img class="image" src="' + toAbs(p.image) + '" alt="">' : '') +
 
-            <div class="reaction-wrapper" style="margin:12px 0">
-              <button class="main-reaction-btn ${buttonClass}" data-post-id="${p.id}">
-                ${buttonText}
-              </button>
-              <div class="reaction-picker">
-                ${reactionOptions}
-              </div>
-            </div>
+            '<div class="reaction-wrapper" style="margin:12px 0">' +
+              '<button class="main-reaction-btn ' + buttonClass + '" data-post-id="' + p.id + '">' +
+                buttonText +
+              '</button>' +
+              '<div class="reaction-picker">' +
+                reactionOptions +
+              '</div>' +
+            '</div>' +
 
-            <div class="caption"><strong>${u.username || "User"}</strong> ${p.caption || ""}</div>
-          </article>
-        `;
+            '<div class="caption"><strong>' + (u.username || "User") + '</strong> ' + (p.caption || "") + '</div>' +
+          '</article>'
+        );
       }).join("");
 
       setupReactionHandlers();
@@ -564,12 +597,12 @@
         let response;
         
         if (type === "like") {
-          response = await fetch(`${API_BASE}/posts/${postId}/like/`, {
+          response = await fetch(API_BASE + "/posts/" + postId + "/like/", {
             method: "POST",
             headers: authHeaders
           });
         } else {
-          response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
+          response = await fetch(API_BASE + "/posts/" + postId + "/react/", {
             method: "POST",
             headers: authHeaders,
             body: JSON.stringify({ reaction_type: type })
@@ -585,7 +618,7 @@
           mainBtn.textContent = '😊 React';
           mainBtn.classList.remove('reacted');
         } else {
-          mainBtn.textContent = `${reaction.emoji} ${reaction.label}`;
+          mainBtn.textContent = reaction.emoji + ' ' + reaction.label;
           mainBtn.classList.add('reacted');
         }
         
@@ -604,22 +637,22 @@
       joinLoad.style.display = "none";
       
       if(!sugg.length){
-        joinList.innerHTML = `<p style="color:#666">Tidak ada saran komunitas.</p>`;
+        joinList.innerHTML = '<p style="color:#666">Tidak ada saran komunitas.</p>';
         return;
       }
       
-      joinList.innerHTML = sugg.slice(0,5).map(c=>`
-        <div class="c-item">
-          <div class="c-info">
-            <img class="c-avatar" src="${toAbs(c.profile_pic) || 'https://via.placeholder.com/90?text=%20'}" alt="">
-            <div>
-              <div class="c-name">${c.name||''}</div>
-              <div class="c-members">${(c.member_count ?? c.members?.length) || 0} members</div>
-            </div>
-          </div>
-          <button class="btn-join" data-id="${c.id}">Join</button>
-        </div>
-      `).join("");
+      joinList.innerHTML = sugg.slice(0,5).map(c =>
+        '<div class="c-item">' +
+          '<div class="c-info">' +
+            '<img class="c-avatar" src="' + (toAbs(c.profile_pic) || 'https://via.placeholder.com/90?text=%20') + '" alt="">' +
+            '<div>' +
+              '<div class="c-name">' + (c.name || '') + '</div>' +
+              '<div class="c-members">' + ((c.member_count ?? c.members?.length) || 0) + ' members</div>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn-join" data-id="' + c.id + '">Join</button>' +
+        '</div>'
+      ).join("");
       
       joinMore.style.display = "block";
 
@@ -629,7 +662,7 @@
         btn.disabled = true;
         
         try {
-          await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, { 
+          await fetch(API_BASE + "/communities/" + btn.dataset.id + "/join/", { 
             method:"POST", 
             headers:authHeaders 
           });
@@ -640,7 +673,6 @@
         }
       };
     }
-    
   </script>
 </body>
 </html>

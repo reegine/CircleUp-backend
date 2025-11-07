@@ -23,7 +23,8 @@
     .left-rail{width:160px;background:#fff;border-right:1px solid #eee;padding:12px 10px;overflow-y:auto}
     .left-rail::-webkit-scrollbar{width:8px}
     .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
-    .rail-item{margin-bottom:12px}
+    .rail-item{margin-bottom:12px;cursor:pointer;transition:all .2s}
+    .rail-item:hover{transform:translateY(-1px)}
     .rail-thumb{width:100%;aspect-ratio:16/10;border-radius:12px;object-fit:cover}
 
     /* MESSAGES */
@@ -38,8 +39,9 @@
     .message-image{margin-left:50px;margin-top:8px;max-width:560px;border-radius:12px;display:block}
 
     .message-reactions{margin-left:50px;margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
-    .reaction{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#f5f5f5;border-radius:12px;font-size:13px}
+    .reaction{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#f5f5f5;border-radius:12px;font-size:13px;border:none;cursor:pointer}
     .reaction.reacted{background:#fff3e0;border:1px solid #e59d2c}
+    .reaction:hover{background:#e5e5e5}
 
     /* INPUT */
     .chat-input-container{padding:14px 20px;background:#fff;border-top:1px solid #e0e0e0;display:flex;align-items:center;gap:12px}
@@ -65,7 +67,7 @@
       </div>
 
       <div class="chat-body">
-        <!-- Left media rail (gambar dari pesan) -->
+        <!-- Left media rail (community thumbnails) -->
         <aside class="left-rail" id="leftRail"></aside>
 
         <!-- Messages -->
@@ -87,103 +89,20 @@
   </div>
 
 <script>
-   (function(){
-    const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS   = localStorage.getItem("access");
-    const H        = ACCESS ? {Authorization: `Bearer ${ACCESS}`} : {};
-
-    // Ambil community UUID dari query string
-    const params = new URLSearchParams(location.search);
-    const COMMUNITY_ID = params.get("community");
-    if (!COMMUNITY_ID){
-      console.warn("[right-sidebar] ?community=<uuid> tidak ditemukan");
-      return;
-    }
-
-    // Helper URL absolut utk gambar file field
-    const abs = (u) => {
-      if (!u) return "";
-      if (u.startsWith("http")) return u;
-      const root = API_BASE.replace(/\/api\/?$/,"");
-      return root + (u.startsWith("/") ? "" : "/") + u;
-    };
-
-    // Render header sidebar (cover+nama+counts)
-    function renderSidebarHeader(comm){
-      const img = document.querySelector('[data-rs="image"]');
-      const nm  = document.querySelector('[data-rs="name"]');
-      const ct  = document.querySelector('[data-rs="counts"]');
-      if (img) img.src = abs(comm.background_banner || comm.profile_pic) || "";
-      if (nm)  nm.textContent = comm.name || "Community";
-      if (ct)  ct.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
-    }
-
-    // Isi daftar channels
-    function renderChannels(channels){
-      const box = document.getElementById("channels-list");
-      if (!box) return;
-      if (!channels.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No channels</div>`;
-        return;
-      }
-      box.innerHTML = channels.map(c => `
-        <a href="/chat/?community=${encodeURIComponent(COMMUNITY_ID)}&channel=${encodeURIComponent(c.id)}"
-           class="channel-item" data-channel="${c.id}">
-          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          <span>${c.name}</span>
-        </a>
-      `).join("");
-    }
-
-    // Isi daftar events
-    function renderEvents(events){
-      const box = document.getElementById("events-list");
-      if (!box) return;
-      if (!events.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No events</div>`;
-        return;
-      }
-      box.innerHTML = events.map(ev => `
-        <a href="/event-info/?community=${encodeURIComponent(COMMUNITY_ID)}#${ev.id}" class="event-item">
-          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
-          <span>${ev.name}</span>
-        </a>
-      `).join("");
-    }
-
-    // Fetch data
-    async function boot(){
-      // 1) Community detail
-      const commRes = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/`, {headers: H});
-      const community = await commRes.json();
-      renderSidebarHeader(community);   // header sidebar
-      // 2) Channels (user-scoped), filter by community
-      const chRes = await fetch(`${API_BASE}/channels/`, {headers: H});
-      const chData = await chRes.json();
-      const channels = Array.isArray(chData) ? chData : (chData.results||[]);
-      renderChannels(channels.filter(c => String(c.community) === String(COMMUNITY_ID)));
-      // 3) Events, filter by community
-      const evRes = await fetch(`${API_BASE}/events/`, {headers: H});
-      const events = await evRes.json(); // array
-      renderEvents((Array.isArray(events)?events:[]).filter(e => (e.community && String(e.community.id)===String(COMMUNITY_ID))));
-    }
-    boot().catch(e => console.warn("[right-sidebar] boot error", e));
-  })();
-  
   // ===== Config & Auth guard =====
   const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
   const ACCESS = localStorage.getItem("access");
   if (!ACCESS) { window.location.href = "/login/"; }
   const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type": "application/json" };
 
-  // channel id dari query string (?channel=...) – BOLEH kosong, akan diisi otomatis
+  // channel id dari query string (?channel=...)
   const params = new URLSearchParams(location.search);
   let channelId = params.get("channel") || params.get("channel_id");
 
   // caches global
-  let CHANNELS_CACHE = [];       // [{id, name, community, ...}]
-  let COMMUNITIES_CACHE = [];    // [{id, name, profile_pic, background_banner, member_count, online_count, ...}]
-  let SELECTED_COMMUNITY_ID = null; // <<< changed: state community terpilih
+  let CHANNELS_CACHE = [];
+  let COMMUNITIES_CACHE = [];
+  let SELECTED_COMMUNITY_ID = null;
 
   // mapping emoji → reaction_type
   const REACT_MAP = { "👍":"like","❤️":"love","😂":"laugh","😮":"wow","😢":"sad","🔥":"fire","👏":"clap" };
@@ -196,42 +115,25 @@
     return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
   };
 
-  // kecil: escape HTML konten teks
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g,(m)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
   }
 
   // ===== Fetchers =====
   async function fetchJoinedCommunities(){
-    const r = await fetch(`${API_BASE}/home/`, { headers: H });
-    if (!r.ok) throw new Error("Gagal memuat home");
-    const home = await r.json();
-    COMMUNITIES_CACHE = Array.isArray(home.joined_communities) ? home.joined_communities : [];
+    const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
+    if (!r.ok) throw new Error("Gagal memuat communities");
+    const communities = await r.json();
+    COMMUNITIES_CACHE = Array.isArray(communities) ? communities : [];
     return COMMUNITIES_CACHE;
   }
 
   async function fetchChannels(){
-    // tarik semua page (pagination DRF)
-    const root = API_BASE.replace(/\/api\/?$/,"");
-    let url = `${API_BASE}/channels/`;
-    let all = [];
-
-    while (url){
-      const r = await fetch(url, { headers: H });
-      if (!r.ok) throw new Error("Gagal memuat channel");
-      const data = await r.json();
-
-      if (Array.isArray(data)) {
-        all = all.concat(data);
-        url = null;
-      } else {
-        all = all.concat(Array.isArray(data.results) ? data.results : []);
-        url = data.next ? (data.next.startsWith('http') ? data.next : `${root}${data.next}`) : null;
-      }
-    }
-
-    CHANNELS_CACHE = all;
-    return all;
+    const r = await fetch(`${API_BASE}/channels/`, { headers: H });
+    if (!r.ok) throw new Error("Gagal memuat channel");
+    const data = await r.json();
+    CHANNELS_CACHE = Array.isArray(data) ? data : (data.results || []);
+    return CHANNELS_CACHE;
   }
 
   async function fetchMessages(){
@@ -239,7 +141,6 @@
     const r = await fetch(`${API_BASE}/chat-messages/?channel_id=${encodeURIComponent(channelId)}`, { headers: H });
     if (!r.ok) throw new Error("Gagal memuat pesan");
     const data = await r.json();
-    // Normalisasi: dukung pagination DRF (results) ATAU array langsung
     return Array.isArray(data) ? data : (Array.isArray(data.results) ? data.results : []);
   }
 
@@ -249,7 +150,6 @@
     const text = (input?.value || "").trim();
     if (!text || !channelId) return;
 
-    // validasi: channelId harus ada di cache
     const ok = CHANNELS_CACHE.some(c => String(c.id) === String(channelId));
     if (!ok){ alert("Pilih channel yang valid."); return; }
 
@@ -259,9 +159,6 @@
       body: JSON.stringify({ channel: channelId, message: text })
     });
 
-    let data = null;
-    try { data = await r.json(); } catch {}
-
     if (r.status === 401) {
       alert("Sesi kamu habis. Silakan login lagi.");
       localStorage.removeItem("access");
@@ -269,7 +166,7 @@
       return;
     }
     if (!r.ok) {
-      console.log("[sendMessage:error]", {channelId, data});
+      const data = await r.json().catch(() => null);
       alert("Gagal mengirim pesan: " + (JSON.stringify(data) || r.status));
       return;
     }
@@ -300,7 +197,6 @@
       return;
     }
 
-    // Judul & stats (kalau API mengirim info channel di item pertama)
     const ch = list[0]?.channel || {};
     const titleEl = document.getElementById("chatTitle");
     if (titleEl) titleEl.textContent = ch.name || "Chat";
@@ -308,7 +204,6 @@
     const stats = document.getElementById("chatStats");
     if (stats) stats.textContent = memberCount ? `• ${memberCount} members` : "";
 
-    // Pesan
     if (wrap){
       wrap.innerHTML = list.map(m => {
         const u = m.sender || m.user || {};
@@ -338,29 +233,15 @@
     }
   }
 
-<<<<<<< HEAD
-=======
-  // ===== (B) HAPUS dropdown channel di header =====
-  // (fungsi renderChannelPicker DIHAPUS agar tidak muncul "general-chat" di header)  // <<< changed
->>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
-
-  // ===== Left rail: util =====
+  // ===== Left rail: community thumbnails =====
   function communityInfo(cid){
     return COMMUNITIES_CACHE.find(c => String(c.id) === String(cid)) || {};
   }
 
-  function highlightRail(activeId){
-    document.querySelectorAll("#leftRail .rail-item").forEach(n=>{
-      n.style.outline = (String(n.dataset.chId)===String(activeId)) ? "2px solid #e59d2c" : "";
-    });
-  }
-
-  // ===== (C) Left-rail per-COMMUNITY (bukan per-channel) =====
-  function renderLeftRailGrouped(){ // <<< changed
+  function renderLeftRailGrouped(){
     const rail = document.getElementById("leftRail");
     if (!rail) return;
 
-    // daftar unik community dari semua channel yang user punya
     const uniqueCommIds = [...new Set(CHANNELS_CACHE.map(c => String(c.community)))];
 
     if (!uniqueCommIds.length){
@@ -371,29 +252,21 @@
     rail.innerHTML = uniqueCommIds.map(commId => {
       const ci = communityInfo(commId);
       const thumb = absUrl(ci.profile_pic || ci.background_banner || '');
+      const isActive = String(commId) === String(SELECTED_COMMUNITY_ID);
       return `
         <div class="rail-item" data-comm-id="${commId}"
              title="${ci.name || 'Community'}"
-             style="display:flex;align-items:center;gap:8px;margin:6px 4px;
-                    padding:6px;border-radius:10px;cursor:pointer;">
-          <img class="rail-thumb" src="${thumb || 'https://via.placeholder.com/56'}"
-               alt="${ci.name||''}" style="width:56px;height:56px;object-fit:cover;border-radius:10px">
-          <div style="display:flex;flex-direction:column">
-            <span class="rail-label" style="font-weight:600">${ci.name || 'Community'}</span>
-            <span style="font-size:12px;color:#666;line-height:1">
-              ${(ci.member_count||0)} members
-            </span>
-          </div>
+             style="outline:${isActive ? '2px solid #e59d2c' : 'none'}">
+          <img class="rail-thumb" src="${thumb || 'https://via.placeholder.com/160x100'}"
+               alt="${ci.name||''}">
         </div>
       `;
     }).join("");
 
-    // klik community → pilih community & channel defaultnya
     rail.querySelectorAll(".rail-item").forEach(el=>{
       el.addEventListener("click", ()=>{
         SELECTED_COMMUNITY_ID = el.getAttribute("data-comm-id");
 
-        // pilih channel pertama milik community tsb sebagai aktif
         const candidates = CHANNELS_CACHE.filter(c => String(c.community)===String(SELECTED_COMMUNITY_ID));
         const nextCh = candidates[0];
         if (nextCh){
@@ -403,19 +276,13 @@
           history.replaceState(null, "", url);
         }
 
-        // highlight
-        document.querySelectorAll("#leftRail .rail-item").forEach(n=>{
-          n.style.outline = (String(n.dataset.commId)===String(SELECTED_COMMUNITY_ID)) ? "2px solid #e59d2c" : "";
-        });
-
-        // sinkron kanan + muat pesan
         syncRightSidebarFromCommunity(SELECTED_COMMUNITY_ID);
         renderRightSidebarChannels(SELECTED_COMMUNITY_ID);
+        renderLeftRailGrouped();
         loadMessages();
       });
     });
 
-    // default selection saat pertama load
     if (!SELECTED_COMMUNITY_ID){
       if (channelId){
         const ch = CHANNELS_CACHE.find(c => String(c.id)===String(channelId));
@@ -431,21 +298,22 @@
         }
       }
     }
-
-    // initial highlight
-    document.querySelectorAll("#leftRail .rail-item").forEach(n=>{
-      n.style.outline = (String(n.dataset.commId)===String(SELECTED_COMMUNITY_ID)) ? "2px solid #e59d2c" : "";
-    });
   }
 
-  // ===== Right sidebar sinkron ke community terpilih =====
-  function syncRightSidebarFromChannel(chId){
-    const ch = CHANNELS_CACHE.find(c => String(c.id)===String(chId));
-    if (ch) syncRightSidebarFromCommunity(ch.community);
+  // ===== Right sidebar =====
+  function syncRightSidebarFromCommunity(commId){
+    const c = communityInfo(commId);
+    const imgEl   = document.querySelector('[data-rs="image"]');
+    const nameEl  = document.querySelector('[data-rs="name"]');
+    const countEl = document.querySelector('[data-rs="counts"]');
+    if (imgEl)   imgEl.src = absUrl(c.background_banner || c.profile_pic || "");
+    if (nameEl)  nameEl.textContent = c.name || "";
+    if (countEl) countEl.textContent = `${c.member_count||0} Members, ${c.online_count||0} Online`;
+
+    renderRightSidebarChannels(commId);
   }
 
-  // (D) sidebar kanan: header tetap, channel list diisi sesuai community
-  function renderRightSidebarChannels(commId){ // <<< changed (baru)
+  function renderRightSidebarChannels(commId){
     const box = document.getElementById("channels-list");
     if (!box) return;
 
@@ -455,16 +323,14 @@
       return;
     }
 
-    const mk = (c) => `
+    box.innerHTML = list.map(c => `
       <a href="?channel=${c.id}" class="channel-item ${String(c.id)===String(channelId)?'active':''}"
          data-channel="${c.id}">
         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
         <span>${c.name}</span>
       </a>
-    `;
-    box.innerHTML = list.map(mk).join("");
+    `).join("");
 
-    // klik channel di kanan → pindah channel & render ulang pesan
     box.querySelectorAll(".channel-item").forEach(a=>{
       a.addEventListener("click", (e)=>{
         e.preventDefault();
@@ -479,18 +345,6 @@
         loadMessages();
       });
     });
-  }
-
-  function syncRightSidebarFromCommunity(commId){
-    const c = communityInfo(commId);
-    const imgEl   = document.querySelector('[data-rs="image"]');
-    const nameEl  = document.querySelector('[data-rs="name"]');
-    const countEl = document.querySelector('[data-rs="counts"]');
-    if (imgEl)   imgEl.src = absUrl(c.background_banner || c.profile_pic || "");
-    if (nameEl)  nameEl.textContent = c.name || "";
-    if (countEl) countEl.textContent = `${c.member_count||0} Members, ${c.online_count||0} Online`;
-
-    renderRightSidebarChannels(commId); // <<< changed: isi daftar channel kanan
   }
 
   // ===== Boot & events =====
@@ -514,29 +368,28 @@
 
   async function boot(){
     const rail = document.getElementById("leftRail");
-    if (rail) rail.innerHTML = `Loading channels...`;
+    if (rail) rail.innerHTML = `Loading...`;
     try{
       await Promise.all([fetchJoinedCommunities(), fetchChannels()]);
-      renderLeftRailGrouped();                 // kiri: sekarang per COMMUNITY  // <<< changed
-      // renderChannelPicker(CHANNELS_CACHE);  // <<< changed: DIHAPUS supaya "general-chat" tidak muncul
-      // sinkronkan sidebar kanan di awal
-      if (channelId) { syncRightSidebarFromChannel(channelId); }
-      else if (SELECTED_COMMUNITY_ID){ syncRightSidebarFromCommunity(SELECTED_COMMUNITY_ID); }
+      renderLeftRailGrouped();
+      
+      if (channelId) {
+        const ch = CHANNELS_CACHE.find(c => String(c.id)===String(channelId));
+        if (ch) syncRightSidebarFromCommunity(ch.community);
+      } else if (SELECTED_COMMUNITY_ID){
+        syncRightSidebarFromCommunity(SELECTED_COMMUNITY_ID);
+      }
+      
       if (channelId) await loadMessages();
     }catch(e){
       console.warn(e);
       if (rail) rail.innerHTML = `<div style="color:#b00020;padding:6px">Gagal memuat channels.</div>`;
-      const wrap = document.getElementById("chatMessages");
-      if (wrap) wrap.innerHTML = `<p style="color:#b00020">Gagal memuat chat.</p>`;
     }
   }
   boot();
 
-  // polling sederhana
   setInterval(()=>{ if (channelId) loadMessages(); }, 8000);
 </script>
-
-
 
 </body>
 </html>
