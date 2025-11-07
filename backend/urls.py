@@ -25,6 +25,7 @@ urlpatterns = [
     path('reset-password/',   TemplateView.as_view(template_name='circleup/reset-password.html'),   name='reset_password'),
     path('register/',         TemplateView.as_view(template_name='circleup/register.html'),         name='register'),
     path('profile/',          TemplateView.as_view(template_name='circleup/profile-and-edit.html'), name='profile'),
+    path('change-password/', TemplateView.as_view(template_name='circleup/change-password.html'), name='change_password'),
     path('login/',          TemplateView.as_view(template_name='circleup/login.html'), name='login'),
 ]
 
