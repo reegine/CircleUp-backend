@@ -1,615 +1,1301 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="id">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tennis Prasmul - About</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <meta charset="utf-8"/>
+  <title>CircleUP – About</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --bg:#f5f5f5; --card:#ffffff; --ink:#0f141a; --muted:#7A889A;
-      --accent:#e59d2c; --accent-ink:#1b1b1b; --ok:#42B846;
-    }
-    body{font-family:'Poppins',sans-serif;background:var(--bg);display:flex;overflow:hidden;color:var(--ink)}
-    #sidebar-container{flex-shrink:0}
-    .main-container{display:flex;flex:1;height:100vh;overflow:hidden}
-    .about-container{flex:1;display:flex;flex-direction:column;background:var(--card);overflow:hidden}
-    .about-body{flex:1;display:flex;min-height:0;background:#fff}
-    .left-rail{width:140px;padding:16px 10px;border-right:1px solid #eee;background:#fff;overflow-y:auto;flex-shrink:0}
-    .left-rail::-webkit-scrollbar{width:8px}.left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
-    .rail-item{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:16px;border-radius:16px;background:#f6f6f6;cursor:pointer;transition:.15s}
-    .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-    .rail-thumb{width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0}
-    .rail-label{display:none;font-size:12px;color:#333}
+/* ====== CircleUP – About (redesigned to match Figma) ====== */
 
-    .about-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
-    .about-content{padding:40px;overflow-y:auto;background:var(--bg)}
+/* FONT + RESET */
+:root{
+  --bg:#f5f5f5;
+  --ink:#333;
+  --card:#fff;
+  --line:#e0e0e0;
+  --line-soft:#eee;
+  --muted:#888;
+  --accent:#e59d2c;
+  --sidebar-bg:#f8f8f8;
+}
 
-    /* CARD */
-    .profile-card{background:#d9d9d9;border-radius:16px;padding:30px;margin-bottom:20px;position:relative;overflow:hidden}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  display:flex;
+  overflow:hidden;
+}
 
-    /* BANNER */
-    .profile-banner{position:relative;margin-bottom:18px}
-    .banner-image{width:100%;height:300px;object-fit:cover;border-radius:16px}
+/* ===== Layout ===== */
+.layout{display:flex;min-height:100vh;overflow:hidden;width:100%}
+.main{flex:1;display:flex;gap:0;padding:0;background:var(--bg);overflow:hidden}
+.content{
+  flex:1;
+  min-width:0;
+  overflow-y:auto;
+  padding:32px 48px;
+  background:#fff;
+}
 
-    /* AVATAR kiri bawah banner */
-    .profile-info{position:absolute;bottom:-60px;left:40px;display:flex;align-items:flex-end;gap:20px}
-    .profile-avatar-large{width:150px;height:150px;border-radius:16px;object-fit:cover;border:6px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.15);background:#fff}
+/* Right sidebar */
+.right-sidebar{
+  flex:0 0 340px;
+  width:340px;
+  height:100vh;
+  overflow-y:auto;
+  background:var(--sidebar-bg);
+  border-left:1px solid var(--line-soft);
+  padding:20px;
+  position:sticky;
+  top:0;
+}
 
-    /* Tombol di bawah banner (kanan) */
-    .actions-below{
-      display:flex;justify-content:flex-end;gap:10px;margin-top:8px;margin-bottom:10px;flex-wrap:wrap;
-    }
+.community-header{
+  text-align:center;
+  margin-bottom:24px;
+}
+.community-cover{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:12px;
+  background:#eaeaea;
+  display:block;
+  margin-bottom:12px;
+}
+.community-name{
+  font-weight:700;
+  font-size:16px;
+  margin-bottom:4px;
+  color:#111;
+}
+.community-stats{
+  font-size:12px;
+  color:var(--muted);
+}
 
-    /* Buttons */
-    .action-button{padding:10px 16px;border-radius:999px;border:none;font-size:14px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform .15s, filter .15s;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-    .action-button:hover{transform:translateY(-1px)}
-    .action-button.primary{background:var(--accent);color:#fff}
-    .action-button.secondary{background:#2f2f2f;color:#fff}
-    .action-button.ghost{background:#ffffff;color:#333;border:1px solid #ddd}
-    .action-button.icon-only{width:44px;height:44px;padding:0;border-radius:50%;justify-content:center}
-    .action-button svg{width:18px;height:18px;fill:currentColor}
-    .logo-btn{background:var(--accent-ink);border:3px solid var(--accent);color:#fff;box-shadow:0 6px 20px rgba(229,157,44,.25)}
-    .logo-svg{width:22px;height:22px;display:block}
+/* ===== Main Content Area ===== */
+.about-header{
+  position:relative;
+  margin:-32px -48px 32px;
+  height:320px;
+  overflow:hidden;
+}
 
-    /* ====== TYPO mirip screenshot ====== */
-    .community-title{
-      font-size:48px;font-weight:900;letter-spacing:-.5px;color:var(--ink);margin: 0 0 8px;
-    }
-    .community-stats{
-      font-size:22px;font-weight:800;margin-bottom:28px;
-    }
-    .community-stats .members{color:#E6AF2E;}
-    .community-stats .online{color:var(--ok);}
+img[data-page="cover"]{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
 
-    .community-lead{
-      font-size:22px;line-height:1.6;color:#111;margin:0 0 18px;
-    }
-    .feature-list{list-style:none;margin:0 0 16px;padding:0}
-    .feature-list li{font-size:24px;line-height:1.5;margin:6px 0}
-    .feature-list .bullet{margin-right:10px}
+.about-header::after{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:150px;
+  background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  pointer-events:none;
+}
 
-    .community-motto{
-      font-size:24px;font-weight:600;font-style:normal;background:none;border:0;padding:0;color:#111;margin:4px 0 24px;
-    }
+.community-info-overlay{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:24px 48px;
+  z-index:2;
+  display:flex;
+  align-items:flex-end;
+  gap:16px;
+}
 
-    .community-footer{
-      margin-top:36px;
-      padding-top:18px;
-      border-top:1px solid #e0e0e0;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-    }
-    .footer-info{display:flex;align-items:center;gap:12px;font-size:18px;color:var(--muted);font-weight:700;margin-bottom:12px}
-    .footer-info .icon{font-size:22px;line-height:1}
+.community-avatar{
+  width:100px;
+  height:100px;
+  border-radius:16px;
+  object-fit:cover;
+  border:4px solid #fff;
+  background:#eaeaea;
+  flex-shrink:0;
+}
 
-    .delete-community-btn{
-      padding:10px 20px;
-      background:#fff;
-      border:0;
-      color:#e45b55;
-      border-radius:999px;
-      font-size:18px;
-      font-weight:700;
-      cursor:pointer;
-      box-shadow:0 2px 8px rgba(0,0,0,.08);
-      transition:all .2s;
-    }
-    .delete-community-btn:hover{
-      filter:brightness(0.95);
-      transform:translateY(-1px);
-    }
+.community-title-area{
+  flex:1;
+  color:#fff;
+  padding-bottom:8px;
+}
 
-    /* MODAL STYLES */
-    .modal-overlay{
-      display:none;
-      position:fixed;
-      top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.6);
-      z-index:1000;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-    .modal-overlay.active{display:flex}
-    
-    .modal-content{
-      background:#fff;
-      border-radius:16px;
-      padding:32px;
-      max-width:500px;
-      width:100%;
-      position:relative;
-      box-shadow:0 10px 40px rgba(0,0,0,0.2);
-      animation:modalSlideIn 0.3s ease;
-    }
+h2[data-page="name"]{
+  font-size:32px;
+  font-weight:700;
+  margin:0 0 4px;
+  color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
 
-    @keyframes modalSlideIn{
-      from{transform:translateY(-20px);opacity:0}
-      to{transform:translateY(0);opacity:1}
-    }
+[data-page="counts"]{
+  font-size:14px;
+  color:rgba(255,255,255,0.9);
+  text-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
 
-    .modal-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:24px;
-    }
+.action-buttons{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding-bottom:8px;
+}
 
-    .modal-title{
-      font-size:20px;
-      font-weight:700;
-      color:#000;
-    }
+.btn-action{
+  padding:10px 20px;
+  border-radius:24px;
+  border:none;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:all .2s;
+  font-family:'Poppins',sans-serif;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
 
-    .modal-close{
-      background:none;
-      border:none;
-      font-size:24px;
-      cursor:pointer;
-      padding:4px 8px;
-      color:#666;
-      line-height:1;
-    }
-    .modal-close:hover{color:#000}
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+}
 
-    .modal-body{margin-bottom:20px}
+.btn-primary:hover{
+  background:#d18b1f;
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(229,157,44,0.3);
+}
 
-    .form-group{margin-bottom:20px}
-    .form-label{
-      display:block;
-      font-size:14px;
-      font-weight:600;
-      color:#333;
-      margin-bottom:8px;
-    }
+.btn-secondary{
+  background:#555;
+  color:#fff;
+}
 
-    .form-input{
-      width:100%;
-      padding:12px 16px;
-      border:1px solid #ddd;
-      border-radius:8px;
-      font-size:15px;
-      font-family:'Poppins',sans-serif;
-      transition:border-color .2s;
-    }
-    .form-input:focus{
-      outline:none;
-      border-color:var(--accent);
-    }
+.btn-secondary:hover{
+  background:#444;
+  transform:translateY(-1px);
+}
 
-    .form-textarea{
-      width:100%;
-      padding:12px 16px;
-      border:1px solid #ddd;
-      border-radius:8px;
-      font-size:15px;
-      font-family:'Poppins',sans-serif;
-      min-height:120px;
-      resize:vertical;
-    }
-    .form-textarea:focus{
-      outline:none;
-      border-color:var(--accent);
-    }
+.btn-icon{
+  background:#fff;
+  color:#333;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  font-size:18px;
+}
 
-    .image-upload-area{
-      width:100%;
-      height:160px;
-      border:2px dashed #ccc;
-      border-radius:12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:8px;
-      cursor:pointer;
-      transition:all .2s;
-      background:#f9f9f9;
-    }
-    .image-upload-area:hover{
-      border-color:var(--accent);
-      background:#fff;
-    }
+.btn-icon:hover{
+  background:#f5f5f5;
+  transform:translateY(-1px);
+}
 
-    .image-upload-icon{
-      font-size:48px;
-      color:#999;
-    }
+/* ===== BIO Section ===== */
+article{
+  margin-top:32px;
+  max-width:800px;
+}
 
-    .toggle-container{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:16px 0;
-    }
+article h3{
+  font-size:18px;
+  font-weight:700;
+  margin:0 0 16px;
+  color:#222;
+}
 
-    .toggle-info{flex:1}
-    .toggle-title{
-      font-size:16px;
-      font-weight:600;
-      color:#000;
-      margin-bottom:4px;
-    }
-    .toggle-desc{
-      font-size:13px;
-      color:#666;
-    }
+[data-page="bio"]{
+  color:#444;
+  line-height:1.7;
+  font-size:15px;
+}
 
-    .toggle-switch{
-      position:relative;
-      width:50px;
-      height:28px;
-      background:#ccc;
-      border-radius:14px;
-      cursor:pointer;
-      transition:background .2s;
-    }
-    .toggle-switch.active{background:var(--accent)}
-    .toggle-switch::after{
-      content:'';
-      position:absolute;
-      top:3px;
-      left:3px;
-      width:22px;
-      height:22px;
-      background:#fff;
-      border-radius:50%;
-      transition:transform .2s;
-    }
-    .toggle-switch.active::after{
-      transform:translateX(22px);
-    }
+.bio-content{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
 
-    .modal-actions{
-      display:flex;
-      gap:12px;
-      justify-content:flex-end;
-    }
+.bio-item{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:15px;
+  line-height:1.6;
+}
 
-    .btn-save{
-      padding:12px 28px;
-      background:#000;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
-      font-family:'Poppins',sans-serif;
-    }
-    .btn-save:hover{background:#333}
+.bio-item-icon{
+  flex-shrink:0;
+  margin-top:2px;
+}
 
-    .invite-link-container{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-top:20px;
-    }
+.bio-footer{
+  margin-top:24px;
+  padding-top:20px;
+  border-top:1px solid var(--line-soft);
+  color:var(--muted);
+  font-size:13px;
+}
 
-    .invite-link-input{
-      flex:1;
-      padding:14px 18px;
-      background:#f5f5f5;
-      border:1px solid #e0e0e0;
-      border-radius:8px;
-      font-size:15px;
-      font-family:'Poppins',sans-serif;
-      color:#333;
-    }
+/* ===== Sidebar Menu & Lists ===== */
+.sidebar-menu{
+  list-style:none;
+  margin:0 0 20px 0;
+  padding:0;
+}
 
-    .btn-copy{
-      padding:14px 28px;
-      background:var(--accent);
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      font-size:15px;
-      font-weight:700;
-      cursor:pointer;
-      font-family:'Poppins',sans-serif;
-      flex-shrink:0;
-    }
-    .btn-copy:hover{filter:brightness(1.1)}
+.sidebar-menu-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:10px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+  font-size:14px;
+  background:transparent;
+  border:none;
+  transition:background .2s;
+  margin-bottom:4px;
+}
 
-    .btn-cancel{
-      padding:12px 28px;
-      background:#f5f5f5;
-      color:#333;
-      border:none;
-      border-radius:8px;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
-      font-family:'Poppins',sans-serif;
-      transition:background .2s;
-    }
-    .btn-cancel:hover{background:#e5e5e5}
+.sidebar-menu-item:hover{
+  background:rgba(0,0,0,0.05);
+}
 
-    .btn-delete{
-      padding:12px 28px;
-      background:#e45b55;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
-      font-family:'Poppins',sans-serif;
-      transition:background .2s;
-    }
-    .btn-delete:hover{background:#d04942}
+.sidebar-menu-item.active{
+  background:var(--accent);
+  color:#fff;
+}
 
-    @media (max-width:900px){.community-title{font-size:36px}}
-    @media (max-width:640px){
-      .about-content{padding:20px}
-      .profile-card{padding:20px}
-      .banner-image{height:220px}
-      .profile-info{left:16px;bottom:-52px}
-      .profile-avatar-large{width:120px;height:120px;border-width:5px}
-      .actions-below{justify-content:flex-start}
-      .modal-content{padding:24px;max-width:90%}
-    }
+.sidebar-menu-item::before{
+  content:'ℹ️';
+  font-size:16px;
+}
+
+.sidebar-menu-item[href*="event"]::before{content:'📅'}
+.sidebar-menu-item[href*="feeds"]::before{content:'📰'}
+.sidebar-menu-item[href*="members"]::before{content:'👥'}
+
+.sidebar-section{
+  margin-top:20px;
+}
+
+.section-toggle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  color:#999;
+  padding:8px 4px;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+
+.section-toggle::before{
+  content:'▼';
+  font-size:10px;
+  transition:transform .2s;
+}
+
+.section-toggle.collapsed::before{
+  transform:rotate(-90deg);
+}
+
+#channels-list,
+#events-list{
+  margin-top:8px;
+}
+
+.channel-item,
+.event-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  color:#333;
+  background:transparent;
+  margin-bottom:4px;
+  transition:background .2s;
+  font-weight:500;
+  font-size:14px;
+}
+
+.channel-item:hover,
+.event-item:hover{
+  background:rgba(0,0,0,0.05);
+}
+
+.channel-item.active{
+  background:rgba(229,157,44,0.15);
+  color:var(--accent);
+  font-weight:600;
+}
+
+/* ===== Modal/Popup Styles ===== */
+.modal-overlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-overlay.active{
+  display:flex;
+}
+
+.modal-content{
+  background:#fff;
+  border-radius:16px;
+  width:90%;
+  max-width:500px;
+  max-height:90vh;
+  overflow-y:auto;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+  animation:modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px 24px;
+  border-bottom:1px solid var(--line-soft);
+}
+
+.modal-title{
+  font-size:20px;
+  font-weight:700;
+  color:#222;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.modal-close{
+  background:none;
+  border:none;
+  font-size:24px;
+  cursor:pointer;
+  color:#666;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  transition:all .2s;
+}
+
+.modal-close:hover{
+  background:#f0f0f0;
+  color:#333;
+}
+
+.modal-body{
+  padding:24px;
+}
+
+.modal-footer{
+  padding:20px 24px;
+  border-top:1px solid var(--line-soft);
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+
+/* Form Styles */
+.form-group{
+  margin-bottom:20px;
+}
+
+.form-label{
+  display:block;
+  font-weight:600;
+  font-size:14px;
+  margin-bottom:8px;
+  color:#333;
+}
+
+.form-input,
+.form-textarea{
+  width:100%;
+  padding:12px 16px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-family:'Poppins',sans-serif;
+  font-size:14px;
+  transition:all .2s;
+}
+
+.form-input:focus,
+.form-textarea:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(229,157,44,0.1);
+}
+
+.form-textarea{
+  resize:vertical;
+  min-height:120px;
+}
+
+/* Toggle Switch */
+.toggle-container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px;
+  background:#f9f9f9;
+  border-radius:8px;
+  margin-bottom:12px;
+}
+
+.toggle-label{
+  font-size:14px;
+  font-weight:600;
+  color:#333;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.toggle-description{
+  font-size:12px;
+  color:#666;
+  margin-top:4px;
+}
+
+.toggle-switch{
+  position:relative;
+  width:48px;
+  height:26px;
+  background:#ccc;
+  border-radius:26px;
+  cursor:pointer;
+  transition:background .3s;
+}
+
+.toggle-switch.active{
+  background:var(--accent);
+}
+
+.toggle-switch::after{
+  content:'';
+  position:absolute;
+  top:3px;
+  left:3px;
+  width:20px;
+  height:20px;
+  background:#fff;
+  border-radius:50%;
+  transition:left .3s;
+}
+
+.toggle-switch.active::after{
+  left:25px;
+}
+
+/* Image Upload */
+.image-upload-area{
+  position:relative;
+  width:100%;
+  height:200px;
+  border:2px dashed var(--line);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:all .2s;
+  overflow:hidden;
+  background:#f9f9f9;
+}
+
+.image-upload-area:hover{
+  border-color:var(--accent);
+  background:#fff;
+}
+
+.image-upload-icon{
+  font-size:48px;
+  color:#999;
+}
+
+.image-preview{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.avatar-upload-area{
+  position:relative;
+  width:120px;
+  height:120px;
+  border:2px dashed var(--line);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:all .2s;
+  overflow:hidden;
+  background:#f9f9f9;
+  margin-bottom:16px;
+}
+
+.avatar-upload-area:hover{
+  border-color:var(--accent);
+}
+
+/* Copy Link Box */
+.copy-link-container{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.copy-input{
+  flex:1;
+  padding:12px 16px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:14px;
+  background:#f9f9f9;
+}
+
+.btn-copy{
+  padding:12px 24px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
+}
+
+.btn-copy:hover{
+  background:#d18b1f;
+}
+
+/* Confirmation Dialog */
+.confirm-dialog{
+  text-align:center;
+  padding:20px;
+}
+
+.confirm-icon{
+  font-size:48px;
+  margin-bottom:16px;
+}
+
+.confirm-message{
+  font-size:16px;
+  color:#666;
+  line-height:1.5;
+  margin-bottom:24px;
+}
+
+/* Button Styles */
+.btn-modal{
+  padding:12px 24px;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:all .2s;
+  font-family:'Poppins',sans-serif;
+}
+
+.btn-modal-primary{
+  background:var(--accent);
+  color:#fff;
+}
+
+.btn-modal-primary:hover{
+  background:#d18b1f;
+}
+
+.btn-modal-danger{
+  background:#dc3545;
+  color:#fff;
+}
+
+.btn-modal-danger:hover{
+  background:#c82333;
+}
+
+.btn-modal-secondary{
+  background:#6c757d;
+  color:#fff;
+}
+
+.btn-modal-secondary:hover{
+  background:#5a6268;
+}
+
+/* ===== Utilities ===== */
+ a{color:inherit}
+ img{max-width:100%;display:block}
+ .muted{
+  color:#9aa6b2;
+  font-size:13px;
+  padding:12px 16px;
+  font-style:italic;
+}
+
+/* ===== Responsive ===== */
+@media (max-width:1024px){
+  .right-sidebar{display:none}
+  .content{padding:20px}
+  .about-header{margin:-20px -20px 24px;height:250px}
+  .community-info-overlay{padding:20px;flex-wrap:wrap}
+  .community-avatar{width:80px;height:80px}
+  h2[data-page="name"]{font-size:24px}
+  .action-buttons{width:100%;justify-content:flex-start}
+}
   </style>
 </head>
 <body>
-  {% include "circleup/sidebar.html" %}
-
-  <div class="main-container">
-    <div class="about-container">
-      <div class="about-body">
-        <aside class="left-rail">
-          <div class="rail-item" title="Tennis Prasmul">
-            <img class="rail-thumb" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop" alt="Tennis Prasmul">
-            <span class="rail-label">Tennis</span>
-          </div>
-        </aside>
-
-        <div class="about-main">
-          <div class="about-content">
-            <div class="profile-card">
-              <div class="profile-banner">
-                <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&h=300&fit=crop" alt="Banner" class="banner-image">
-                <div class="profile-info">
-                  <img src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=200&h=200&fit=crop" alt="Tennis Prasmul" class="profile-avatar-large">
-                </div>
-              </div>
-
-              <!-- tombol di bawah banner -->
-              <div class="actions-below">
-                <button class="action-button icon-only logo-btn" title="Tennis Prasmul" onclick="openChannelModal()">
-                  <svg class="logo-svg" viewBox="0 0 48 48" aria-hidden="true">
-                    <circle cx="24" cy="24" r="22" fill="#E6AF2E"></circle>
-                    <g transform="translate(24,24)">
-                      <path d="M-8,-8 L-8,8 L-2,8 L-2,2 L2,2 C5,2 7,0 7,-3 C7,-6 5,-8 2,-8 Z M-2,-3 L-2,3 L2,3 C3,3 4,2 4,-3 C4,-4 3,-3 2,-3 Z" fill="#2f2f2f"/>
-                    </g>
-                  </svg>
-                </button>
-                <button class="action-button primary" title="Edit Bio" onclick="openEditBioModal()">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>
-                  Edit Bio
-                </button>
-                <button class="action-button secondary" title="Joined">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                  Joined
-                </button>
-                <button class="action-button ghost icon-only" title="Share invite link" onclick="openInviteModal()">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-                </button>
-              </div>
-
-              <!-- konten -->
-              <h1 class="community-title">Tennis Prasmul</h1>
-              <p class="community-stats">
-                <span class="members">260 Members</span>, <span class="online">128 Online</span>
-              </p>
-
-              <p class="community-lead">
-                Tempatnya mahasiswa &amp; alumni Prasmul yang hobi tenis buat kumpul, latihan, &amp; fun match bareng.
-              </p>
-
-              <ul class="feature-list">
-                <li><span class="bullet">🌞</span>Regular practice &amp; sparring</li>
-                <li><span class="bullet">🤝</span>Open for all levels</li>
-                <li><span class="bullet">📍</span>Prasmul Tennis Court</li>
-              </ul>
-
-              <p class="community-motto">"Serve, rally, and grow together on and off the court!"</p>
-
-              <div class="community-footer">
-                <div>
-                  <div class="footer-info"><span class="icon">👤</span>Created by @LukaMOD</div>
-                  <div class="footer-info"><span class="icon">📍</span>Indonesia <span class="icon">📅</span>Created September 2011</div>
-                </div>
-                <button class="delete-community-btn" onclick="deleteCommunity()">Delete Community</button>
-              </div>
+  <div class="layout">
+    <main class="main">
+      <section class="content">
+        <!-- HEADER with Hero Banner -->
+        <div class="about-header">
+          <img data-page="cover" class="community-cover" alt="cover"/>
+          
+          <div class="community-info-overlay">
+            <img class="community-avatar" data-page="avatar" alt="Community avatar"/>
+            
+            <div class="community-title-area">
+              <h2 data-page="name">Community Name</h2>
+              <div data-page="counts" class="community-stats">0 Members, 0 Online</div>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn-action btn-icon" onclick="openAddChannelModal()" title="Add Channel">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+              <button class="btn-action btn-primary" onclick="openEditBioModal()">Edit Bio</button>
+              <button class="btn-action btn-secondary" id="joinedBtn" onclick="openLeaveConfirmModal()">Joined</button>
+              <button class="btn-action btn-icon" onclick="openShareLinkModal()" title="Share Link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div id="right-sidebar-container"></div>
+        <!-- BIO/ABOUT -->
+        <article>
+          <h3>About</h3>
+          <div data-page="bio" class="bio-content">
+            <p>Deskripsi/bio komunitas akan tampil di sini.</p>
+          </div>
+          
+          <div class="bio-footer">
+            <div>Created by <strong id="createdBy">@Creator</strong></div>
+            <div><span id="locationInfo">📍 Location</span> • <span id="createdDate">📅 Created [Date]</span></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- RIGHT SIDEBAR -->
+      <aside id="rightSidebar" class="right-sidebar">
+        <div class="community-header">
+          <img data-rs="image" class="community-cover" alt="Community banner">
+          <div data-rs="name" class="community-name">Community</div>
+          <div data-rs="counts" class="community-stats"></div>
+        </div>
+        
+        <ul class="sidebar-menu">
+          <li><a href="/about/" class="sidebar-menu-item active">About</a></li>
+          <li><a href="/event-info/" class="sidebar-menu-item">Event Info</a></li>
+          <li><a href="/feeds/" class="sidebar-menu-item">Feeds</a></li>
+          <li><a href="/members/" class="sidebar-menu-item">Members</a></li>
+        </ul>
+        
+        <div class="sidebar-section">
+          <div class="section-toggle" onclick="toggleSection('channels')">Channels</div>
+          <div id="channels-list"></div>
+        </div>
+        
+        <div class="sidebar-section">
+          <div class="section-toggle" onclick="toggleSection('events')">Events</div>
+          <div id="events-list"></div>
+        </div>
+      </aside>
+    </main>
   </div>
 
-  <!-- Add Channel Modal -->
-  <div class="modal-overlay" id="channelModal">
+  <!-- Modal 1: Add Channel -->
+  <div id="addChannelModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">Add Channel</span>
-        <button class="modal-close" onclick="closeModal('channelModal')">✕</button>
+        <div class="modal-title">Add Channel</div>
+        <button class="modal-close" onclick="closeModal('addChannelModal')">✕</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">Channel Name</label>
-          <input type="text" class="form-input" placeholder="Enter channel name">
-        </div>
-        <div class="toggle-container">
-          <div class="toggle-info">
-            <div class="toggle-title">🔒 Restricted Channel</div>
-            <div class="toggle-desc">Only Creator and admin will be able to view this channel</div>
+        <form id="addChannelForm" onsubmit="event.preventDefault(); addChannel();">
+          <div class="form-group">
+            <label class="form-label">Channel Name</label>
+            <input type="text" class="form-input" id="channelName" placeholder="Enter channel name" required>
           </div>
-          <div class="toggle-switch" id="restrictedToggle" onclick="toggleSwitch('restrictedToggle')"></div>
-        </div>
+          
+          <div class="toggle-container">
+            <div>
+              <div class="toggle-label">
+                <span>🔒</span> Restricted Channel
+              </div>
+              <div class="toggle-description">Only Creator and admin will be able to view this channel</div>
+            </div>
+            <div class="toggle-switch" id="restrictedToggle" onclick="toggleSwitch('restrictedToggle')"></div>
+          </div>
+        </form>
       </div>
-      <div class="modal-actions">
-        <button class="btn-save" onclick="closeModal('channelModal')">Add</button>
+      <div class="modal-footer">
+        <button class="btn-modal btn-modal-primary" onclick="addChannel()">Add</button>
       </div>
     </div>
   </div>
 
-  <!-- Edit Bio Modal -->
-  <div class="modal-overlay" id="editBioModal">
+  <!-- Modal 2: Edit Bio -->
+  <div id="editBioModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title">Edit Community Bio</span>
+        <div class="modal-title">Edit Community Bio</div>
         <button class="modal-close" onclick="closeModal('editBioModal')">✕</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">Banner Image</label>
-          <div class="image-upload-area">
-            <div class="image-upload-icon">📷</div>
-            <div style="font-size:13px;color:#999">Click to upload banner</div>
+        <form id="editBioForm" onsubmit="event.preventDefault(); saveBio();">
+          <div class="form-group">
+            <label class="form-label">Banner Image</label>
+            <div class="image-upload-area" onclick="document.getElementById('bannerInput').click()">
+              <img id="bannerPreview" class="image-preview" style="display:none" alt="Banner">
+              <div id="bannerPlaceholder">
+                <div class="image-upload-icon">📷</div>
+              </div>
+            </div>
+            <input type="file" id="bannerInput" accept="image/*" style="display:none" onchange="previewImage('bannerInput', 'bannerPreview', 'bannerPlaceholder')">
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Profile Image</label>
-          <div class="image-upload-area" style="height:120px">
-            <div class="image-upload-icon">📷</div>
-            <div style="font-size:13px;color:#999">Click to upload profile image</div>
+
+          <div class="form-group">
+            <label class="form-label">Avatar</label>
+            <div class="avatar-upload-area" onclick="document.getElementById('avatarInput').click()">
+              <img id="avatarPreview" class="image-preview" style="display:none" alt="Avatar">
+              <div id="avatarPlaceholder">
+                <div class="image-upload-icon" style="font-size:32px">📷</div>
+              </div>
+            </div>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewImage('avatarInput', 'avatarPreview', 'avatarPlaceholder')">
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Community Name</label>
-          <input type="text" class="form-input" value="Tennis Prasmul" placeholder="Enter community name">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Bio</label>
-          <textarea class="form-textarea" placeholder="Enter bio">Tempatnya mahasiswa & alumni Prasmul yang hobi tenis buat kumpul, latihan, & fun match bareng.</textarea>
-        </div>
+          
+          <div class="form-group">
+            <label class="form-label">Community Name</label>
+            <input type="text" class="form-input" id="communityName" placeholder="Enter community name" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            <textarea class="form-textarea" id="communityBio" placeholder="Enter community bio"></textarea>
+          </div>
+        </form>
       </div>
-      <div class="modal-actions">
-        <button class="btn-save" onclick="closeModal('editBioModal')">Save</button>
+      <div class="modal-footer">
+        <button class="btn-modal btn-modal-primary" onclick="saveBio()">Save</button>
       </div>
     </div>
   </div>
 
-  <!-- Invite Link Modal -->
-  <div class="modal-overlay" id="inviteModal">
-    <div class="modal-content">
+  <!-- Modal 3: Leave Community Confirmation -->
+  <div id="leaveConfirmModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:400px">
       <div class="modal-header">
-        <span class="modal-title">Share community invite link</span>
-        <button class="modal-close" onclick="closeModal('inviteModal')">✕</button>
+        <div class="modal-title">Leave Community</div>
+        <button class="modal-close" onclick="closeModal('leaveConfirmModal')">✕</button>
       </div>
       <div class="modal-body">
-        <div class="invite-link-container">
-          <input type="text" class="invite-link-input" value="Https://blabla.com" readonly>
+        <div class="confirm-dialog">
+          <div class="confirm-icon">⚠️</div>
+          <div class="confirm-message">
+            Are you sure you want to leave this community?
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal btn-modal-secondary" onclick="closeModal('leaveConfirmModal')">Cancel</button>
+        <button class="btn-modal btn-modal-danger" onclick="leaveCommunity()">Yes, Leave</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Share Invite Link -->
+  <div id="shareLinkModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:500px">
+      <div class="modal-header">
+        <div class="modal-title">Share community invite link</div>
+        <button class="modal-close" onclick="closeModal('shareLinkModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="copy-link-container">
+          <input type="text" class="copy-input" id="inviteLink" readonly value="https://blabla.com">
           <button class="btn-copy" onclick="copyInviteLink()">Copy</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Delete Warning Modal -->
-  <div class="modal-overlay" id="deleteModal">
-    <div class="modal-content" style="max-width:440px">
-      <div class="modal-header" style="border-bottom:none;padding-bottom:0">
-        <span class="modal-title" style="color:#e45b55;font-size:22px">⚠️ Delete Community</span>
-        <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:16px;color:#333;line-height:1.6;margin-bottom:16px">
-          Are you sure you want to delete <strong>Tennis Prasmul</strong>?
-        </p>
-        <p style="font-size:14px;color:#666;line-height:1.5;margin-bottom:0">
-          This action cannot be undone. All members, channels, and content will be permanently deleted.
-        </p>
-      </div>
-      <div class="modal-actions" style="gap:10px">
-        <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
-        <button class="btn-delete" onclick="confirmDelete()">Delete Community</button>
-      </div>
-    </div>
-  </div>
-  {% include "circleup/right-sidebar.html" %}
-  <script>
-        const API = {
-      base: "/api",
-      token: null,
-      setToken(t){ this.token = t },
-      async req(path, opts={}){
-        const headers = {'Content-Type':'application/json', ...(opts.headers||{})};
-        if(this.token) headers.Authorization = `Bearer ${this.token}`;
-        const res = await fetch(this.base + path, {...opts, headers});
-        if(!res.ok) throw await res.json().catch(()=>({error: res.statusText}));
-        return res.json();
-      },
-      form(path, form){ // untuk upload image
-        const headers = {};
-        if(this.token) headers.Authorization = `Bearer ${this.token}`;
-        return fetch(this.base + path, { method:'POST', headers, body: form }).then(r=>r.json());
+<script>
+(function(){
+  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+  const ACCESS   = localStorage.getItem("access");
+  const H        = ACCESS ? { Authorization: `Bearer ${ACCESS}` } : {};
+  const q        = new URLSearchParams(location.search);
+
+  const abs = (u)=>{ if(!u) return ""; if(/^https?:\/\//.test(u)) return u; const root=API_BASE.replace(/\/api\/?$/,"" ); return root+(u.startsWith("/")?"":"/")+u; };
+  const $ = (sel)=>document.querySelector(sel);
+
+  const elCover  = document.querySelector('[data-page="cover"]');
+  const elAvatar = document.querySelector('[data-page="avatar"]');
+  const elName   = document.querySelector('[data-page="name"]');
+  const elCounts = document.querySelector('[data-page="counts"]');
+  const elBio    = document.querySelector('[data-page="bio"]');
+
+  const rsImg = document.querySelector('[data-rs="image"]');
+  const rsNm  = document.querySelector('[data-rs="name"]');
+  const rsCt  = document.querySelector('[data-rs="counts"]');
+
+  let currentCommunity = null;
+
+  async function resolveCommunityId(){
+    let id = q.get("community");
+    if(!id && q.get("channel")){
+      try{
+        const r = await fetch(`${API_BASE}/channels/${q.get("channel")}/`, {headers:H});
+        if(r.ok){ const ch = await r.json(); id = ch.community; }
+      }catch(e){}
+    }
+    if(!id){ id = localStorage.getItem("lastCommunityId"); }
+    if(!id){
+      try{
+        const r = await fetch(`${API_BASE}/communities/joined/`, {headers:H});
+        if(r.ok){ const arr = await r.json(); if(Array.isArray(arr) && arr.length) id = arr[0].id; }
+      }catch(e){}
+    }
+    return id || null;
+  }
+
+  function attachCommunityToMenuLinks(communityId){
+    document.querySelectorAll('.sidebar-menu a, a[data-keep-community]').forEach(a=>{
+      try{
+        const url = new URL(a.getAttribute('href'), location.origin);
+        url.searchParams.set('community', communityId);
+        a.setAttribute('href', url.pathname + "?" + url.searchParams.toString());
+      }catch(e){}
+    });
+  }
+
+  function renderSidebarHeader(comm){
+    if(rsImg) rsImg.src = abs(comm.background_banner || comm.profile_pic) || "";
+    if(rsNm)  rsNm.textContent = comm.name || "Community";
+    if(rsCt)  rsCt.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
+  }
+
+  function renderCommunityHeader(c){
+    currentCommunity = c;
+    if(elCover) elCover.src = abs(c.background_banner || c.profile_pic);
+    if(elAvatar) elAvatar.src = abs(c.profile_pic || c.background_banner);
+    if(elName) elName.textContent = c.name || "Community";
+    if(elCounts) elCounts.textContent = `${c.member_count||0} Members, ${c.online_count||0} Online`;
+    
+    if(elBio && c.bio){
+      const bioLines = c.bio.split('\n').filter(l => l.trim());
+      elBio.innerHTML = bioLines.map(line => {
+        const match = line.match(/^([⭐🤝📍].+?):\s*(.+)$/);
+        if(match){
+          return `<div class="bio-item"><span class="bio-item-icon">${match[1].charAt(0)}</span><span>${match[1].substring(1)}: ${match[2]}</span></div>`;
+        }
+        return `<p>${line}</p>`;
+      }).join('');
+    }
+
+    // Update bio footer
+    const createdBy = document.getElementById('createdBy');
+    const locationInfo = document.getElementById('locationInfo');
+    const createdDate = document.getElementById('createdDate');
+    
+    if(createdBy && c.created_by) createdBy.textContent = '@' + (c.created_by.username || 'Creator');
+    if(locationInfo && c.location) locationInfo.textContent = '📍 ' + c.location;
+    if(createdDate && c.created_at){
+      const date = new Date(c.created_at);
+      createdDate.textContent = '📅 Created ' + date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    // Right sidebar header (parity with chat.html)
+    renderSidebarHeader(c);
+
+    // Update invite link
+    if(c.invite_link){
+      const input = document.getElementById('inviteLink');
+      if(input){ input.value = `${window.location.origin}/invite/${c.invite_link}`; }
+    }
+  }
+
+  async function renderChannels(communityId){
+    const box = document.getElementById("channels-list");
+    if(!box) return;
+    try{
+      const r = await fetch(`${API_BASE}/channels/`, {headers:H});
+      const data = r.ok ? await r.json() : [];
+      const arr  = Array.isArray(data) ? data : (data.results||[]);
+      const chans = arr.filter(x => String(x.community) === String(communityId));
+
+      if (!chans.length){
+        box.innerHTML = `<div class="muted">No channels</div>`;
+        return;
+      }
+
+      box.innerHTML = chans.map(c => `
+        <a href="/chat/?community=${encodeURIComponent(communityId)}&channel=${encodeURIComponent(c.id)}"
+           class="channel-item" data-channel="${c.id}">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+          <span>${c.name}</span>
+        </a>
+      `).join("");
+    }catch(e){
+      box.innerHTML = `<div class="muted">No channels</div>`;
+    }
+  }
+
+  async function renderEvents(communityId){
+    const box = document.getElementById("events-list");
+    if(!box) return;
+    try{
+      const r = await fetch(`${API_BASE}/events/`, {headers:H});
+      const arr = r.ok ? await r.json() : [];
+      const evs = Array.isArray(arr)
+        ? arr.filter(e => e.community && String(e.community.id) === String(communityId))
+        : [];
+
+      if (!evs.length){
+        box.innerHTML = `<div class="muted">No events</div>`;
+        return;
+      }
+
+      box.innerHTML = evs.map(ev => `
+        <a href="/event-info/?community=${encodeURIComponent(communityId)}#${ev.id}"
+           class="event-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/>
+          </svg>
+          <span>${ev.name}</span>
+        </a>
+      `).join("");
+    }catch(e){ box.innerHTML = `<div class="muted">No events</div>`; }
+  }
+
+  window.toggleSection = function(section){
+    const toggle = document.querySelector(`.section-toggle[onclick*="${section}"]`);
+    const list = document.getElementById(`${section}-list`);
+    if(toggle && list){
+      toggle.classList.toggle('collapsed');
+      list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    }
+  };
+
+  async function boot(){
+    const communityId = await resolveCommunityId();
+    if(!communityId){ console.warn("Tidak menemukan community id"); return; }
+    localStorage.setItem("lastCommunityId", communityId);
+    attachCommunityToMenuLinks(communityId);
+
+    const r = await fetch(`${API_BASE}/communities/${communityId}/`, {headers:H});
+    if(!r.ok){ console.warn("Gagal load community"); return; }
+    const c = await r.json();
+    renderCommunityHeader(c);
+    await Promise.all([ renderChannels(communityId), renderEvents(communityId) ]);
+  }
+
+  boot().catch(console.warn);
+
+  // Modal Functions
+  window.openAddChannelModal = function(){
+    document.getElementById('addChannelModal').classList.add('active');
+  };
+
+  window.openEditBioModal = function(){
+    const modal = document.getElementById('editBioModal');
+    if(currentCommunity){
+      document.getElementById('communityName').value = currentCommunity.name || '';
+      document.getElementById('communityBio').value = currentCommunity.bio || '';
+      
+      // Set preview images if available
+      if(currentCommunity.background_banner){
+        const bannerPreview = document.getElementById('bannerPreview');
+        const bannerPlaceholder = document.getElementById('bannerPlaceholder');
+        bannerPreview.src = abs(currentCommunity.background_banner);
+        bannerPreview.style.display = 'block';
+        bannerPlaceholder.style.display = 'none';
+      }
+      
+      if(currentCommunity.profile_pic){
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        avatarPreview.src = abs(currentCommunity.profile_pic);
+        avatarPreview.style.display = 'block';
+        avatarPlaceholder.style.display = 'none';
       }
     }
+    modal.classList.add('active');
+  };
 
-    // About actions
-    async function loadCommunity(id){
-      const data = await API.req(`/communities/${id}/`);
-      // isi DOM (judul, bio, stats, gambar) dari 'data'
-    }
-    function joinCommunity(id){ return API.req(`/communities/${id}/join/`, {method:'POST'}); }
-    function leaveCommunity(id){ return API.req(`/communities/${id}/leave/`, {method:'POST'}); }
-    function addChannel(commId, payload){ return API.req(`/communities/${commId}/add_channel/`, {method:'POST', body: JSON.stringify(payload)}); }
-    function deleteCommunity(id){ return fetch(`/api/communities/${id}/`, { method:'DELETE', headers:{Authorization:`Bearer ${API.token}`} }); }
+  window.openLeaveConfirmModal = function(){
+    document.getElementById('leaveConfirmModal').classList.add('active');
+  };
 
-    function deleteCommunity(){
-      document.getElementById('deleteModal').classList.add('active');
-    }
+  window.openShareLinkModal = function(){
+    document.getElementById('shareLinkModal').classList.add('active');
+  };
 
-    function confirmDelete(){
-      closeModal('deleteModal');
-      alert('Community deleted successfully');
-      window.location.href='home.html';
-    }
+  window.closeModal = function(modalId){
+    document.getElementById(modalId).classList.remove('active');
+  };
 
-    function openChannelModal(){
-      document.getElementById('channelModal').classList.add('active');
-    }
-
-    function openEditBioModal(){
-      document.getElementById('editBioModal').classList.add('active');
-    }
-
-    function openInviteModal(){
-      document.getElementById('inviteModal').classList.add('active');
-    }
-
-    function closeModal(modalId){
-      document.getElementById(modalId).classList.remove('active');
-    }
-
-    function toggleSwitch(toggleId){
-      document.getElementById(toggleId).classList.toggle('active');
-    }
-
-    function copyInviteLink(){
-      const input = document.querySelector('.invite-link-input');
-      input.select();
-      document.execCommand('copy');
-      alert('Link copied to clipboard!');
-    }
-
-    // Close modal when clicking outside
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-      overlay.addEventListener('click', function(e){
-        if(e.target === this){
-          this.classList.remove('active');
-        }
-      });
+  // Close modal when clicking overlay
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e){
+      if(e.target === this){
+        this.classList.remove('active');
+      }
     });
-  </script>
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+        modal.classList.remove('active');
+      });
+    }
+  });
+
+  // Toggle Switch
+  window.toggleSwitch = function(id){
+    document.getElementById(id).classList.toggle('active');
+  };
+
+  // Image Preview
+  window.previewImage = function(inputId, previewId, placeholderId){
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    const placeholder = document.getElementById(placeholderId);
+    
+    if(input.files && input.files[0]){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  // Add Channel
+  window.addChannel = async function(){
+    const channelName = document.getElementById('channelName').value;
+    const isRestricted = document.getElementById('restrictedToggle').classList.contains('active');
+    
+    if(!channelName.trim()){
+      alert('Please enter a channel name');
+      return;
+    }
+
+    if(!currentCommunity){
+      alert('Community not loaded');
+      return;
+    }
+
+    try{
+      const response = await fetch(`${API_BASE}/channels/`, {
+        method: 'POST',
+        headers: {
+          ...H,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: channelName,
+          community: currentCommunity.id,
+          is_restricted: isRestricted,
+          channel_type: isRestricted ? 'restricted' : 'general'
+        })
+      });
+
+      if(response.ok){
+        alert('Channel added successfully!');
+        closeModal('addChannelModal');
+        document.getElementById('channelName').value = '';
+        document.getElementById('restrictedToggle').classList.remove('active');
+        await renderChannels(currentCommunity.id);
+      } else {
+        const error = await response.json();
+        alert('Failed to add channel: ' + JSON.stringify(error));
+      }
+    } catch(e){
+      console.error(e);
+      alert('Error adding channel');
+    }
+  };
+
+  // Save Bio
+  window.saveBio = async function(){
+    const communityName = document.getElementById('communityName').value;
+    const communityBio = document.getElementById('communityBio').value;
+
+    if(!currentCommunity){
+      alert('Community not loaded');
+      return;
+    }
+
+    if(!communityName.trim()){
+      alert('Please enter a community name');
+      return;
+    }
+
+    try{
+      const formData = new FormData();
+      formData.append('name', communityName);
+      formData.append('bio', communityBio);
+      
+      const bannerInput = document.getElementById('bannerInput');
+      if(bannerInput.files[0]){
+        formData.append('background_banner', bannerInput.files[0]);
+      }
+      
+      const avatarInput = document.getElementById('avatarInput');
+      if(avatarInput.files[0]){
+        formData.append('profile_pic', avatarInput.files[0]);
+      }
+
+      const response = await fetch(`${API_BASE}/communities/${currentCommunity.id}/`, {
+        method: 'PATCH',
+        headers: H,
+        body: formData
+      });
+
+      if(response.ok){
+        alert('Community updated successfully!');
+        closeModal('editBioModal');
+        const updated = await response.json();
+        renderCommunityHeader(updated);
+      } else {
+        const error = await response.json();
+        alert('Failed to update community: ' + JSON.stringify(error));
+      }
+    } catch(e){
+      console.error(e);
+      alert('Error updating community');
+    }
+  };
+
+  // Leave Community
+  window.leaveCommunity = async function(){
+    if(!currentCommunity){
+      alert('Community not loaded');
+      return;
+    }
+
+    try{
+      const response = await fetch(`${API_BASE}/communities/${currentCommunity.id}/leave/`, {
+        method: 'POST',
+        headers: H
+      });
+
+      if(response.ok){
+        alert('You have left the community');
+        closeModal('leaveConfirmModal');
+        window.location.href = '/';
+      } else {
+        alert('Failed to leave community');
+      }
+    } catch(e){
+      console.error(e);
+      alert('Error leaving community');
+    }
+  };
+
+  // Copy Invite Link
+  window.copyInviteLink = function(){
+    const input = document.getElementById('inviteLink');
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile devices
+    
+    // Modern way
+    navigator.clipboard.writeText(input.value).then(function(){
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    }).catch(function(){
+      // Fallback
+      document.execCommand('copy');
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    });
+  };
+})();
+</script>
 </body>
 </html>

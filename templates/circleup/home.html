@@ -602,24 +602,19 @@
       `).join("");
       joinMore.style.display = "block";
 
-      joinList.addEventListener("click", async (e)=>{
-        const btn = e.target.closest(".btn-join");
-        if(!btn || btn.disabled) return;
+      box.onclick = async (e) => {
+        const btn = e.target.closest(".join-btn"); if (!btn) return;
         btn.disabled = true;
         try{
-          const response = await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, {
-            method:"POST",
-            headers:authHeaders
-          });
-          if (!response.ok) throw new Error('Failed to join');
+          await fetch(`${API_BASE}/communities/${btn.dataset.id}/join/`, { method:"POST", headers:authHeaders });
           btn.textContent = "Joined ✓";
-          btn.style.background = "#4caf50";
-        }catch(err){
+        }catch{
           btn.disabled = false;
           alert("Gagal join komunitas.");
         }
-      });
+      };
     }
+    
   </script>
 </body>
 </html>
