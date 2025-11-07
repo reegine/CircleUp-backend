@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <title>CircleUP – About</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<<<<<<< HEAD
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
 :root{
@@ -358,11 +359,304 @@ body{
 /* Sections */
 .sidebar-section{
   margin-top:24px;
+=======
+  <style>
+/* ====== CircleUP – About (redesigned to match Figma) ====== */
+
+/* FONT + RESET */
+:root{
+  --bg:#f5f5f5;
+  --ink:#333;
+  --card:#fff;
+  --line:#e0e0e0;
+  --line-soft:#eee;
+  --muted:#888;
+  --accent:#e59d2c;
+  --sidebar-bg:#f8f8f8;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  display:flex;
+  overflow:hidden;
+}
+
+/* ===== Layout ===== */
+.layout{display:flex;min-height:100vh;overflow:hidden;width:100%}
+.main{flex:1;display:flex;gap:0;padding:0;background:var(--bg);overflow:hidden}
+.content{
+  flex:1;
+  min-width:0;
+  overflow-y:auto;
+  padding:32px 48px;
+  background:#fff;
+}
+
+/* Right sidebar */
+.right-sidebar{
+  flex:0 0 340px;
+  width:340px;
+  height:100vh;
+  overflow-y:auto;
+  background:var(--sidebar-bg);
+  border-left:1px solid var(--line-soft);
+  padding:20px;
+  position:sticky;
+  top:0;
+}
+
+.community-header{
+  text-align:center;
+  margin-bottom:24px;
+}
+.community-cover{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:12px;
+  background:#eaeaea;
+  display:block;
+  margin-bottom:12px;
+}
+.community-name{
+  font-weight:700;
+  font-size:16px;
+  margin-bottom:4px;
+  color:#111;
+}
+.community-stats{
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* ===== Main Content Area ===== */
+.about-header{
+  position:relative;
+  margin:-32px -48px 32px;
+  height:320px;
+  overflow:hidden;
+}
+
+img[data-page="cover"]{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.about-header::after{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:150px;
+  background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  pointer-events:none;
+}
+
+.community-info-overlay{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:24px 48px;
+  z-index:2;
+  display:flex;
+  align-items:flex-end;
+  gap:16px;
+}
+
+.community-avatar{
+  width:100px;
+  height:100px;
+  border-radius:16px;
+  object-fit:cover;
+  border:4px solid #fff;
+  background:#eaeaea;
+  flex-shrink:0;
+}
+
+.community-title-area{
+  flex:1;
+  color:#fff;
+  padding-bottom:8px;
+}
+
+h2[data-page="name"]{
+  font-size:32px;
+  font-weight:700;
+  margin:0 0 4px;
+  color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+
+[data-page="counts"]{
+  font-size:14px;
+  color:rgba(255,255,255,0.9);
+  text-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+
+.action-buttons{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding-bottom:8px;
+}
+
+.btn-action{
+  padding:10px 20px;
+  border-radius:24px;
+  border:none;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:all .2s;
+  font-family:'Poppins',sans-serif;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+}
+
+.btn-primary:hover{
+  background:#d18b1f;
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(229,157,44,0.3);
+}
+
+.btn-secondary{
+  background:#555;
+  color:#fff;
+}
+
+.btn-secondary:hover{
+  background:#444;
+  transform:translateY(-1px);
+}
+
+.btn-icon{
+  background:#fff;
+  color:#333;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  font-size:18px;
+}
+
+.btn-icon:hover{
+  background:#f5f5f5;
+  transform:translateY(-1px);
+}
+
+/* ===== BIO Section ===== */
+article{
+  margin-top:32px;
+  max-width:800px;
+}
+
+article h3{
+  font-size:18px;
+  font-weight:700;
+  margin:0 0 16px;
+  color:#222;
+}
+
+[data-page="bio"]{
+  color:#444;
+  line-height:1.7;
+  font-size:15px;
+}
+
+.bio-content{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.bio-item{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:15px;
+  line-height:1.6;
+}
+
+.bio-item-icon{
+  flex-shrink:0;
+  margin-top:2px;
+}
+
+.bio-footer{
+  margin-top:24px;
+  padding-top:20px;
+  border-top:1px solid var(--line-soft);
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* ===== Sidebar Menu & Lists ===== */
+.sidebar-menu{
+  list-style:none;
+  margin:0 0 20px 0;
+  padding:0;
+}
+
+.sidebar-menu-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:10px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+  font-size:14px;
+  background:transparent;
+  border:none;
+  transition:background .2s;
+  margin-bottom:4px;
+}
+
+.sidebar-menu-item:hover{
+  background:rgba(0,0,0,0.05);
+}
+
+.sidebar-menu-item.active{
+  background:var(--accent);
+  color:#fff;
+}
+
+.sidebar-menu-item::before{
+  content:'ℹ️';
+  font-size:16px;
+}
+
+.sidebar-menu-item[href*="event"]::before{content:'📅'}
+.sidebar-menu-item[href*="feeds"]::before{content:'📰'}
+.sidebar-menu-item[href*="members"]::before{content:'👥'}
+
+.sidebar-section{
+  margin-top:20px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .section-toggle{
   display:flex;
   align-items:center;
+<<<<<<< HEAD
   gap:10px;
   cursor:pointer;
   color:#666;
@@ -372,6 +666,16 @@ body{
   letter-spacing:0.5px;
   text-transform:uppercase;
   user-select:none;
+=======
+  gap:8px;
+  cursor:pointer;
+  color:#999;
+  padding:8px 4px;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .section-toggle::before{
@@ -384,14 +688,21 @@ body{
   transform:rotate(-90deg);
 }
 
+<<<<<<< HEAD
 .section-list{
   margin-top:10px;
+=======
+#channels-list,
+#events-list{
+  margin-top:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .channel-item,
 .event-item{
   display:flex;
   align-items:center;
+<<<<<<< HEAD
   gap:12px;
   padding:12px 14px;
   border-radius:10px;
@@ -399,6 +710,15 @@ body{
   color:#333;
   background:transparent;
   margin-bottom:6px;
+=======
+  gap:10px;
+  padding:10px 12px;
+  border-radius:8px;
+  text-decoration:none;
+  color:#333;
+  background:transparent;
+  margin-bottom:4px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   transition:background .2s;
   font-weight:500;
   font-size:14px;
@@ -415,6 +735,7 @@ body{
   font-weight:600;
 }
 
+<<<<<<< HEAD
 .item-icon{
   width:18px;
   height:18px;
@@ -423,6 +744,9 @@ body{
 }
 
 /* Modals */
+=======
+/* ===== Modal/Popup Styles ===== */
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 .modal-overlay{
   display:none;
   position:fixed;
@@ -430,8 +754,13 @@ body{
   left:0;
   right:0;
   bottom:0;
+<<<<<<< HEAD
   background:rgba(0,0,0,0.6);
   z-index:10000;
+=======
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   align-items:center;
   justify-content:center;
 }
@@ -442,45 +771,85 @@ body{
 
 .modal-content{
   background:#fff;
+<<<<<<< HEAD
   border-radius:20px;
   width:90%;
   max-width:540px;
   max-height:90vh;
   overflow-y:auto;
   box-shadow:0 10px 40px rgba(0,0,0,0.3);
+=======
+  border-radius:16px;
+  width:90%;
+  max-width:500px;
+  max-height:90vh;
+  overflow-y:auto;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   animation:modalSlideIn 0.3s ease;
 }
 
 @keyframes modalSlideIn{
+<<<<<<< HEAD
   from{opacity:0;transform:translateY(30px)scale(0.95)}
   to{opacity:1;transform:translateY(0)scale(1)}
+=======
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .modal-header{
   display:flex;
   align-items:center;
   justify-content:space-between;
+<<<<<<< HEAD
   padding:24px 28px;
+=======
+  padding:20px 24px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   border-bottom:1px solid var(--line-soft);
 }
 
 .modal-title{
+<<<<<<< HEAD
   font-size:22px;
+=======
+  font-size:20px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   font-weight:700;
   color:#222;
   display:flex;
   align-items:center;
+<<<<<<< HEAD
   gap:12px;
+=======
+  gap:10px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .modal-close{
   background:none;
   border:none;
+<<<<<<< HEAD
   font-size:28px;
   cursor:pointer;
   color:#666;
   width:36px;
   height:36px;
+=======
+  font-size:24px;
+  cursor:pointer;
+  color:#666;
+  width:32px;
+  height:32px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   display:flex;
   align-items:center;
   justify-content:center;
@@ -494,36 +863,60 @@ body{
 }
 
 .modal-body{
+<<<<<<< HEAD
   padding:28px;
 }
 
 .modal-footer{
   padding:20px 28px;
+=======
+  padding:24px;
+}
+
+.modal-footer{
+  padding:20px 24px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   border-top:1px solid var(--line-soft);
   display:flex;
   justify-content:flex-end;
   gap:12px;
 }
 
+<<<<<<< HEAD
 /* Forms */
 .form-group{
   margin-bottom:24px;
+=======
+/* Form Styles */
+.form-group{
+  margin-bottom:20px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .form-label{
   display:block;
   font-weight:600;
   font-size:14px;
+<<<<<<< HEAD
   margin-bottom:10px;
+=======
+  margin-bottom:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   color:#333;
 }
 
 .form-input,
 .form-textarea{
   width:100%;
+<<<<<<< HEAD
   padding:14px 18px;
   border:1px solid var(--line);
   border-radius:10px;
+=======
+  padding:12px 16px;
+  border:1px solid var(--line);
+  border-radius:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   font-family:'Poppins',sans-serif;
   font-size:14px;
   transition:all .2s;
@@ -538,18 +931,32 @@ body{
 
 .form-textarea{
   resize:vertical;
+<<<<<<< HEAD
   min-height:140px;
 }
 
 /* Toggle */
+=======
+  min-height:120px;
+}
+
+/* Toggle Switch */
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 .toggle-container{
   display:flex;
   align-items:center;
   justify-content:space-between;
+<<<<<<< HEAD
   padding:18px;
   background:#f9f9f9;
   border-radius:12px;
   margin-bottom:14px;
+=======
+  padding:16px;
+  background:#f9f9f9;
+  border-radius:8px;
+  margin-bottom:12px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .toggle-label{
@@ -557,22 +964,38 @@ body{
   font-weight:600;
   color:#333;
   display:flex;
+<<<<<<< HEAD
   flex-direction:column;
   gap:4px;
+=======
+  align-items:center;
+  gap:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .toggle-description{
   font-size:12px;
   color:#666;
+<<<<<<< HEAD
   font-weight:400;
+=======
+  margin-top:4px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .toggle-switch{
   position:relative;
+<<<<<<< HEAD
   width:52px;
   height:28px;
   background:#ccc;
   border-radius:28px;
+=======
+  width:48px;
+  height:26px;
+  background:#ccc;
+  border-radius:26px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   cursor:pointer;
   transition:background .3s;
 }
@@ -586,24 +1009,39 @@ body{
   position:absolute;
   top:3px;
   left:3px;
+<<<<<<< HEAD
   width:22px;
   height:22px;
+=======
+  width:20px;
+  height:20px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   background:#fff;
   border-radius:50%;
   transition:left .3s;
 }
 
 .toggle-switch.active::after{
+<<<<<<< HEAD
   left:27px;
+=======
+  left:25px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 /* Image Upload */
 .image-upload-area{
   position:relative;
   width:100%;
+<<<<<<< HEAD
   height:220px;
   border:2px dashed var(--line);
   border-radius:16px;
+=======
+  height:200px;
+  border:2px dashed var(--line);
+  border-radius:12px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   display:flex;
   align-items:center;
   justify-content:center;
@@ -619,7 +1057,11 @@ body{
 }
 
 .image-upload-icon{
+<<<<<<< HEAD
   font-size:52px;
+=======
+  font-size:48px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   color:#999;
 }
 
@@ -631,10 +1073,17 @@ body{
 
 .avatar-upload-area{
   position:relative;
+<<<<<<< HEAD
   width:130px;
   height:130px;
   border:2px dashed var(--line);
   border-radius:16px;
+=======
+  width:120px;
+  height:120px;
+  border:2px dashed var(--line);
+  border-radius:12px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   display:flex;
   align-items:center;
   justify-content:center;
@@ -642,35 +1091,60 @@ body{
   transition:all .2s;
   overflow:hidden;
   background:#f9f9f9;
+<<<<<<< HEAD
   margin-bottom:20px;
+=======
+  margin-bottom:16px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
 
 .avatar-upload-area:hover{
   border-color:var(--accent);
 }
 
+<<<<<<< HEAD
 /* Copy Link */
 .copy-link-container{
   display:flex;
   gap:10px;
+=======
+/* Copy Link Box */
+.copy-link-container{
+  display:flex;
+  gap:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   align-items:center;
 }
 
 .copy-input{
   flex:1;
+<<<<<<< HEAD
   padding:14px 18px;
   border:1px solid var(--line);
   border-radius:10px;
+=======
+  padding:12px 16px;
+  border:1px solid var(--line);
+  border-radius:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   font-size:14px;
   background:#f9f9f9;
 }
 
 .btn-copy{
+<<<<<<< HEAD
   padding:14px 28px;
   background:var(--accent);
   color:#fff;
   border:none;
   border-radius:10px;
+=======
+  padding:12px 24px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   font-weight:600;
   cursor:pointer;
   transition:all .2s;
@@ -681,6 +1155,7 @@ body{
   background:#d18b1f;
 }
 
+<<<<<<< HEAD
 /* Confirmation */
 .confirm-dialog{
   text-align:center;
@@ -706,6 +1181,33 @@ body{
   border-radius:10px;
   font-weight:600;
   font-size:15px;
+=======
+/* Confirmation Dialog */
+.confirm-dialog{
+  text-align:center;
+  padding:20px;
+}
+
+.confirm-icon{
+  font-size:48px;
+  margin-bottom:16px;
+}
+
+.confirm-message{
+  font-size:16px;
+  color:#666;
+  line-height:1.5;
+  margin-bottom:24px;
+}
+
+/* Button Styles */
+.btn-modal{
+  padding:12px 24px;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  font-size:14px;
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   cursor:pointer;
   transition:all .2s;
   font-family:'Poppins',sans-serif;
@@ -738,13 +1240,21 @@ body{
   background:#5a6268;
 }
 
+<<<<<<< HEAD
 .muted{
+=======
+/* ===== Utilities ===== */
+ a{color:inherit}
+ img{max-width:100%;display:block}
+ .muted{
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   color:#9aa6b2;
   font-size:13px;
   padding:12px 16px;
   font-style:italic;
 }
 
+<<<<<<< HEAD
 @media (max-width:1024px){
   .layout{margin-left:0}
   .left-rail,
@@ -757,11 +1267,23 @@ body{
   .community-title{font-size:28px}
   .action-buttons{width:100%;justify-content:flex-start}
   .bio-section{padding:28px}
+=======
+/* ===== Responsive ===== */
+@media (max-width:1024px){
+  .right-sidebar{display:none}
+  .content{padding:20px}
+  .about-header{margin:-20px -20px 24px;height:250px}
+  .community-info-overlay{padding:20px;flex-wrap:wrap}
+  .community-avatar{width:80px;height:80px}
+  h2[data-page="name"]{font-size:24px}
+  .action-buttons{width:100%;justify-content:flex-start}
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 }
   </style>
 </head>
 <body>
   <div class="layout">
+<<<<<<< HEAD
     <!-- Left Rail: Communities List -->
     <aside class="left-rail" id="leftRail">
       <div style="color:#888;padding:6px">Loading communities...</div>
@@ -804,19 +1326,59 @@ body{
                   </svg>
                 </button>
               </div>
+=======
+    <main class="main">
+      <section class="content">
+        <!-- HEADER with Hero Banner -->
+        <div class="about-header">
+          <img data-page="cover" class="community-cover" alt="cover"/>
+          
+          <div class="community-info-overlay">
+            <img class="community-avatar" data-page="avatar" alt="Community avatar"/>
+            
+            <div class="community-title-area">
+              <h2 data-page="name">Community Name</h2>
+              <div data-page="counts" class="community-stats">0 Members, 0 Online</div>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn-action btn-icon" onclick="openAddChannelModal()" title="Add Channel">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+              <button class="btn-action btn-primary" onclick="openEditBioModal()">Edit Bio</button>
+              <button class="btn-action btn-secondary" id="joinedBtn" onclick="openLeaveConfirmModal()">Joined</button>
+              <button class="btn-action btn-icon" onclick="openShareLinkModal()" title="Share Link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </button>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
             </div>
           </div>
         </div>
 
+<<<<<<< HEAD
         <!-- Bio Section -->
         <article class="bio-section">
           <h3>About</h3>
           <div id="bioContent" class="bio-content">
             <p>Community description will appear here.</p>
+=======
+        <!-- BIO/ABOUT -->
+        <article>
+          <h3>About</h3>
+          <div data-page="bio" class="bio-content">
+            <p>Deskripsi/bio komunitas akan tampil di sini.</p>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
           </div>
           
           <div class="bio-footer">
             <div>Created by <strong id="createdBy">@Creator</strong></div>
+<<<<<<< HEAD
             <div>
               <span id="locationInfo">📍 Location</span> • 
               <span id="createdDate">📅 Created Date</span>
@@ -830,10 +1392,14 @@ body{
             <button class="btn-action btn-danger" onclick="openDeleteCommunityModal()">
               Delete Community
             </button>
+=======
+            <div><span id="locationInfo">📍 Location</span> • <span id="createdDate">📅 Created [Date]</span></div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
           </div>
         </article>
       </section>
 
+<<<<<<< HEAD
       <!-- Right Sidebar -->
       <aside class="right-sidebar">
         <div class="sidebar-header">
@@ -875,32 +1441,64 @@ body{
               <span>Members</span>
             </a>
           </li>
+=======
+      <!-- RIGHT SIDEBAR -->
+      <aside id="rightSidebar" class="right-sidebar">
+        <div class="community-header">
+          <img data-rs="image" class="community-cover" alt="Community banner">
+          <div data-rs="name" class="community-name">Community</div>
+          <div data-rs="counts" class="community-stats"></div>
+        </div>
+        
+        <ul class="sidebar-menu">
+          <li><a href="/about/" class="sidebar-menu-item active">About</a></li>
+          <li><a href="/event-info/" class="sidebar-menu-item">Event Info</a></li>
+          <li><a href="/feeds/" class="sidebar-menu-item">Feeds</a></li>
+          <li><a href="/members/" class="sidebar-menu-item">Members</a></li>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         </ul>
         
         <div class="sidebar-section">
           <div class="section-toggle" onclick="toggleSection('channels')">Channels</div>
+<<<<<<< HEAD
           <div id="channels-list" class="section-list"></div>
+=======
+          <div id="channels-list"></div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         </div>
         
         <div class="sidebar-section">
           <div class="section-toggle" onclick="toggleSection('events')">Events</div>
+<<<<<<< HEAD
           <div id="events-list" class="section-list"></div>
+=======
+          <div id="events-list"></div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         </div>
       </aside>
     </main>
   </div>
 
+<<<<<<< HEAD
   <!-- Modal: Add Channel -->
   <div id="addChannelModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">➕ Add Channel</div>
+=======
+  <!-- Modal 1: Add Channel -->
+  <div id="addChannelModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Add Channel</div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         <button class="modal-close" onclick="closeModal('addChannelModal')">✕</button>
       </div>
       <div class="modal-body">
         <form id="addChannelForm" onsubmit="event.preventDefault(); addChannel();">
           <div class="form-group">
             <label class="form-label">Channel Name</label>
+<<<<<<< HEAD
             <input type="text" class="form-input" id="channelName" placeholder="e.g., general-chat" required>
           </div>
           
@@ -913,23 +1511,46 @@ body{
             <div class="toggle-label">
               <span>🔒 Restricted Channel</span>
               <span class="toggle-description">Only admins can view this channel</span>
+=======
+            <input type="text" class="form-input" id="channelName" placeholder="Enter channel name" required>
+          </div>
+          
+          <div class="toggle-container">
+            <div>
+              <div class="toggle-label">
+                <span>🔒</span> Restricted Channel
+              </div>
+              <div class="toggle-description">Only Creator and admin will be able to view this channel</div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
             </div>
             <div class="toggle-switch" id="restrictedToggle" onclick="toggleSwitch('restrictedToggle')"></div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
+<<<<<<< HEAD
         <button class="btn-modal btn-modal-secondary" onclick="closeModal('addChannelModal')">Cancel</button>
         <button class="btn-modal btn-modal-primary" onclick="addChannel()">Add Channel</button>
+=======
+        <button class="btn-modal btn-modal-primary" onclick="addChannel()">Add</button>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Modal: Edit Bio -->
   <div id="editBioModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">✏️ Edit Community Bio</div>
+=======
+  <!-- Modal 2: Edit Bio -->
+  <div id="editBioModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Edit Community Bio</div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         <button class="modal-close" onclick="closeModal('editBioModal')">✕</button>
       </div>
       <div class="modal-body">
@@ -950,7 +1571,11 @@ body{
             <div class="avatar-upload-area" onclick="document.getElementById('avatarInput').click()">
               <img id="avatarPreview" class="image-preview" style="display:none" alt="Avatar">
               <div id="avatarPlaceholder">
+<<<<<<< HEAD
                 <div class="image-upload-icon" style="font-size:36px">📷</div>
+=======
+                <div class="image-upload-icon" style="font-size:32px">📷</div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
               </div>
             </div>
             <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewImage('avatarInput', 'avatarPreview', 'avatarPlaceholder')">
@@ -958,6 +1583,7 @@ body{
           
           <div class="form-group">
             <label class="form-label">Community Name</label>
+<<<<<<< HEAD
             <input type="text" class="form-input" id="communityName" placeholder="Community name" required>
           </div>
           
@@ -969,19 +1595,37 @@ body{
           <div class="form-group">
             <label class="form-label">Location</label>
             <input type="text" class="form-input" id="communityLocation" placeholder="e.g., Jakarta, Indonesia">
+=======
+            <input type="text" class="form-input" id="communityName" placeholder="Enter community name" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            <textarea class="form-textarea" id="communityBio" placeholder="Enter community bio"></textarea>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
           </div>
         </form>
       </div>
       <div class="modal-footer">
+<<<<<<< HEAD
         <button class="btn-modal btn-modal-secondary" onclick="closeModal('editBioModal')">Cancel</button>
         <button class="btn-modal btn-modal-primary" onclick="saveBio()">Save Changes</button>
+=======
+        <button class="btn-modal btn-modal-primary" onclick="saveBio()">Save</button>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Modal: Leave Community -->
   <div id="leaveConfirmModal" class="modal-overlay">
     <div class="modal-content" style="max-width:440px">
+=======
+  <!-- Modal 3: Leave Community Confirmation -->
+  <div id="leaveConfirmModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:400px">
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
       <div class="modal-header">
         <div class="modal-title">Leave Community</div>
         <button class="modal-close" onclick="closeModal('leaveConfirmModal')">✕</button>
@@ -990,17 +1634,26 @@ body{
         <div class="confirm-dialog">
           <div class="confirm-icon">⚠️</div>
           <div class="confirm-message">
+<<<<<<< HEAD
             Are you sure you want to leave this community? You'll need an invite to rejoin.
+=======
+            Are you sure you want to leave this community?
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn-modal btn-modal-secondary" onclick="closeModal('leaveConfirmModal')">Cancel</button>
+<<<<<<< HEAD
         <button class="btn-modal btn-modal-danger" onclick="leaveCommunity()">Leave</button>
+=======
+        <button class="btn-modal btn-modal-danger" onclick="leaveCommunity()">Yes, Leave</button>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- Modal: Delete Community -->
   <div id="deleteCommunityModal" class="modal-overlay">
     <div class="modal-content" style="max-width:440px">
@@ -1028,11 +1681,22 @@ body{
     <div class="modal-content" style="max-width:520px">
       <div class="modal-header">
         <div class="modal-title">🔗 Share Invite Link</div>
+=======
+  <!-- Modal 4: Share Invite Link -->
+  <div id="shareLinkModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:500px">
+      <div class="modal-header">
+        <div class="modal-title">Share community invite link</div>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         <button class="modal-close" onclick="closeModal('shareLinkModal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="copy-link-container">
+<<<<<<< HEAD
           <input type="text" class="copy-input" id="inviteLink" readonly value="">
+=======
+          <input type="text" class="copy-input" id="inviteLink" readonly value="https://blabla.com">
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
           <button class="btn-copy" onclick="copyInviteLink()">Copy</button>
         </div>
       </div>
@@ -1040,6 +1704,7 @@ body{
   </div>
 
 <script>
+<<<<<<< HEAD
 // ===== Configuration =====
 const API_BASE = typeof localStorage !== 'undefined' && localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
 const ACCESS = typeof localStorage !== 'undefined' && localStorage.getItem("access");
@@ -1513,6 +2178,414 @@ document.addEventListener('click', (e) => {
 
 // Start the app
 init();
+=======
+(function(){
+  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+  const ACCESS   = localStorage.getItem("access");
+  const H        = ACCESS ? { Authorization: `Bearer ${ACCESS}` } : {};
+  const q        = new URLSearchParams(location.search);
+
+  const abs = (u)=>{ if(!u) return ""; if(/^https?:\/\//.test(u)) return u; const root=API_BASE.replace(/\/api\/?$/,"" ); return root+(u.startsWith("/")?"":"/")+u; };
+  const $ = (sel)=>document.querySelector(sel);
+
+  const elCover  = document.querySelector('[data-page="cover"]');
+  const elAvatar = document.querySelector('[data-page="avatar"]');
+  const elName   = document.querySelector('[data-page="name"]');
+  const elCounts = document.querySelector('[data-page="counts"]');
+  const elBio    = document.querySelector('[data-page="bio"]');
+
+  const rsImg = document.querySelector('[data-rs="image"]');
+  const rsNm  = document.querySelector('[data-rs="name"]');
+  const rsCt  = document.querySelector('[data-rs="counts"]');
+
+  let currentCommunity = null;
+
+  async function resolveCommunityId(){
+    let id = q.get("community");
+    if(!id && q.get("channel")){
+      try{
+        const r = await fetch(`${API_BASE}/channels/${q.get("channel")}/`, {headers:H});
+        if(r.ok){ const ch = await r.json(); id = ch.community; }
+      }catch(e){}
+    }
+    if(!id){ id = localStorage.getItem("lastCommunityId"); }
+    if(!id){
+      try{
+        const r = await fetch(`${API_BASE}/communities/joined/`, {headers:H});
+        if(r.ok){ const arr = await r.json(); if(Array.isArray(arr) && arr.length) id = arr[0].id; }
+      }catch(e){}
+    }
+    return id || null;
+  }
+
+  function attachCommunityToMenuLinks(communityId){
+    document.querySelectorAll('.sidebar-menu a, a[data-keep-community]').forEach(a=>{
+      try{
+        const url = new URL(a.getAttribute('href'), location.origin);
+        url.searchParams.set('community', communityId);
+        a.setAttribute('href', url.pathname + "?" + url.searchParams.toString());
+      }catch(e){}
+    });
+  }
+
+  function renderSidebarHeader(comm){
+    if(rsImg) rsImg.src = abs(comm.background_banner || comm.profile_pic) || "";
+    if(rsNm)  rsNm.textContent = comm.name || "Community";
+    if(rsCt)  rsCt.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
+  }
+
+  function renderCommunityHeader(c){
+    currentCommunity = c;
+    if(elCover) elCover.src = abs(c.background_banner || c.profile_pic);
+    if(elAvatar) elAvatar.src = abs(c.profile_pic || c.background_banner);
+    if(elName) elName.textContent = c.name || "Community";
+    if(elCounts) elCounts.textContent = `${c.member_count||0} Members, ${c.online_count||0} Online`;
+    
+    if(elBio && c.bio){
+      const bioLines = c.bio.split('\n').filter(l => l.trim());
+      elBio.innerHTML = bioLines.map(line => {
+        const match = line.match(/^([⭐🤝📍].+?):\s*(.+)$/);
+        if(match){
+          return `<div class="bio-item"><span class="bio-item-icon">${match[1].charAt(0)}</span><span>${match[1].substring(1)}: ${match[2]}</span></div>`;
+        }
+        return `<p>${line}</p>`;
+      }).join('');
+    }
+
+    // Update bio footer
+    const createdBy = document.getElementById('createdBy');
+    const locationInfo = document.getElementById('locationInfo');
+    const createdDate = document.getElementById('createdDate');
+    
+    if(createdBy && c.created_by) createdBy.textContent = '@' + (c.created_by.username || 'Creator');
+    if(locationInfo && c.location) locationInfo.textContent = '📍 ' + c.location;
+    if(createdDate && c.created_at){
+      const date = new Date(c.created_at);
+      createdDate.textContent = '📅 Created ' + date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    // Right sidebar header (parity with chat.html)
+    renderSidebarHeader(c);
+
+    // Update invite link
+    if(c.invite_link){
+      const input = document.getElementById('inviteLink');
+      if(input){ input.value = `${window.location.origin}/invite/${c.invite_link}`; }
+    }
+  }
+
+  async function renderChannels(communityId){
+    const box = document.getElementById("channels-list");
+    if(!box) return;
+    try{
+      const r = await fetch(`${API_BASE}/channels/`, {headers:H});
+      const data = r.ok ? await r.json() : [];
+      const arr  = Array.isArray(data) ? data : (data.results||[]);
+      const chans = arr.filter(x => String(x.community) === String(communityId));
+
+      if (!chans.length){
+        box.innerHTML = `<div class="muted">No channels</div>`;
+        return;
+      }
+
+      box.innerHTML = chans.map(c => `
+        <a href="/chat/?community=${encodeURIComponent(communityId)}&channel=${encodeURIComponent(c.id)}"
+           class="channel-item" data-channel="${c.id}">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+          <span>${c.name}</span>
+        </a>
+      `).join("");
+    }catch(e){
+      box.innerHTML = `<div class="muted">No channels</div>`;
+    }
+  }
+
+  async function renderEvents(communityId){
+    const box = document.getElementById("events-list");
+    if(!box) return;
+    try{
+      const r = await fetch(`${API_BASE}/events/`, {headers:H});
+      const arr = r.ok ? await r.json() : [];
+      const evs = Array.isArray(arr)
+        ? arr.filter(e => e.community && String(e.community.id) === String(communityId))
+        : [];
+
+      if (!evs.length){
+        box.innerHTML = `<div class="muted">No events</div>`;
+        return;
+      }
+
+      box.innerHTML = evs.map(ev => `
+        <a href="/event-info/?community=${encodeURIComponent(communityId)}#${ev.id}"
+           class="event-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/>
+          </svg>
+          <span>${ev.name}</span>
+        </a>
+      `).join("");
+    }catch(e){ box.innerHTML = `<div class="muted">No events</div>`; }
+  }
+
+  window.toggleSection = function(section){
+    const toggle = document.querySelector(`.section-toggle[onclick*="${section}"]`);
+    const list = document.getElementById(`${section}-list`);
+    if(toggle && list){
+      toggle.classList.toggle('collapsed');
+      list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    }
+  };
+
+  async function boot(){
+    const communityId = await resolveCommunityId();
+    if(!communityId){ console.warn("Tidak menemukan community id"); return; }
+    localStorage.setItem("lastCommunityId", communityId);
+    attachCommunityToMenuLinks(communityId);
+
+    const r = await fetch(`${API_BASE}/communities/${communityId}/`, {headers:H});
+    if(!r.ok){ console.warn("Gagal load community"); return; }
+    const c = await r.json();
+    renderCommunityHeader(c);
+    await Promise.all([ renderChannels(communityId), renderEvents(communityId) ]);
+  }
+
+  boot().catch(console.warn);
+
+  // Modal Functions
+  window.openAddChannelModal = function(){
+    document.getElementById('addChannelModal').classList.add('active');
+  };
+
+  window.openEditBioModal = function(){
+    const modal = document.getElementById('editBioModal');
+    if(currentCommunity){
+      document.getElementById('communityName').value = currentCommunity.name || '';
+      document.getElementById('communityBio').value = currentCommunity.bio || '';
+      
+      // Set preview images if available
+      if(currentCommunity.background_banner){
+        const bannerPreview = document.getElementById('bannerPreview');
+        const bannerPlaceholder = document.getElementById('bannerPlaceholder');
+        bannerPreview.src = abs(currentCommunity.background_banner);
+        bannerPreview.style.display = 'block';
+        bannerPlaceholder.style.display = 'none';
+      }
+      
+      if(currentCommunity.profile_pic){
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        avatarPreview.src = abs(currentCommunity.profile_pic);
+        avatarPreview.style.display = 'block';
+        avatarPlaceholder.style.display = 'none';
+      }
+    }
+    modal.classList.add('active');
+  };
+
+  window.openLeaveConfirmModal = function(){
+    document.getElementById('leaveConfirmModal').classList.add('active');
+  };
+
+  window.openShareLinkModal = function(){
+    document.getElementById('shareLinkModal').classList.add('active');
+  };
+
+  window.closeModal = function(modalId){
+    document.getElementById(modalId).classList.remove('active');
+  };
+
+  // Close modal when clicking overlay
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e){
+      if(e.target === this){
+        this.classList.remove('active');
+      }
+    });
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+        modal.classList.remove('active');
+      });
+    }
+  });
+
+  // Toggle Switch
+  window.toggleSwitch = function(id){
+    document.getElementById(id).classList.toggle('active');
+  };
+
+  // Image Preview
+  window.previewImage = function(inputId, previewId, placeholderId){
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    const placeholder = document.getElementById(placeholderId);
+    
+    if(input.files && input.files[0]){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
+  // Add Channel
+  window.addChannel = async function(){
+    const channelName = document.getElementById('channelName').value;
+    const isRestricted = document.getElementById('restrictedToggle').classList.contains('active');
+    
+    if(!channelName.trim()){
+      alert('Please enter a channel name');
+      return;
+    }
+
+    if(!currentCommunity){
+      alert('Community not loaded');
+      return;
+    }
+
+    try{
+      const response = await fetch(`${API_BASE}/channels/`, {
+        method: 'POST',
+        headers: {
+          ...H,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: channelName,
+          community: currentCommunity.id,
+          is_restricted: isRestricted,
+          channel_type: isRestricted ? 'restricted' : 'general'
+        })
+      });
+
+      if(response.ok){
+        alert('Channel added successfully!');
+        closeModal('addChannelModal');
+        document.getElementById('channelName').value = '';
+        document.getElementById('restrictedToggle').classList.remove('active');
+        await renderChannels(currentCommunity.id);
+      } else {
+        const error = await response.json();
+        alert('Failed to add channel: ' + JSON.stringify(error));
+      }
+    } catch(e){
+      console.error(e);
+      alert('Error adding channel');
+    }
+  };
+
+  // Save Bio
+  window.saveBio = async function(){
+    const communityName = document.getElementById('communityName').value;
+    const communityBio = document.getElementById('communityBio').value;
+
+    if(!currentCommunity){
+      alert('Community not loaded');
+      return;
+    }
+
+    if(!communityName.trim()){
+      alert('Please enter a community name');
+      return;
+    }
+
+    try{
+      const formData = new FormData();
+      formData.append('name', communityName);
+      formData.append('bio', communityBio);
+      
+      const bannerInput = document.getElementById('bannerInput');
+      if(bannerInput.files[0]){
+        formData.append('background_banner', bannerInput.files[0]);
+      }
+      
+      const avatarInput = document.getElementById('avatarInput');
+      if(avatarInput.files[0]){
+        formData.append('profile_pic', avatarInput.files[0]);
+      }
+
+      const response = await fetch(`${API_BASE}/communities/${currentCommunity.id}/`, {
+        method: 'PATCH',
+        headers: H,
+        body: formData
+      });
+
+      if(response.ok){
+        alert('Community updated successfully!');
+        closeModal('editBioModal');
+        const updated = await response.json();
+        renderCommunityHeader(updated);
+      } else {
+        const error = await response.json();
+        alert('Failed to update community: ' + JSON.stringify(error));
+      }
+    } catch(e){
+      console.error(e);
+      alert('Error updating community');
+    }
+  };
+
+  // Leave Community
+  window.leaveCommunity = async function(){
+    if(!currentCommunity){
+      alert('Community not loaded');
+      return;
+    }
+
+    try{
+      const response = await fetch(`${API_BASE}/communities/${currentCommunity.id}/leave/`, {
+        method: 'POST',
+        headers: H
+      });
+
+      if(response.ok){
+        alert('You have left the community');
+        closeModal('leaveConfirmModal');
+        window.location.href = '/';
+      } else {
+        alert('Failed to leave community');
+      }
+    } catch(e){
+      console.error(e);
+      alert('Error leaving community');
+    }
+  };
+
+  // Copy Invite Link
+  window.copyInviteLink = function(){
+    const input = document.getElementById('inviteLink');
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile devices
+    
+    // Modern way
+    navigator.clipboard.writeText(input.value).then(function(){
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    }).catch(function(){
+      // Fallback
+      document.execCommand('copy');
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    });
+  };
+})();
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 </script>
 </body>
 </html>

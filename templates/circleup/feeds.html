@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <title>CircleUP – Feeds</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<<<<<<< HEAD
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--bg:#f9f9fb;--bd:#ececec;--text:#1f2937;--muted:#6b7280;--brand:#e59d2c;--card:#ffffff}
@@ -77,10 +78,48 @@
     .right-sidebar{flex:0 0 320px;width:320px;max-height:100vh;overflow:auto;background:var(--bg);border-left:1px solid var(--bd);padding:16px}
     .right-sidebar::-webkit-scrollbar{width:8px}
     .right-sidebar::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
+=======
+  <style>
+    :root{--bg:#f9f9fb;--bd:#ececec;--text:#1f2937;--muted:#6b7280;--brand:#e59d2c;--card:#ffffff}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;color:var(--text);background:var(--bg)}
+    a{color:inherit}
+    .layout{display:flex;min-height:100vh}
+    .main{flex:1;display:flex;gap:20px;padding:20px}
+    .content{flex:1;max-width:920px}
+    .page-head h2{margin:0 0 6px 0}
+    .page-head .meta{color:var(--muted);font-size:14px}
+
+    .card{border:1px solid var(--bd);border-radius:14px;background:var(--card)}
+    .post{padding:14px;margin:12px 0}
+    .post + .post{margin-top:14px}
+    .post-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .avatar{width:30px;height:30px;border-radius:50%;background:#e5e7eb;flex:0 0 30px;object-fit:cover}
+    .post-meta{font-size:12px;color:var(--muted)}
+    .post-body{margin:6px 0 4px 0;line-height:1.5}
+    .post-img{max-width:100%;border-radius:10px;margin-top:8px;border:1px solid var(--bd)}
+
+    .empty{color:#94a3b8;padding:16px;text-align:center}
+    .warn{background:#fff8e1;border:1px solid #ffe08a;color:#6b5b00;border-radius:10px;padding:12px;margin-bottom:12px}
+
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+    .search{flex:1;display:flex;gap:8px}
+    .search input{flex:1;border:1px solid var(--bd);border-radius:10px;padding:10px;background:#fff}
+    .btn{border:1px solid var(--bd);background:#fff;border-radius:10px;padding:10px 12px;cursor:pointer}
+    .btn.primary{border-color:#f1d6a5;background:#fff3e0}
+
+    .load-more{display:block;margin:16px auto 24px auto}
+    .spinner{width:22px;height:22px;border-radius:50%;border:3px solid #e5e7eb;border-top-color:#9ca3af;animation:spin .9s linear infinite;margin:auto}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Right sidebar */
+    .right-sidebar{flex:0 0 320px;width:320px;max-height:100vh;overflow:auto;background:var(--bg);border-left:1px solid var(--bd);padding:16px}
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
     .community-cover{width:100%;height:150px;object-fit:cover;border-radius:12px;background:#eaeaea}
     .community-name{font-weight:700;font-size:18px;margin-top:10px}
     .community-stats{font-size:13px;color:var(--muted);margin-top:4px}
     .sidebar-menu{list-style:none;margin:12px 0 8px 0;padding:0}
+<<<<<<< HEAD
     .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text)}
     .sidebar-menu-item:hover{background:#fff}
     .sidebar-menu-item.active{background:#fff3e0;border:1px solid var(--brand)}
@@ -96,19 +135,37 @@
     .sort-option.active{background:#fff3e0;color:var(--brand);font-weight:600}
     @media (max-width: 1200px){.feeds-grid{grid-template-columns:repeat(2, 1fr)}}
     @media (max-width: 768px){.main{margin-left:0;padding:12px}.feeds-grid{grid-template-columns:1fr}.right-sidebar{display:none}.post-detail{flex-direction:column}.post-image-large{max-width:100%}}
+=======
+    .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--text)}
+    .sidebar-menu-item:hover{background:#fff}
+    .sidebar-menu-item.active{background:#fff3e0;border:1px solid var(--brand)}
+    .sidebar-section{margin-top:14px}
+    .section-title{color:var(--muted);font-size:12px;margin:8px 0}
+    #channels-list,#events-list{margin-top:6px}
+    .channel-item,.event-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--text)}
+    .channel-item:hover,.event-item:hover{background:#fff}
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
   </style>
 </head>
 <body>
   <div class="layout">
     <main class="main">
       <section class="content">
+<<<<<<< HEAD
         <div id="needCommunity" class="warn" style="display:none">
           Tambahkan parameter <code>?community=&lt;uuid&gt;</code> pada URL untuk memuat Feeds komunitas.
         </div>
+=======
+        <div id="needCommunity" class="warn" role="alert" style="display:none">
+          Tambahkan parameter <code>?community=&lt;uuid&gt;</code> pada URL untuk memuat Feeds komunitas.
+        </div>
+
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
         <header class="page-head">
           <h2 data-page="name">Community Feeds</h2>
           <div data-page="counts" class="meta">0 Members, 0 Online</div>
         </header>
+<<<<<<< HEAD
         <div class="toolbar">
           <div class="toolbar-left">
             <button id="createPostBtn" class="post-btn"><span>+</span> Post</button>
@@ -503,5 +560,202 @@
   });
 })();
 </script>
+=======
+
+        <div class="toolbar">
+          <div class="search" role="search">
+            <input id="q" type="search" placeholder="Cari posting…" aria-label="Cari posting"/>
+            <button id="doSearch" class="btn" aria-label="Cari">Cari</button>
+          </div>
+          <button id="refresh" class="btn" aria-label="Muat ulang">↻ Refresh</button>
+        </div>
+
+        <div id="feed" aria-live="polite">
+          <div class="card post">
+            <strong>Welcome to Feeds</strong>
+            <p>Halaman ini kini dapat memuat posting dari API <code>/api/posts/</code>. Jika endpoint belum tersedia, placeholder ini akan tampil.</p>
+          </div>
+        </div>
+        <button id="more" class="btn load-more" hidden>Load more…</button>
+        <div id="loading" class="spinner" style="display:none"></div>
+      </section>
+
+      <!-- RIGHT SIDEBAR -->
+      <aside id="rightSidebar" class="right-sidebar">
+        <div class="community-header">
+          <img data-rs="image" class="community-cover" alt="Community banner" loading="lazy">
+          <div data-rs="name" class="community-name">Community</div>
+          <div data-rs="counts" class="community-stats"></div>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="/about/" class="sidebar-menu-item">About</a></li>
+          <li><a href="/event-info/" class="sidebar-menu-item">Event Info</a></li>
+          <li><a href="/feeds/" class="sidebar-menu-item active">Feeds</a></li>
+          <li><a href="/members/" class="sidebar-menu-item">Members</a></li>
+        </ul>
+        <div class="sidebar-section">
+          <div class="section-title">CHANNELS</div>
+          <div id="channels-list" class="empty">Loading…</div>
+        </div>
+        <div class="sidebar-section">
+          <div class="section-title">EVENTS</div>
+          <div id="events-list" class="empty">Loading…</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    (function(){
+      const API_BASE = (localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api").replace(/\/$/,"");
+      const ACCESS   = localStorage.getItem("access");
+      const HEADERS  = ACCESS ? { Authorization: `Bearer ${ACCESS}` } : {};
+      const q        = new URLSearchParams(location.search);
+      const COMM_ID  = q.get("community");
+
+      // Elements
+      const feedEl   = document.getElementById('feed');
+      const moreBtn  = document.getElementById('more');
+      const spinner  = document.getElementById('loading');
+
+      // guard: missing community id
+      if(!COMM_ID){
+        document.getElementById('needCommunity').style.display = 'block';
+        return; // stop boot
+      }
+
+      // Attach community param to all sidebar links
+      document.querySelectorAll('.sidebar-menu a').forEach(a=>{
+        const url = new URL(a.getAttribute('href'), location.origin);
+        url.searchParams.set('community', COMM_ID);
+        a.setAttribute('href', url.pathname + '?' + url.searchParams.toString());
+      });
+
+      // small helpers
+      const abs = (u) => {
+        if(!u) return "";
+        if(/^https?:\/\//i.test(u)) return u;
+        const root = API_BASE.replace(/\/api$/,'');
+        return root + (u.startsWith('/') ? '' : '/') + u;
+      };
+
+      async function fetchJSON(url){
+        const r = await fetch(url, { headers: HEADERS });
+        if(!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+        return r.json();
+      }
+
+      // COMMUNITY HEADER
+      async function loadCommunity(){
+        try{
+          const c = await fetchJSON(`${API_BASE}/communities/${COMM_ID}/`);
+          const pageName = document.querySelector('[data-page="name"]');
+          const pageCnts = document.querySelector('[data-page="counts"]');
+          const sImg = document.querySelector('[data-rs="image"]');
+          const sNm  = document.querySelector('[data-rs="name"]');
+          const sCt  = document.querySelector('[data-rs="counts"]');
+          if(pageName) pageName.textContent = c.name || 'Community Feeds';
+          const counts = `${c.member_count||0} Members, ${c.online_count||0} Online`;
+          if(pageCnts) pageCnts.textContent = counts;
+          if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
+          if(sNm)  sNm.textContent = c.name || 'Community';
+          if(sCt)  sCt.textContent = counts;
+        }catch(e){ console.warn('Community load failed', e); }
+      }
+
+      // CHANNELS
+      async function loadChannels(){
+        const list = document.getElementById('channels-list');
+        try{
+          const data = await fetchJSON(`${API_BASE}/channels/?community=${encodeURIComponent(COMM_ID)}`);
+          const items = Array.isArray(data) ? data : (data.results||[]);
+          list.innerHTML = items.length
+            ? items.map(c=>`<a class="channel-item" href="/chat/?channel=${encodeURIComponent(c.id)}&community=${encodeURIComponent(COMM_ID)}">💬 ${c.name}</a>`).join('')
+            : '<div class="empty">No channels</div>';
+        }catch(e){ list.innerHTML = '<div class="empty">Gagal memuat channels</div>'; }
+      }
+
+      // EVENTS
+      async function loadEvents(){
+        const list = document.getElementById('events-list');
+        try{
+          const data = await fetchJSON(`${API_BASE}/events/?community=${encodeURIComponent(COMM_ID)}`);
+          const items = Array.isArray(data) ? data : (data.results||data||[]);
+          const events = items.filter(e => (e.community && (String(e.community.id||e.community) === String(COMM_ID))));
+          list.innerHTML = events.length
+            ? events.map(e=>`<a class="event-item" href="/event-info/?community=${encodeURIComponent(COMM_ID)}#${e.id}">📅 ${e.name}</a>`).join('')
+            : '<div class="empty">No events</div>';
+        }catch(e){ list.innerHTML = '<div class="empty">Gagal memuat events</div>'; }
+      }
+
+      // POSTS (with simple pagination & search)
+      let nextURL = null;
+      async function loadPosts({ reset=false, search='' }={}){
+        spinner.style.display = 'block';
+        moreBtn.hidden = true;
+        try{
+          const base = `${API_BASE}/posts/?community=${encodeURIComponent(COMM_ID)}` + (search ? `&search=${encodeURIComponent(search)}` : '');
+          const url  = reset || !nextURL ? base : nextURL;
+          const data = await fetchJSON(url);
+          const items = Array.isArray(data) ? data : (data.results || []);
+          if(reset) feedEl.innerHTML = '';
+          if(!items.length && (!feedEl.children.length)){
+            feedEl.innerHTML = '<div class="card empty">Belum ada posting.</div>';
+          } else {
+            const frag = document.createDocumentFragment();
+            items.forEach(p=> frag.appendChild(renderPost(p)) );
+            feedEl.appendChild(frag);
+          }
+          nextURL = data.next || null;
+          moreBtn.hidden = !nextURL;
+        }catch(e){
+          if(!feedEl.children.length){
+            feedEl.innerHTML = '<div class="card empty">Gagal memuat posts. Pastikan endpoint <code>/api/posts/</code> tersedia.</div>';
+          }
+          console.warn('Posts load failed', e);
+        }finally{
+          spinner.style.display = 'none';
+        }
+      }
+
+      function renderPost(p){
+        const el = document.createElement('article');
+        el.className = 'card post';
+        const author = p.author_name || (p.author && (p.author.name||p.author.username)) || 'Anon';
+        const avatar = abs(p.author_avatar || (p.author && p.author.avatar));
+        const when   = p.created_at ? new Date(p.created_at).toLocaleString() : '';
+        const img    = p.image || p.photo || null;
+        el.innerHTML = `
+          <div class="post-head">
+            <img class="avatar" alt="${author}" src="${avatar||''}" onerror="this.remove()"/>
+            <div>
+              <div><strong>${escapeHTML(author)}</strong></div>
+              <div class="post-meta">${escapeHTML(when)}</div>
+            </div>
+          </div>
+          <div class="post-body">${safeText(p.content || p.text || '')}</div>
+          ${img ? `<img class="post-img" loading="lazy" src="${abs(img)}" alt="post image">` : ''}
+        `;
+        return el;
+      }
+
+      function escapeHTML(s){
+        return String(s||'').replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+      }
+      function safeText(s){ return `<p>${escapeHTML(s).replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>')}</p>`; }
+
+      // UI actions
+      document.getElementById('refresh').addEventListener('click', ()=>{ nextURL=null; loadPosts({reset:true, search:document.getElementById('q').value.trim()}); });
+      document.getElementById('doSearch').addEventListener('click', ()=>{ nextURL=null; loadPosts({reset:true, search:document.getElementById('q').value.trim()}); });
+      document.getElementById('q').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); nextURL=null; loadPosts({reset:true, search:e.target.value.trim()}); }});
+      moreBtn.addEventListener('click', ()=> loadPosts({reset:false, search:document.getElementById('q').value.trim()}));
+
+      // boot
+      Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
+        loadPosts({reset:true});
+      });
+    })();
+  </script>
+>>>>>>> cc1f84288d20ec533abdb1275075a7c4908bf245
 </body>
 </html>
