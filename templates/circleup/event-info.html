@@ -10,60 +10,226 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Poppins',sans-serif;background:#f5f5f5;display:flex;overflow:hidden}
     #sidebar-container{flex-shrink:0}
-    .main-container{display:flex;flex:1;height:100vh;overflow:hidden}
+    
+    /* ===== COMMUNITY LIST SIDEBAR ===== */
+    .community-list-sidebar {
+      width: 400px;
+      height: 100vh;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+      position: fixed;
+      left: 200px;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+    }
 
-    .event-container{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+    .community-list-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid #eee;
+      background: #fafafa;
+    }
+
+    .community-list-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .community-list-stats {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .communities-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .communities-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .communities-container::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 8px;
+    }
+
+    .community-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #fff;
+      border: 2px solid #eee;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .community-card:hover {
+      border-color: #e59d2c;
+      background: #fef9f2;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .community-card.active {
+      border-color: #e59d2c;
+      background: #fff3e0;
+      border-left: 4px solid #e59d2c;
+    }
+
+    .community-card-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #eaeaea;
+      flex-shrink: 0;
+    }
+
+    .community-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .community-card-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .community-card-members {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Main container needs to account for both sidebars */
+    .main-container{
+      display:flex;
+      flex:1;
+      height:100vh;
+      overflow:hidden;
+      margin-left:600px; /* 200px sidebar + 400px community list */
+    }
+
+    .event-container{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+      overflow:hidden;
+    }
 
     /* Body 2 kolom */
-    .event-body{flex:1;display:flex;min-height:0;background:#fff}
+    .event-body{
+      flex:1;
+      display:flex;
+      min-height:0;
+      background:#fff;
+    }
 
-    /* Left Rail */
-    .left-rail{
-      width:140px;padding:16px 10px;border-right:1px solid #eee;background:#fff;
-      overflow-y:auto;flex-shrink:0;
-    }
-    .left-rail::-webkit-scrollbar{width:8px}
-    .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
-    .rail-item{
-      display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:16px;border-radius:16px;
-      background:#f6f6f6;cursor:pointer;transition:transform .15s,box-shadow .15s,background-color .15s;
-      position:relative;
-    }
-    .rail-item:hover{transform:translateY(-1px);background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-    .rail-item.active{outline:2px solid #e59d2c}
-    .rail-thumb{width:112px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0}
-    .rail-label{display:none;font-size:12px;color:#333}
+    /* Left Rail - HIDE THIS as we now have community list sidebar */
+    .left-rail{display:none}
 
     /* Kolom kanan */
-    .events-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+    .events-main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      overflow:hidden;
+    }
 
     /* Header */
     .event-header{
-      padding:30px 40px;background:#ffffff;border-bottom:1px solid #e0e0e0;
-      display:flex;align-items:center;justify-content:space-between
+      padding:30px 40px;
+      background:#ffffff;
+      border-bottom:1px solid #e0e0e0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-shrink: 0; /* Prevent header from shrinking */
     }
+    
     .header-left{display:flex;align-items:center;gap:15px}
+    
     .add-event-btn{
-      padding:12px 25px;background:#e59d2c;color:#fff;border:none;border-radius:25px;
-      font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;
-      transition:background-color .3s ease
+      padding:12px 25px;
+      background:#e59d2c;
+      color:#fff;
+      border:none;
+      border-radius:25px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:background-color .3s ease;
     }
     .add-event-btn:hover{background:#d48b1f}
     .add-event-btn svg{width:18px;height:18px;fill:#fff}
 
     .sort-btn{
-      padding:10px 20px;background:transparent;color:#e59d2c;border:none;font-size:15px;font-weight:600;
-      cursor:pointer;display:flex;align-items:center;gap:8px;transition:color .3s ease
+      padding:10px 20px;
+      background:transparent;
+      color:#e59d2c;
+      border:none;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:color .3s ease;
     }
     .sort-btn:hover{color:#d48b1f}
     .sort-btn svg{width:20px;height:20px;fill:#e59d2c}
 
-    .event-content{padding:30px 40px;flex:1;overflow:auto}
+    .event-content{
+      padding:30px 40px;
+      flex:1;
+      overflow-y:auto;
+      overflow-x: hidden;
+    }
 
-    .event-table{width:100%;border-collapse:separate;border-spacing:0}
+    .event-content::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .event-content::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 10px;
+    }
+
+    .event-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width: 800px; /* Ensure table doesn't shrink too much */
+    }
     .event-table thead{background:#f5f5f5}
     .event-table th{
-      padding:18px 20px;text-align:left;font-size:14px;font-weight:600;color:#333;border-bottom:2px solid #e0e0e0
+      padding:18px 20px;
+      text-align:left;
+      font-size:14px;
+      font-weight:600;
+      color:#333;
+      border-bottom:2px solid #e0e0e0;
+      white-space: nowrap;
     }
     .event-table th:first-child{border-radius:12px 0 0 0}
     .event-table th:last-child{border-radius:0 12px 0 0}
@@ -71,8 +237,19 @@
     .event-table tbody tr:hover{background:#f9f9f9}
     .event-table tbody tr.highlighted{background:#fff3e0}
     .event-table tbody tr.highlighted:hover{background:#ffe8cc}
-    .event-table td{padding:20px;font-size:14px;color:#333;border-bottom:1px solid #f0f0f0}
-    .event-name{font-weight:500;display:flex;align-items:center;gap:10px}
+    .event-table td{
+      padding:20px;
+      font-size:14px;
+      color:#333;
+      border-bottom:1px solid #f0f0f0;
+    }
+    .event-name{
+      font-weight:500;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 200px;
+    }
     .edit-icon{cursor:pointer;opacity:0;transition:opacity .2s ease}
     .event-table tbody tr:hover .edit-icon{opacity:1}
     .edit-icon svg{width:16px;height:16px;fill:#888}
@@ -80,7 +257,14 @@
     .event-date,.event-time,.event-location{color:#555}
 
     .participation-btn{
-      padding:8px 20px;border:none;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:all .3s ease
+      padding:8px 20px;
+      border:none;
+      border-radius:20px;
+      font-size:13px;
+      font-weight:500;
+      cursor:pointer;
+      transition:all .3s ease;
+      white-space: nowrap;
     }
     .participation-btn.join{background:#333;color:#fff}
     .participation-btn.join:hover{background:#555}
@@ -91,29 +275,55 @@
 
     /* Modal Add Event */
     .modal{
-      display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.35);
-      align-items:center;justify-content:center;padding:24px
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:10000;
+      background:rgba(0,0,0,.35);
+      align-items:center;
+      justify-content:center;
+      padding:24px;
     }
     .modal.show{display:flex}
     .modal-content{
-      width:100%;max-width:560px;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.18);
-      overflow:hidden;animation:slideIn .3s ease
+      width:100%;
+      max-width:560px;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 10px 40px rgba(0,0,0,.18);
+      overflow:hidden;
+      animation:slideIn .3s ease;
     }
     @keyframes slideIn{
       from{transform:translateY(-20px);opacity:0}
       to{transform:translateY(0);opacity:1}
     }
     .modal-header{
-      display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eee
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 20px;
+      border-bottom:1px solid #eee;
     }
     .modal-header h2{font-size:18px;margin:0 auto}
     .close-modal{
-      font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px;
-      position:absolute;left:20px
+      font-size:24px;
+      line-height:1;
+      cursor:pointer;
+      padding:4px 8px;
+      border-radius:8px;
+      position:absolute;
+      left:20px;
     }
     .close-modal:hover{background:#f5f5f5}
     .add-btn{
-      padding:8px 16px;border:none;border-radius:10px;background:#e59d2c;color:#fff;font-weight:600;cursor:pointer
+      padding:8px 16px;
+      border:none;
+      border-radius:10px;
+      background:#e59d2c;
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
     }
     .add-btn:hover{background:#d48b1f}
     .add-btn:disabled{background:#ccc;cursor:not-allowed}
@@ -121,25 +331,64 @@
     .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
     .form-group label{font-size:13px;color:#333;font-weight:500}
     .form-group input, .form-group textarea, .form-group select{
-      padding:10px 12px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;outline:none;
-      font-family:'Poppins',sans-serif
+      padding:10px 12px;
+      border:1px solid #e5e5e5;
+      border-radius:10px;
+      font-size:14px;
+      outline:none;
+      font-family:'Poppins',sans-serif;
     }
     .form-group input:focus, .form-group textarea:focus, .form-group select:focus{
-      border-color:#e59d2c;box-shadow:0 0 0 3px rgba(229,157,44,.15)
+      border-color:#e59d2c;
+      box-shadow:0 0 0 3px rgba(229,157,44,.15);
     }
     .form-group textarea{resize:vertical;min-height:80px}
     
     .loading{text-align:center;padding:40px;color:#888}
     .error-message{background:#fee;color:#c33;padding:12px;border-radius:8px;margin-bottom:16px}
+
+    /* Responsive */
+    @media (max-width:1400px){
+      .main-container{margin-left:600px}
+      .event-content{padding:20px 30px}
+    }
+
+    @media (max-width:1024px){
+      .community-list-sidebar{display:none}
+      .main-container{margin-left:200px}
+      .event-header{padding:20px 30px}
+      .event-content{padding:20px 30px}
+    }
+
+    @media (max-width:768px){
+      #sidebar-container{display:none}
+      .main-container{margin-left:0}
+      .event-header{padding:15px 20px;flex-direction:column;gap:10px}
+      .event-content{padding:15px 20px}
+      .event-table{font-size:13px}
+      .event-table th, .event-table td{padding:12px 10px}
+    }
   </style>
 </head>
 <body>
   {% include "circleup/sidebar.html" %}
 
+  <!-- COMMUNITY LIST SIDEBAR -->
+  <aside class="community-list-sidebar">
+    <div class="community-list-header">
+      <div class="community-list-title" id="currentCommunityName">Community</div>
+      <div class="community-list-stats" id="currentCommunityStats">0 Members · 0 Online</div>
+    </div>
+    
+    <div class="communities-container" id="communitiesContainer">
+      <div class="loading">Loading communities...</div>
+    </div>
+  </aside>
+
   <div class="main-container">
     <div class="event-container">
       <div class="event-body">
-        <!-- LEFT RAIL -->
+        <!-- LEFT RAIL - Hidden now, using community list sidebar instead -->
         <aside class="left-rail" id="leftRail">
           <div class="loading">Loading...</div>
         </aside>
@@ -282,28 +531,38 @@
       return EVENTS_CACHE;
     }
 
-    // Render left rail (communities)
-    function renderLeftRail(){
-      const rail = document.getElementById("leftRail");
-      if (!rail) return;
+    // Render community list sidebar
+    function renderCommunityList(){
+      const container = document.getElementById('communitiesContainer');
+      if(!container) return;
 
-      if (!COMMUNITIES_CACHE.length){
-        rail.innerHTML = `<div style="color:#888;padding:6px">No communities</div>`;
+      if(!COMMUNITIES_CACHE.length){
+        container.innerHTML = '<div class="loading">No communities joined yet</div>';
         return;
       }
 
-      rail.innerHTML = COMMUNITIES_CACHE.map(comm => {
-        const thumb = absUrl(comm.profile_pic || comm.background_banner || '');
-        const isActive = String(comm.id) === String(COMMUNITY_ID);
-        return `
-          <div class="rail-item ${isActive ? 'active' : ''}" data-comm-id="${comm.id}" 
-               onclick="selectCommunity('${comm.id}')"
-               title="${comm.name || 'Community'}">
-            <img class="rail-thumb" src="${thumb || 'https://via.placeholder.com/112x72?text=Community'}" 
-                 alt="${comm.name||''}" style="width:112px;height:72px;object-fit:cover;border-radius:12px">
+      container.innerHTML = COMMUNITIES_CACHE.map(comm => `
+        <div class="community-card ${String(comm.id) === String(COMMUNITY_ID) ? 'active' : ''}"
+             onclick="selectCommunity('${comm.id}')"
+             data-community-id="${comm.id}">
+          <img src="${absUrl(comm.profile_pic || comm.background_banner)}" 
+               alt="${comm.name}" 
+               class="community-card-avatar"
+               onerror="this.src='https://via.placeholder.com/60?text=C'">
+          <div class="community-card-info">
+            <div class="community-card-name">${comm.name || 'Unnamed Community'}</div>
+            <div class="community-card-members">${comm.member_count || 0} members</div>
           </div>
-        `;
-      }).join("");
+        </div>
+      `).join('');
+
+      // Update header
+      const currentComm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
+      if(currentComm){
+        document.getElementById('currentCommunityName').textContent = currentComm.name || 'Community';
+        document.getElementById('currentCommunityStats').textContent = 
+          `${currentComm.member_count || 0} Members · ${currentComm.online_count || 0} Online`;
+      }
     }
 
     // Select community
@@ -313,7 +572,7 @@
       url.searchParams.set("community", COMMUNITY_ID);
       history.replaceState(null, "", url);
       
-      renderLeftRail();
+      renderCommunityList();
       syncRightSidebar();
       renderEvents();
       populateChannelDropdown();
@@ -444,7 +703,6 @@
       btn.textContent = 'Adding...';
 
       try {
-        // Format time properly (ensure HH:MM:SS format)
         const formattedTime = time.includes(':') ? `${time}:00` : time;
         
         const payload = {
@@ -457,8 +715,6 @@
           location
         };
 
-        console.log('Sending payload:', payload); // Debug log
-
         const r = await fetch(`${API_BASE}/events/`, {
           method: 'POST',
           headers: H,
@@ -466,7 +722,6 @@
         });
 
         const responseText = await r.text();
-        console.log('Response:', responseText); // Debug log
 
         if (!r.ok) {
           let errorMsg = 'Failed to create event';
@@ -474,22 +729,15 @@
             const error = JSON.parse(responseText);
             errorMsg = error.detail || error.message || JSON.stringify(error);
           } catch(parseError) {
-            // If response is HTML (error page), show status
             errorMsg = `Server error (${r.status}): ${r.statusText}`;
           }
           throw new Error(errorMsg);
         }
 
-        // Parse successful response
         const newEvent = JSON.parse(responseText);
-        console.log('Created event:', newEvent);
-
-        // Refresh events
         await fetchEvents();
         renderEvents();
         closeModal();
-        
-        // Show success message
         alert('Event created successfully!');
       } catch(e){
         console.error('Error creating event:', e);
@@ -564,7 +812,7 @@
     async function boot(){
       try {
         await Promise.all([fetchCommunities(), fetchChannels(), fetchEvents()]);
-        renderLeftRail();
+        renderCommunityList();
         renderEvents();
         syncRightSidebar();
       } catch(e){
