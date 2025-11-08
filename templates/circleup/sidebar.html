@@ -9,14 +9,35 @@
   
   .logo { font-size:32px; font-weight:bolder; font-style: italic; color:#333; padding:0 25px; margin-bottom:30px; }
   .menu { flex:1; display:flex; flex-direction:column; }
-  .menu-item {
-    display:flex; align-items:center; padding:15px 25px; color:#555; text-decoration:none;
-    font-size:15px; font-weight:400; transition:.3s ease; cursor:pointer; border:none; background:none; width:100%; text-align:left;
-  }
+.menu-item {
+  display:flex; align-items:center; padding:15px 25px; color:#555; text-decoration:none;
+  font-size:15px; font-weight:400; transition:.3s ease; cursor:pointer; border:none; background:none; width:100%; text-align:left;
+  position: relative;
+  font-family: 'Poppins', sans-serif; /* ADD THIS */
+}
   .menu-item svg { width:28px; height:28px; margin-right:20px; fill:#555; transition:fill .3s ease; }
   .menu-item:hover { background:rgba(255,152,0,.1); }
   .menu-item.active { background:#e59d2c; color:#fff; font-weight:600; }
   .menu-item.active svg { fill:#fff; }
+  
+  /* Notification Badge */
+  .notification-badge {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+  }
+  
   .dropdown { position:relative; }
   .dropdown-menu {
     position:absolute; left:100%; top:0; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,.15);
@@ -44,6 +65,212 @@
   .profile-icon svg { width:24px; height:24px; fill:#fff; z-index: 1; }
   .profile-icon img {
     width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2;
+  }
+
+  /* ===== NOTIFICATION POPUP STYLES ===== */
+  .notification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .notification-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .notification-popup {
+    position: fixed;
+    top: 0;
+    right: -450px;
+    width: 420px;
+    height: 100vh;
+    background: white;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Poppins', sans-serif; 
+  }
+  
+  .notification-popup.show {
+    right: 0;
+  }
+  
+  .notification-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .close-notification {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+  
+  .close-notification:hover {
+    background: #f5f5f5;
+  }
+  
+  .notification-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+  }
+  
+  .notification-section {
+    padding: 16px 24px 8px;
+  }
+  
+  .notification-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px 0;
+  }
+  
+  .notification-item {
+    display: flex;
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-left: 3px solid transparent;
+  }
+  
+  .notification-item:hover {
+    background: #f9f9f9;
+  }
+  
+  .notification-item.unread {
+    background: #f0f8ff;
+    border-left-color: #e59d2c;
+  }
+  
+  .notification-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+  
+  .notification-details {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .notification-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+  }
+  
+  .notification-message {
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .notification-time {
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .notification-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e8e8e8;
+    text-align: center;
+  }
+  
+  .mark-all-read-btn {
+    background: none;
+    border: none;
+    color: #e59d2c;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  
+  .mark-all-read-btn:hover {
+    background: #fff5e6;
+  }
+  
+  .empty-notifications {
+    text-align: center;
+    padding: 60px 24px;
+    color: #999;
+  }
+  
+  .empty-notifications svg {
+    width: 64px;
+    height: 64px;
+    fill: #ddd;
+    margin-bottom: 16px;
+  }
+  
+  .loading-notifications {
+    text-align: center;
+    padding: 40px 24px;
+    color: #999;
+  }
+
+  /* Scrollbar styling */
+  .notification-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .notification-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .notification-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  
+  .notification-content::-webkit-scrollbar-thumb:hover {
+    background: #999;
   }
 </style>
 
@@ -76,15 +303,16 @@
       Community
     </a>
 
-    <!-- NOTIFICATIONS -->
-    <a href="{% url 'notifications' %}" 
-       class="menu-item {% if current == 'notifications' %}active{% endif %}"
-       data-page="notifications">
+    <!-- NOTIFICATIONS - Modified to open popup -->
+    <button class="menu-item {% if current == 'notifications' %}active{% endif %}"
+            id="notificationBtn"
+            onclick="toggleNotifications(event)">
       <svg viewBox="0 0 24 24">
         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
       </svg>
       Notifications
-    </a>
+      <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+    </button>
 
     <!-- MORE DROPDOWN -->
     <div class="dropdown">
@@ -112,10 +340,264 @@
   </div>
 
 </aside>
+
+<!-- NOTIFICATION POPUP -->
+<div class="notification-overlay" id="notificationOverlay" onclick="closeNotifications()"></div>
+<div class="notification-popup" id="notificationPopup">
+  <div class="notification-header">
+    <h2>Notifications</h2>
+    <button class="close-notification" onclick="closeNotifications()">×</button>
+  </div>
+  
+  <div class="notification-content" id="notificationContent">
+    <div class="loading-notifications">
+      <p>Loading notifications...</p>
+    </div>
+  </div>
+  
+  <div class="notification-footer">
+    <button class="mark-all-read-btn" onclick="markAllAsRead()">Mark all as read</button>
+  </div>
+</div>
+
 {% endwith %}
 
 <script>
-  // Dropdown toggle
+  // ===== NOTIFICATION FUNCTIONS =====
+  let notificationsData = [];
+
+  async function toggleNotifications(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const overlay = document.getElementById('notificationOverlay');
+    const popup = document.getElementById('notificationPopup');
+    
+    if (popup.classList.contains('show')) {
+      closeNotifications();
+    } else {
+      overlay.classList.add('show');
+      popup.classList.add('show');
+      await loadNotifications();
+    }
+  }
+
+  function closeNotifications() {
+    document.getElementById('notificationOverlay').classList.remove('show');
+    document.getElementById('notificationPopup').classList.remove('show');
+  }
+
+  async function loadNotifications() {
+    const token = localStorage.getItem('access');
+    if (!token) return;
+
+    const contentEl = document.getElementById('notificationContent');
+    contentEl.innerHTML = '<div class="loading-notifications"><p>Loading notifications...</p></div>';
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/notifications/', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        notificationsData = await response.json();
+        renderNotifications(notificationsData);
+        updateNotificationBadge();
+      } else {
+        contentEl.innerHTML = '<div class="empty-notifications"><p>Failed to load notifications</p></div>';
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      contentEl.innerHTML = '<div class="empty-notifications"><p>Error loading notifications</p></div>';
+    }
+  }
+
+  function renderNotifications(notifications) {
+    const contentEl = document.getElementById('notificationContent');
+    
+    if (notifications.length === 0) {
+      contentEl.innerHTML = `
+        <div class="empty-notifications">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+          </svg>
+          <p>No notifications yet</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Group notifications by date
+    const today = [];
+    const yesterday = [];
+    const earlier = [];
+    
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterdayStart = new Date(todayStart);
+    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+
+    notifications.forEach(notif => {
+      const notifDate = new Date(notif.created_at);
+      if (notifDate >= todayStart) {
+        today.push(notif);
+      } else if (notifDate >= yesterdayStart) {
+        yesterday.push(notif);
+      } else {
+        earlier.push(notif);
+      }
+    });
+
+    let html = '';
+    
+    if (today.length > 0) {
+      html += '<div class="notification-section"><h3 class="notification-section-title">Today</h3></div>';
+      html += today.map(n => renderNotificationItem(n)).join('');
+    }
+    
+    if (yesterday.length > 0) {
+      html += '<div class="notification-section"><h3 class="notification-section-title">Yesterday</h3></div>';
+      html += yesterday.map(n => renderNotificationItem(n)).join('');
+    }
+    
+    if (earlier.length > 0) {
+      html += '<div class="notification-section"><h3 class="notification-section-title">Earlier</h3></div>';
+      html += earlier.map(n => renderNotificationItem(n)).join('');
+    }
+
+    contentEl.innerHTML = html;
+  }
+
+  function renderNotificationItem(notif) {
+    const timeAgo = getTimeAgo(notif.created_at);
+    const avatarUrl = notif.community?.profile_pic || 'https://ui-avatars.com/api/?name=User&size=48&background=667eea&color=fff';
+    const unreadClass = notif.is_read ? '' : 'unread';
+    
+    return `
+      <div class="notification-item ${unreadClass}" onclick="handleNotificationClick('${notif.id}')">
+        <img src="${avatarUrl}" alt="Avatar" class="notification-avatar">
+        <div class="notification-details">
+          <p class="notification-title">${notif.title}</p>
+          <p class="notification-message">${notif.message}</p>
+          <span class="notification-time">${timeAgo}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  async function handleNotificationClick(notifId) {
+    const token = localStorage.getItem('access');
+    if (!token) return;
+
+    try {
+      await fetch(`http://127.0.0.1:8000/api/notifications/${notifId}/mark_as_read/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      // Update local data
+      const notif = notificationsData.find(n => n.id === notifId);
+      if (notif) {
+        notif.is_read = true;
+        renderNotifications(notificationsData);
+        updateNotificationBadge();
+      }
+      
+      // Optional: Navigate to related content
+      // You can add navigation logic here based on notification type
+      
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  }
+
+  async function markAllAsRead() {
+    const token = localStorage.getItem('access');
+    if (!token) return;
+
+    try {
+      await fetch('http://127.0.0.1:8000/api/notifications/mark_all_as_read/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      // Update local data
+      notificationsData.forEach(n => n.is_read = true);
+      renderNotifications(notificationsData);
+      updateNotificationBadge();
+      
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  }
+
+  function updateNotificationBadge() {
+    const unreadCount = notificationsData.filter(n => !n.is_read).length;
+    const badge = document.getElementById('notificationBadge');
+    
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function getTimeAgo(dateString) {
+    const now = new Date();
+    const date = new Date(dateString);
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+    if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+    if (seconds < 604800) return Math.floor(seconds / 86400) + 'd';
+    return Math.floor(seconds / 604800) + 'w';
+  }
+
+  // Load notification count on page load
+  (function() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', async () => {
+        const token = localStorage.getItem('access');
+        if (token) {
+          try {
+            const response = await fetch('http://127.0.0.1:8000/api/notifications/', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+              notificationsData = await response.json();
+              updateNotificationBadge();
+            }
+          } catch (error) {
+            console.error('Error loading notification count:', error);
+          }
+        }
+      });
+    } else {
+      // Page already loaded
+      const token = localStorage.getItem('access');
+      if (token) {
+        fetch('http://127.0.0.1:8000/api/notifications/', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(r => r.ok ? r.json() : [])
+        .then(data => {
+          notificationsData = data;
+          updateNotificationBadge();
+        })
+        .catch(e => console.error('Error:', e));
+      }
+    }
+  })();
+
+  // ===== EXISTING DROPDOWN TOGGLE =====
   (function() {
     const moreBtn = document.getElementById('moreBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
@@ -135,12 +617,11 @@
     });
   })();
 
-  // Load user profile for sidebar
+  // ===== EXISTING PROFILE FUNCTIONS =====
   async function loadSidebarProfile() {
     const token = localStorage.getItem('access');
     if (!token) return;
 
-    // Try to load from cache first
     const cachedProfile = localStorage.getItem('sidebarProfile');
     if (cachedProfile) {
       try {
@@ -151,7 +632,6 @@
       }
     }
 
-    // Then fetch fresh data in background
     try {
       const response = await fetch('http://127.0.0.1:8000/api/users/profile/', {
         headers: {
@@ -161,7 +641,6 @@
 
       if (response.ok) {
         const user = await response.json();
-        // Save to cache
         localStorage.setItem('sidebarProfile', JSON.stringify(user));
         updateSidebarProfile(user);
       }
@@ -170,17 +649,14 @@
     }
   }
 
-  // Update sidebar profile display
   function updateSidebarProfile(user) {
     const profileIcon = document.getElementById('sidebarProfileIcon');
     const profileName = document.getElementById('sidebarProfileName');
     
     if (!profileIcon || !profileName) return;
 
-    // Update name
     profileName.textContent = user.first_name || 'Profile';
 
-    // Update profile picture
     let profilePicUrl = null;
     if (user.profile_pic) {
       profilePicUrl = user.profile_pic.startsWith('http') 
@@ -190,13 +666,11 @@
       profilePicUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name + ' ' + user.last_name)}&size=80&background=667eea&color=fff`;
     }
 
-    // Remove existing image if any
     const existingImg = profileIcon.querySelector('img');
     if (existingImg) {
       existingImg.remove();
     }
 
-    // Add new image
     const img = document.createElement('img');
     img.src = profilePicUrl;
     img.alt = 'Profile';
@@ -205,23 +679,19 @@
     };
     profileIcon.appendChild(img);
 
-    // Hide the SVG icon when image is loaded
     const svg = profileIcon.querySelector('svg');
     if (svg) {
       svg.style.display = 'none';
     }
   }
 
-  // Expose function globally so profile page can call it
   window.updateSidebarProfile = updateSidebarProfile;
 
-  // Also update cache when profile is updated
   window.updateSidebarProfileCache = function(user) {
     localStorage.setItem('sidebarProfile', JSON.stringify(user));
     updateSidebarProfile(user);
   };
 
-  // Load profile when page loads
   (function() {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', loadSidebarProfile);
@@ -230,7 +700,6 @@
     }
   })();
 
-  // Handle logout
   async function handleLogout() {
     if (!confirm('Are you sure you want to log out?')) {
       return;
@@ -261,7 +730,7 @@
       localStorage.removeItem('refresh');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('API_BASE');
-      localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
+      localStorage.removeItem('sidebarProfile');
       
       window.location.href = "/login/";
       
@@ -271,7 +740,7 @@
       localStorage.removeItem('refresh');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('API_BASE');
-      localStorage.removeItem('sidebarProfile'); // Clear sidebar cache
+      localStorage.removeItem('sidebarProfile');
       window.location.href = "/login/";
     }
   }
