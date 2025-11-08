@@ -705,45 +705,51 @@
   if (msgInput) msgInput.addEventListener("keypress", (e) => { if(e.key === "Enter"){ e.preventDefault(); sendMessage(); } });
 
   async function boot(){
-    try{
-      await Promise.all([fetchJoinedCommunities(), fetchChannels()]);
-      
-      // Initialize selected community from channel if available
-      if (channelId) {
-        const ch = (CHANNELSCACHE || []).find(c => String(c.id) === String(channelId));
-        if (ch) {
-          SELECTEDCOMMUNITYID = ch.community;
-        }
+  try{
+    await Promise.all([fetchJoinedCommunities(), fetchChannels()]);
+    
+    // Initialize selected community from channel if available
+    if (channelId) {
+      const ch = (CHANNELSCACHE || []).find(c => String(c.id) === String(channelId));
+      if (ch) {
+        SELECTEDCOMMUNITYID = ch.community;
       }
-      
-      // If no community selected, pick first one
-      if (!SELECTEDCOMMUNITYID && COMMUNITIESCACHE.length > 0){
-        SELECTEDCOMMUNITYID = COMMUNITIESCACHE[0].id;
-      }
-
-      renderCommunityList();
-      if (SELECTEDCOMMUNITYID) {
-        syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-        renderRightSidebarChannels(SELECTEDCOMMUNITYID);
-      }
-
-      // Only auto-select general if no channel is specified
-      if (!channelId && SELECTEDCOMMUNITYID){
-        const general = (CHANNELSCACHE || []).find(c => 
-          String(c.community) === String(SELECTEDCOMMUNITYID) && 
-          (c.name || '').toLowerCase() === 'general'
-        );
-        if (general) channelId = general.id;
-      }
-
-      if (channelId) await loadMessages();
-      updateChatHeader();
-    } catch(e){
-      console.warn(e);
-      const container = document.getElementById('communitiesContainer');
-      if (container) container.innerHTML = `<div style="color:#b00020;padding:20px;text-align:center">Gagal memuat data</div>`;
     }
+    
+    // NEW: Handle community parameter from URL
+    const communityParam = params.get("community");
+    if (communityParam && !SELECTEDCOMMUNITYID) {
+      SELECTEDCOMMUNITYID = communityParam;
+    }
+    
+    // If no community selected, pick first one
+    if (!SELECTEDCOMMUNITYID && COMMUNITIESCACHE.length > 0){
+      SELECTEDCOMMUNITYID = COMMUNITIESCACHE[0].id;
+    }
+
+    renderCommunityList();
+    if (SELECTEDCOMMUNITYID) {
+      syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
+      renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+    }
+
+    // Only auto-select general if no channel is specified
+    if (!channelId && SELECTEDCOMMUNITYID){
+      const general = (CHANNELSCACHE || []).find(c => 
+        String(c.community) === String(SELECTEDCOMMUNITYID) && 
+        (c.name || '').toLowerCase() === 'general'
+      );
+      if (general) channelId = general.id;
+    }
+
+    if (channelId) await loadMessages();
+    updateChatHeader();
+  } catch(e){
+    console.warn(e);
+    const container = document.getElementById('communitiesContainer');
+    if (container) container.innerHTML = `<div style="color:#b00020;padding:20px;text-align:center">Gagal memuat data</div>`;
   }
+}
 
   boot();
 
