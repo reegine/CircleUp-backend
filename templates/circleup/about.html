@@ -1066,6 +1066,7 @@ img{max-width:100%;display:block}
     }
   };
 
+  // Add Channel - FIXED VERSION
   window.addChannel = async function(){
     const channelName = document.getElementById('channelName').value;
     const isRestricted = document.getElementById('restrictedToggle').classList.contains('active');
@@ -1081,7 +1082,8 @@ img{max-width:100%;display:block}
     }
 
     try{
-      const response = await fetch(`${API_BASE}/channels/`, {
+      // Use the correct endpoint: /communities/{id}/add_channel/
+      const response = await fetch(`${API_BASE}/communities/${currentCommunity.id}/add_channel/`, {
         method: 'POST',
         headers: {
           ...H,
@@ -1089,7 +1091,7 @@ img{max-width:100%;display:block}
         },
         body: JSON.stringify({
           name: channelName,
-          community: currentCommunity.id,
+          description: '', // Optional description
           is_restricted: isRestricted,
           channel_type: isRestricted ? 'restricted' : 'general'
         })
@@ -1101,17 +1103,26 @@ img{max-width:100%;display:block}
         document.getElementById('channelName').value = '';
         document.getElementById('restrictedToggle').classList.remove('active');
         
-        // Refresh channels in right sidebar
-        if (typeof window.renderRightSidebarChannels === 'function') {
-          window.renderRightSidebarChannels(currentCommunity.id);
+        // Call the global function to refresh channels list
+        if (typeof window.refreshChannelsList === 'function') {
+          await window.refreshChannelsList();
+        } else if (typeof window.renderChannels === 'function') {
+          await window.renderChannels(currentCommunity.id);
+        } else if (typeof window.renderRightSidebarChannels === 'function') {
+          await window.renderRightSidebarChannels(currentCommunity.id);
         }
       } else {
         const error = await response.json();
-        alert('Failed to add channel: ' + JSON.stringify(error));
+        // Show more detailed error message
+        if(error.detail){
+          alert('Failed to add channel: ' + error.detail);
+        } else {
+          alert('Failed to add channel: ' + JSON.stringify(error));
+        }
       }
     } catch(e){
-      console.error(e);
-      alert('Error adding channel');
+      console.error('Error adding channel:', e);
+      alert('Error adding channel: ' + e.message);
     }
   };
 

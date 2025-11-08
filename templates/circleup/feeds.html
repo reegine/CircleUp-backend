@@ -125,14 +125,9 @@
     .page-head{margin-bottom:20px;flex-shrink:0}
     .page-head h2{margin:0 0 6px 0;font-size:24px;font-weight:600}
     .page-head .meta{color:var(--muted);font-size:14px}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-shrink:0}
-    .toolbar-left{display:flex;gap:12px;flex:1}
+    .toolbar{display:flex;justify-content:flex-start;align-items:center;margin-bottom:20px;gap:12px;flex-shrink:0}
     .post-btn{background:var(--brand);color:#fff;border:none;border-radius:25px;padding:12px 24px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s}
     .post-btn:hover{background:#d48d1f;transform:translateY(-1px)}
-    .search{flex:1;max-width:400px}
-    .search input{width:100%;border:1px solid var(--bd);border-radius:25px;padding:10px 20px;background:#fff;font-size:14px}
-    .sort-btn{border:1px solid var(--bd);background:#fff;border-radius:25px;padding:10px 20px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;transition:all 0.2s}
-    .sort-btn:hover{background:#f5f5f5}
     .feeds-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:24px;flex:1;align-content:start}
     .feed-card{background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;height:fit-content}
     .feed-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
@@ -184,29 +179,17 @@
     .post-submit-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:14px;border-radius:25px;font-weight:600;cursor:pointer;font-size:15px}
     .post-submit-btn:hover{background:#d48d1f}
     .post-submit-btn:disabled{background:#ccc;cursor:not-allowed}
-    
-    .sort-dropdown{position:relative}
-    .sort-menu{display:none;position:absolute;top:100%;right:0;background:#fff;border:1px solid var(--bd);border-radius:12px;margin-top:8px;min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100}
-    .sort-menu.active{display:block}
-    .sort-option{padding:12px 16px;cursor:pointer;font-size:14px;transition:background 0.2s}
-    .sort-option:hover{background:#f5f5f5}
-    .sort-option.active{background:#fff3e0;color:var(--brand);font-weight:600}
-    
-    @media (max-width: 1400px){
-      .main{margin-left:450px}
-      .feeds-grid{grid-template-columns:repeat(2, 1fr)}
-    }
-    @media (max-width: 1200px){.feeds-grid{grid-template-columns:repeat(2, 1fr)}}
-    @media (max-width: 1024px){
-      .community-list-sidebar{display:none}
-      .main{margin-left:200px;padding:12px}
-      .feeds-grid{grid-template-columns:1fr}
-    }
-    @media (max-width: 768px){
-      .main{margin-left:0}
-      .post-detail{flex-direction:column}
-      .post-image-large{max-width:100%}
-    }
+    .right-sidebar {
+      width: 250px;
+      background: white;
+      border-left: 1px solid #e0e0e0;
+      padding: 20px;
+      overflow-y: auto;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+  }
+
   </style>
 </head>
 <body>
@@ -237,27 +220,14 @@
         </header>
         
         <div class="toolbar">
-          <div class="toolbar-left">
-            <button id="createPostBtn" class="post-btn"><span>+</span> Post</button>
-            <div class="search">
-              <input id="q" type="search" placeholder="Cari posting…"/>
-            </div>
-          </div>
-          <div class="sort-dropdown">
-            <button id="sortBtn" class="sort-btn"><span>≡</span> Sort</button>
-            <div id="sortMenu" class="sort-menu">
-              <div class="sort-option active" data-sort="newest">Newest First</div>
-              <div class="sort-option" data-sort="oldest">Oldest First</div>
-              <div class="sort-option" data-sort="popular">Most Popular</div>
-            </div>
-          </div>
+          <button id="createPostBtn" class="post-btn"><span>+</span> Post</button>
         </div>
         
         <div id="feed" class="feeds-grid"></div>
         <div id="loading" class="spinner" style="display:none"></div>
       </section>
       
-      {% include "circleup/right-sidebar.html" %}
+
     </main>
   </div>
   
@@ -291,12 +261,13 @@
       </div>
     </div>
   </div>
+    {% include "circleup/right-sidebar.html" %}
 
 <script>
 (function(){
   const API_BASE = (localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api").replace(/\/$/,"");
   const ACCESS = localStorage.getItem("access");
-  const HEADERS = ACCESS ? {Authorization:`Bearer ${ACCESS}`} : {};
+  const HEADERS = ACCESS ? {Authorization:`Bearer ${ACCESS}`, "Content-Type": "application/json"} : {};
   const q = new URLSearchParams(location.search);
   let COMM_ID = q.get("community");
   const feedEl = document.getElementById('feed');
@@ -305,6 +276,16 @@
   let allCommunities = [];
   let currentSort = 'newest';
   let selectedFile = null;
+  let currentPostForModal = null;
+
+  const REACTIONS = [
+    { type: 'love', emoji: '❤️', label: 'Love' },
+    { type: 'like', emoji: '👍', label: 'Like' },
+    { type: 'laugh', emoji: '😂', label: 'Haha' },
+    { type: 'wow', emoji: '😮', label: 'Wow' },
+    { type: 'sad', emoji: '😢', label: 'Sad' },
+    { type: 'angry', emoji: '😠', label: 'Angry' }
+  ];
 
   const abs = (u) => {
     if(!u) return "";
@@ -332,7 +313,6 @@
       allCommunities = Array.isArray(data) ? data : [];
       renderCommunitiesList();
       
-      // Set default community if not specified
       if(!COMM_ID && allCommunities.length > 0){
         COMM_ID = allCommunities[0].id;
         const url = new URL(location.href);
@@ -395,21 +375,20 @@
     history.replaceState(null, '', url);
     
     renderCommunitiesList();
-    
-    // Use global right sidebar functions from right-sidebar.html
-    if (typeof window.syncRightSidebarFromCommunity === 'function') {
-      window.syncRightSidebarFromCommunity(COMM_ID);
-    }
-    if (typeof window.renderRightSidebarChannels === 'function') {
-      window.renderRightSidebarChannels(COMM_ID);
-    }
-    if (typeof window.renderRightSidebarEvents === 'function') {
-      window.renderRightSidebarEvents(COMM_ID);
-    }
-    
+    updateSidebarLinks();
     loadCommunity();
+    loadChannels();
+    loadEvents();
     loadPosts();
   };
+
+  function updateSidebarLinks(){
+    document.querySelectorAll('.sidebar-menu a').forEach(a=>{
+      const url = new URL(a.getAttribute('href'), location.origin);
+      url.searchParams.set('community', COMM_ID);
+      a.setAttribute('href', url.pathname + '?' + url.searchParams.toString());
+    });
+  }
 
   if(!COMM_ID){
     loadCommunitiesList().then(() => {
@@ -431,10 +410,48 @@
       const c = await fetchJSON(`${API_BASE}/communities/${COMM_ID}/`);
       const pageName = document.querySelector('[data-page="name"]');
       const pageCnts = document.querySelector('[data-page="counts"]');
+      const sImg = document.querySelector('[data-rs="image"]');
+      const sNm = document.querySelector('[data-rs="name"]');
+      const sCt = document.querySelector('[data-rs="counts"]');
       if(pageName) pageName.textContent = c.name || 'Community Feeds';
       const counts = `${c.member_count||0} Members, ${c.online_count||0} Online`;
       if(pageCnts) pageCnts.textContent = counts;
+      if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
+      if(sNm) sNm.textContent = c.name || 'Community';
+      if(sCt) sCt.textContent = counts;
     }catch(e){console.warn('Community load failed', e);}
+  }
+
+  async function loadChannels(){
+    if(!COMM_ID) return;
+    const list = document.getElementById('channels-list');
+    try{
+      const data = await fetchJSON(`${API_BASE}/channels/`);
+      const allChannels = Array.isArray(data) ? data : (data.results||[]);
+      const items = allChannels.filter(c => String(c.community) === String(COMM_ID));
+      list.innerHTML = items.length
+        ? items.map(c=>`<a class="channel-item" href="/chat/?channel=${encodeURIComponent(c.id)}&community=${encodeURIComponent(COMM_ID)}">💬 ${escapeHtml(c.name)}</a>`).join('')
+        : '<div class="empty">No channels</div>';
+    }catch(e){
+      console.warn('Channels load failed', e);
+      list.innerHTML = '<div class="empty">Gagal memuat channels</div>';
+    }
+  }
+
+  async function loadEvents(){
+    if(!COMM_ID) return;
+    const list = document.getElementById('events-list');
+    try{
+      const data = await fetchJSON(`${API_BASE}/events/`);
+      const items = Array.isArray(data) ? data : (data.results||data||[]);
+      const events = items.filter(e => (e.community && (String(e.community.id||e.community) === String(COMM_ID))));
+      list.innerHTML = events.length
+        ? events.map(e=>`<a class="event-item" href="/event-info/?community=${encodeURIComponent(COMM_ID)}#${e.id}">📅 ${escapeHtml(e.name)}</a>`).join('')
+        : '<div class="empty">No events</div>';
+    }catch(e){
+      console.warn('Events load failed', e);
+      list.innerHTML = '<div class="empty">Gagal memuat events</div>';
+    }
   }
 
   async function loadPosts(){
@@ -507,11 +524,17 @@
   window.openPostModal = function(postId){
     const post = allPosts.find(p => String(p.id) === String(postId));
     if(!post) return;
+    currentPostForModal = post;
+    
     const author = post.posted_by?.username || post.posted_by?.email || 'Anon';
     const avatar = abs(post.posted_by?.profile_pic);
     const when = post.created_at ? new Date(post.created_at).toLocaleString() : '';
     const img = abs(post.image);
     const caption = post.caption || 'No caption';
+    
+    // Determine current user reaction
+    const userReaction = post.user_reaction;
+    
     document.getElementById('postDetailContent').innerHTML = `
       ${img ? `<div class="post-image-large"><img src="${img}" alt="post"></div>` : ''}
       <div class="post-info">
@@ -524,10 +547,13 @@
         </div>
         <div class="post-caption-full">${escapeHtml(caption)}</div>
         <div class="post-reactions-full">
-          <button class="reaction-btn ${post.user_liked?'active':''}" onclick="likePost('${post.id}')">❤️ ${post.like_count||0}</button>
-          <button class="reaction-btn">👍 Like</button>
-          <button class="reaction-btn">😂 Haha</button>
-          <button class="reaction-btn">😮 Wow</button>
+          ${REACTIONS.map(r => `
+            <button class="reaction-btn ${userReaction === r.type ? 'active' : ''}" 
+                    data-reaction="${r.type}"
+                    onclick="reactToPost('${post.id}', '${r.type}')">
+              ${r.emoji} ${r.label}
+            </button>
+          `).join('')}
         </div>
       </div>
     `;
@@ -536,16 +562,47 @@
 
   window.closePostModal = function(){
     document.getElementById('postModal').classList.remove('active');
+    currentPostForModal = null;
   };
 
-  window.likePost = async function(postId){
+  window.reactToPost = async function(postId, reactionType){
     try{
-      await fetchJSON(`${API_BASE}/posts/${postId}/like/`, {method:'POST'});
+      const response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ reaction_type: reactionType })
+      });
+      
+      if(!response.ok) throw new Error('Failed to react');
+      
+      const data = await response.json();
+      
+      // Update the post in allPosts array
+      const postIndex = allPosts.findIndex(p => String(p.id) === String(postId));
+      if(postIndex !== -1){
+        if(data.message.includes('removed')){
+          allPosts[postIndex].user_reaction = null;
+        } else {
+          allPosts[postIndex].user_reaction = reactionType;
+        }
+        
+        // Update currentPostForModal if it exists
+        if(currentPostForModal && String(currentPostForModal.id) === String(postId)){
+          currentPostForModal.user_reaction = allPosts[postIndex].user_reaction;
+        }
+      }
+      
+      // Reload posts and re-render
       await loadPosts();
-      closePostModal();
+      
+      // If modal is open, refresh it
+      if(currentPostForModal){
+        openPostModal(postId);
+      }
+      
     }catch(e){
-      console.warn('Like failed', e);
-      alert('Failed to like post');
+      console.warn('Reaction failed', e);
+      alert('Failed to react to post');
     }
   };
 
@@ -665,21 +722,9 @@
   });
 
   function boot(){
-    Promise.all([loadCommunity()]).then(()=>{
+    updateSidebarLinks();
+    Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
       loadPosts();
-      
-      // Use global right sidebar functions from right-sidebar.html
-      if (COMM_ID) {
-        if (typeof window.syncRightSidebarFromCommunity === 'function') {
-          window.syncRightSidebarFromCommunity(COMM_ID);
-        }
-        if (typeof window.renderRightSidebarChannels === 'function') {
-          window.renderRightSidebarChannels(COMM_ID);
-        }
-        if (typeof window.renderRightSidebarEvents === 'function') {
-          window.renderRightSidebarEvents(COMM_ID);
-        }
-      }
     });
   }
 })();

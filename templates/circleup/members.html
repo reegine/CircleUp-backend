@@ -438,11 +438,15 @@
   }
 
   // Render members dari community yang dipilih
-  async function renderMembers() {
+ async function renderMembers() {
     const content = document.getElementById("membersContent");
     
     try {
-      // Get all users (in production, this should be a specific members endpoint)
+      // Ambil data community untuk mendapatkan member_count yang akurat
+      const communityResponse = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/`, { headers: H });
+      const community = await communityResponse.json();
+      
+      // Ambil daftar semua users
       const allUsersResponse = await fetch(`${API_BASE}/users/`, { headers: H });
       const allUsersData = await allUsersResponse.json();
       const allUsers = Array.isArray(allUsersData) ? allUsersData : (allUsersData.results || []);
@@ -468,13 +472,16 @@
         });
       }
       
-      // Add some other users as members (sample - in production this should come from members endpoint)
+      // PERBAIKAN: Hitung berapa member lain yang perlu ditambahkan
+      const remainingMemberCount = Math.max(0, (community.member_count || 0) - members.length);
+      
+      // Add other users sebanyak remainingMemberCount
       const otherUsers = allUsers
         .filter(u => 
           String(u.id) !== String(communityData.created_by?.id) && 
           String(u.id) !== String(currentUser?.id)
         )
-        .slice(0, 6);
+        .slice(0, remainingMemberCount);
       
       otherUsers.forEach(u => {
         members.push({
@@ -486,6 +493,9 @@
       
       allMembers = members;
       
+      // PERBAIKAN: Update header
+      renderHeader(community);
+      
       content.innerHTML = members.map((m, idx) => {
         const user = m.user;
         const role = m.role;
@@ -493,30 +503,47 @@
         const isAdmin = role === 'admin';
         const isCurrentUserMember = String(user.id) === String(currentUser?.id);
         
+        // Cek apakah current user adalah creator
+        const isCurrentUserCreator = communityData.user_role === 'creator';
+        
         let badge = '';
         if (isCreator) badge = '<span class="member-badge creator">Creator</span>';
         else if (isAdmin) badge = '<span class="member-badge">Admin</span>';
         
         let actions = '';
-        // Only show actions if current user is admin AND target is not creator or self
-        if (!isCreator && !isCurrentUserMember && isCurrentUserAdmin) {
-          if (isAdmin) {
-            actions = `
-              <button class="action-button remove" onclick="handleRemoveAdmin(${idx})">Remove Admin</button>
-              <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
-            `;
-          } else {
-            actions = `
-              <button class="action-button admin" onclick="handleMakeAdmin(${idx})">Make Admin</button>
-              <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
-            `;
+        // PERBAIKAN: Creator bisa manage semua member (kecuali diri sendiri)
+        // Admin hanya bisa manage member biasa (tidak bisa manage creator atau admin lain)
+        if (!isCurrentUserMember) {
+          if (isCurrentUserCreator) {
+            // Creator bisa manage semua orang kecuali diri sendiri
+            if (!isCreator) {
+              if (isAdmin) {
+                actions = `
+                  <button class="action-button remove" onclick="handleRemoveAdmin(${idx})">Remove Admin</button>
+                  <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
+                `;
+              } else {
+                actions = `
+                  <button class="action-button admin" onclick="handleMakeAdmin(${idx})">Make Admin</button>
+                  <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
+                `;
+              }
+            }
+          } else if (isCurrentUserAdmin) {
+            // Admin hanya bisa manage member biasa (bukan creator atau admin lain)
+            if (!isCreator && !isAdmin) {
+              actions = `
+                <button class="action-button admin" onclick="handleMakeAdmin(${idx})">Make Admin</button>
+                <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
+              `;
+            }
           }
         }
         
         return `
           <div class="member-item" data-member-idx="${idx}">
             <div class="member-info">
-              <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar" onerror="this.src='https://via.placeholder.com/45?text=U'">
+              <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar">
               <div class="member-details">
                 <div class="member-name">
                   ${user.username || user.first_name || user.email}
@@ -534,36 +561,77 @@
     }
   }
 
-  // Handle make admin (client-side simulation)
-  window.handleMakeAdmin = function(idx) {
+  // PERBAIKAN: Fungsi-fungsi action dengan API call yang benar
+  window.handleMakeAdmin = async function(idx) {
     if (!confirm('Make this member an admin?')) return;
     
-    const member = allMembers[idx];
-    member.role = 'admin';
-    
-    alert('Member promoted to admin successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/make_admin/');
-    renderMembers();
+    try {
+      const member = allMembers[idx];
+      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/promote_admin/`, {
+        method: 'POST',
+        headers: H,
+        body: JSON.stringify({ user_id: member.user.id })
+      });
+      
+      if (response.ok) {
+        alert('Member promoted to admin successfully!');
+        await renderMembers(); // Refresh member list
+      } else {
+        const error = await response.json();
+        alert(`Failed: ${error.detail || 'Unknown error'}`);
+      }
+    } catch (e) {
+      console.error('Make admin error:', e);
+      alert('Failed to promote member to admin');
+    }
   };
 
-  // Handle remove admin (client-side simulation)
-  window.handleRemoveAdmin = function(idx) {
+  window.handleRemoveAdmin = async function(idx) {
     if (!confirm('Remove admin privileges from this member?')) return;
     
-    const member = allMembers[idx];
-    member.role = 'member';
-    
-    alert('Admin privileges removed successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/remove_admin/');
-    renderMembers();
+    try {
+      const member = allMembers[idx];
+      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/demote_admin/`, {
+        method: 'POST',
+        headers: H,
+        body: JSON.stringify({ user_id: member.user.id })
+      });
+      
+      if (response.ok) {
+        alert('Admin privileges removed successfully!');
+        await renderMembers(); // Refresh member list
+      } else {
+        const error = await response.json();
+        alert(`Failed: ${error.detail || 'Unknown error'}`);
+      }
+    } catch (e) {
+      console.error('Remove admin error:', e);
+      alert('Failed to remove admin privileges');
+    }
   };
 
-  // Handle kick (client-side simulation)
-  window.handleKick = function(idx) {
+  window.handleKick = async function(idx) {
     if (!confirm('Are you sure you want to kick this member from the community?')) return;
     
-    allMembers.splice(idx, 1);
-    
-    alert('Member kicked successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/kick_member/');
-    renderMembers();
+    try {
+      const member = allMembers[idx];
+      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/kick_member/`, {
+        method: 'POST',
+        headers: H,
+        body: JSON.stringify({ user_id: member.user.id })
+      });
+      
+      if (response.ok) {
+        alert('Member kicked successfully!');
+        await renderMembers(); // Refresh member list
+      } else {
+        const error = await response.json();
+        alert(`Failed: ${error.detail || 'Unknown error'}`);
+      }
+    } catch (e) {
+      console.error('Kick member error:', e);
+      alert('Failed to kick member');
+    }
   };
 
   // Dropdown toggle for sidebar
