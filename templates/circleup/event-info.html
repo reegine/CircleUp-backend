@@ -13,7 +13,7 @@
     
     /* ===== COMMUNITY LIST SIDEBAR ===== */
     .community-list-sidebar {
-      width: 400px;
+      width: 250px;
       height: 100vh;
       background: #fff;
       border-right: 1px solid #e0e0e0;
@@ -122,7 +122,7 @@
       flex:1;
       height:100vh;
       overflow:hidden;
-      margin-left:600px; /* 200px sidebar + 400px community list */
+      margin-left:450px;/* 200px sidebar + 250px community list */
     }
 
     .event-container{
@@ -140,9 +140,6 @@
       min-height:0;
       background:#fff;
     }
-
-    /* Left Rail - HIDE THIS as we now have community list sidebar */
-    .left-rail{display:none}
 
     /* Kolom kanan */
     .events-main{
@@ -271,7 +268,6 @@
     .participation-btn.cancel{background:#f5f5f5;color:#333}
     .participation-btn.cancel:hover{background:#e0e0e0}
 
-    #right-sidebar-container{flex-shrink:0}
 
     /* Modal Add Event */
     .modal{
@@ -349,7 +345,7 @@
 
     /* Responsive */
     @media (max-width:1400px){
-      .main-container{margin-left:600px}
+      .main-container{margin-left:450px}
       .event-content{padding:20px 30px}
     }
 
@@ -388,11 +384,6 @@
   <div class="main-container">
     <div class="event-container">
       <div class="event-body">
-        <!-- LEFT RAIL - Hidden now, using community list sidebar instead -->
-        <aside class="left-rail" id="leftRail">
-          <div class="loading">Loading...</div>
-        </aside>
-
         <!-- KANAN: header + tabel -->
         <div class="events-main">
           <!-- HEADER -->
@@ -424,8 +415,7 @@
         </div>
       </div>
     </div>
-
-    <div id="right-sidebar-container"></div>
+    {% include "circleup/right-sidebar.html" %}
   </div>
 
   <!-- Modal Add Event -->
@@ -473,8 +463,6 @@
       </div>
     </div>
   </div>
-
-  {% include "circleup/right-sidebar.html" %}
   
   <script>
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
@@ -573,9 +561,19 @@
       history.replaceState(null, "", url);
       
       renderCommunityList();
-      syncRightSidebar();
       renderEvents();
       populateChannelDropdown();
+      
+      // Sync right sidebar
+      if (typeof window.syncRightSidebarFromCommunity === 'function') {
+        window.syncRightSidebarFromCommunity(COMMUNITY_ID);
+      }
+      if (typeof window.renderRightSidebarChannels === 'function') {
+        window.renderRightSidebarChannels(COMMUNITY_ID);
+      }
+      if (typeof window.renderRightSidebarEvents === 'function') {
+        window.renderRightSidebarEvents(COMMUNITY_ID);
+      }
     }
 
     // Render events table
@@ -737,6 +735,12 @@
         const newEvent = JSON.parse(responseText);
         await fetchEvents();
         renderEvents();
+        
+        // Update right sidebar events
+        if (typeof window.renderRightSidebarEvents === 'function') {
+          window.renderRightSidebarEvents(COMMUNITY_ID);
+        }
+        
         closeModal();
         alert('Event created successfully!');
       } catch(e){
@@ -752,69 +756,25 @@
       alert('Edit event functionality coming soon!');
     }
 
-    // Right sidebar sync
-    function syncRightSidebar(){
-      const comm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
-      if (!comm) return;
-
-      const img = document.querySelector('[data-rs="image"]');
-      const name = document.querySelector('[data-rs="name"]');
-      const counts = document.querySelector('[data-rs="counts"]');
-      
-      if (img) img.src = absUrl(comm.background_banner || comm.profile_pic) || "";
-      if (name) name.textContent = comm.name || "Community";
-      if (counts) counts.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
-
-      renderRightSidebarChannels();
-      renderRightSidebarEvents();
-    }
-
-    function renderRightSidebarChannels(){
-      const box = document.getElementById("channels-list");
-      if (!box) return;
-
-      const channels = CHANNELS_CACHE.filter(c => String(c.community) === String(COMMUNITY_ID));
-      
-      if (!channels.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No channels</div>`;
-        return;
-      }
-
-      box.innerHTML = channels.map(c => `
-        <a href="/chat/?community=${encodeURIComponent(COMMUNITY_ID)}&channel=${encodeURIComponent(c.id)}"
-           class="channel-item" data-channel="${c.id}">
-          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          <span>${c.name}</span>
-        </a>
-      `).join("");
-    }
-
-    function renderRightSidebarEvents(){
-      const box = document.getElementById("events-list");
-      if (!box) return;
-
-      const events = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
-      
-      if (!events.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No events</div>`;
-        return;
-      }
-
-      box.innerHTML = events.map(ev => `
-        <a href="/event-info/?community=${encodeURIComponent(COMMUNITY_ID)}#${ev.id}" class="event-item">
-          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
-          <span>${ev.name}</span>
-        </a>
-      `).join("");
-    }
-
     // Boot
     async function boot(){
       try {
         await Promise.all([fetchCommunities(), fetchChannels(), fetchEvents()]);
         renderCommunityList();
         renderEvents();
-        syncRightSidebar();
+        
+        // Sync right sidebar
+        if (COMMUNITY_ID) {
+          if (typeof window.syncRightSidebarFromCommunity === 'function') {
+            window.syncRightSidebarFromCommunity(COMMUNITY_ID);
+          }
+          if (typeof window.renderRightSidebarChannels === 'function') {
+            window.renderRightSidebarChannels(COMMUNITY_ID);
+          }
+          if (typeof window.renderRightSidebarEvents === 'function') {
+            window.renderRightSidebarEvents(COMMUNITY_ID);
+          }
+        }
       } catch(e){
         console.error('Boot error:', e);
         const tbody = document.getElementById("eventsTableBody");

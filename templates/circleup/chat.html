@@ -13,7 +13,7 @@
     
     /* ===== COMMUNITY LIST SIDEBAR ===== */
     .community-list-sidebar {
-      width: 400px;
+      width: 250px;
       height: 100vh;
       background: #fff;
       border-right: 1px solid #e0e0e0;
@@ -122,7 +122,7 @@
       flex:1;
       height:100vh;
       overflow:hidden;
-      margin-left:600px; /* 200px sidebar + 400px community list */
+      margin-left:450px; /* 200px sidebar + 250px community list */
     }
 
     /* CHAT LAYOUT */
@@ -146,9 +146,6 @@
     .chat-title{font-size:18px;font-weight:600}
     .chat-stats{font-size:12px;color:#888}
     .chat-body{flex:1;display:flex;min-height:0;background:#fff}
-
-    /* LEFT RAIL - Hide this as we now use community list sidebar */
-    .left-rail{display:none}
 
     /* MESSAGES */
     .messages-wrap{
@@ -255,7 +252,7 @@
 
     /* Responsive */
     @media (max-width:1400px){
-      .main-container{margin-left:600px}
+      .main-container{margin-left:450px}
     }
 
     @media (max-width: 1024px){
@@ -292,12 +289,6 @@
       <span class="chat-stats" id="chatStats"></span>
     </div>
     <div class="chat-body">
-
-      <!-- Left media rail (community thumbnails) - HIDDEN NOW -->
-      <aside class="left-rail" id="leftRail">
-        <div id="currentCommunityNameOld"></div>
-      </aside>
-
       <!-- Messages -->
       <div class="messages-wrap">
         <div class="chat-messages" id="chatMessages">
@@ -309,7 +300,6 @@
           <input type="text" class="chat-input" placeholder="Type your message" id="messageInput">
           <button class="send-btn" id="sendBtn" title="Send">➤</button>
         </div>
-
       </div>
     </div>
   </div>
@@ -439,18 +429,39 @@
       try {
         const url = new URL(location.href);
         url.searchParams.set('channel', channelId);
+        url.searchParams.set('community', commId);
         history.replaceState(null, '', url);
       } catch(e){}
-      syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-      renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+      
+      // Sync right sidebar using global functions
+      if (typeof window.syncRightSidebarFromCommunity === 'function') {
+        window.syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
+      }
+      if (typeof window.renderRightSidebarChannels === 'function') {
+        window.renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+      }
+      if (typeof window.renderRightSidebarEvents === 'function') {
+        window.renderRightSidebarEvents(SELECTEDCOMMUNITYID);
+      }
+      
       renderCommunityList();
       updateChatHeader();
       loadMessages();
     } else {
       // No general channel exists yet
       channelId = null;
-      syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-      renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+      
+      // Still sync right sidebar even without channel
+      if (typeof window.syncRightSidebarFromCommunity === 'function') {
+        window.syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
+      }
+      if (typeof window.renderRightSidebarChannels === 'function') {
+        window.renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+      }
+      if (typeof window.renderRightSidebarEvents === 'function') {
+        window.renderRightSidebarEvents(SELECTEDCOMMUNITYID);
+      }
+      
       renderCommunityList();
       updateChatHeader();
       const wrap = document.getElementById('chatMessages');
@@ -593,80 +604,62 @@
     }
   }
 
-  // ===== Right sidebar =====
-  function syncRightSidebarFromCommunity(commId){
-    const c = communityInfo(commId);
-    const imgEl = document.querySelector('[data-rs="image"]');
-    const nameEl = document.querySelector('[data-rs="name"]');
-    const countEl = document.querySelector('[data-rs="counts"]');
-    if (!c) return;
-    if (imgEl) imgEl.src = absUrl(c.backgroundpic || c.background_banner) || absUrl(c.profilepic || c.profile_pic) || 'https://via.placeholder.com/300x120';
-    if (nameEl) nameEl.textContent = c.name || "";
-    if (countEl) countEl.textContent = `${c.membercount || c.member_count || 0} Members, ${c.onlinecount || c.online_count || 0} Online`;
+  // ===== Setup channel click handlers for right sidebar =====
+  function setupRightSidebarChannelHandlers(){
+    // Wait a bit for right sidebar to render
+    setTimeout(() => {
+      const channelsList = document.getElementById('channels-list');
+      if (!channelsList) return;
+      
+      const channelLinks = channelsList.querySelectorAll('.channel-item');
+      channelLinks.forEach(link => {
+        // Clone to remove old event listeners
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+        
+        newLink.addEventListener('click', async (e) => {
+          e.preventDefault();
+          
+          const href = newLink.getAttribute('href');
+          if (!href || href === '#') return;
+          
+          // Extract channel ID from href
+          const match = href.match(/channel=([^&]+)/);
+          if (match) {
+            channelId = match[1];
+            
+            // Update URL
+            try {
+              const url = new URL(location.href);
+              url.searchParams.set('channel', channelId);
+              if (SELECTEDCOMMUNITYID) {
+                url.searchParams.set('community', SELECTEDCOMMUNITYID);
+              }
+              history.replaceState(null, '', url);
+            } catch(err){}
+            
+            // Update active state
+            channelsList.querySelectorAll('.channel-item').forEach(item => {
+              item.classList.remove('active');
+            });
+            newLink.classList.add('active');
+            
+            // Load messages
+            updateChatHeader();
+            await loadMessages();
+          }
+        });
+      });
+    }, 200);
   }
 
-  // Always show General even if empty and route composer to it
-  function renderRightSidebarChannels(commId){
-    const box = document.getElementById("channels-list");
-    if (!box) return;
-
-    const all = (CHANNELSCACHE || []).filter(c => String(c.community) === String(commId));
-    const hasGeneral = all.some(c => (c.name || '').toLowerCase() === 'general');
-    let display = [...all];
-    if (!hasGeneral) {
-      display.unshift({ id: null, community: commId, name: 'General', _virtual: true });
-    }
-
-    box.innerHTML = display.map(c => `
-      <a href="${c.id ? `?channel=${c.id}` : '#'}" class="channel-item ${String(c.id) === String(channelId) ? 'active' : ''}" data-channel="${c.id || ''}" data-comm="${commId}" data-virtual="${c._virtual ? 1 : 0}">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-        <span>${escapeHtml(c.name)}</span>
-      </a>
-    `).join("");
-
-    box.querySelectorAll(".channel-item").forEach(a => {
-      a.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const isVirtual = a.getAttribute('data-virtual') === '1';
-        const comm = a.getAttribute('data-comm');
-        
-        if (isVirtual) {
-          // Resolve General channel id if it exists now
-          let gen = (CHANNELSCACHE || []).find(c => String(c.community) === String(comm) && (c.name || '').toLowerCase() === 'general');
-          if (!gen) {
-            await fetchChannels();
-            gen = (CHANNELSCACHE || []).find(c => String(c.community) === String(comm) && (c.name || '').toLowerCase() === 'general');
-          }
-          channelId = gen ? gen.id : null;
-        } else {
-          channelId = a.getAttribute("data-channel");
-        }
-
-        SELECTEDCOMMUNITYID = comm;
-        try {
-          if (channelId) {
-            const url = new URL(location.href);
-            url.searchParams.set("channel", channelId);
-            history.replaceState(null, "", url);
-          }
-        } catch(e){}
-
-        box.querySelectorAll(".channel-item").forEach(x => x.classList.remove("active"));
-        if (channelId) a.classList.add("active");
-        renderCommunityList();
-        updateChatHeader();
-        if (channelId) {
-          loadMessages();
-        } else {
-          const wrap = document.getElementById('chatMessages');
-          if (wrap) wrap.innerHTML = `
-            <div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#777;text-align:center;padding:24px;">
-              <div style="font-size:16px;margin-bottom:6px;">No messages yet</div>
-              <div style="font-size:14px;">Let's start our conversation.</div>
-            </div>`;
-        }
-      });
-    });
+  // Override right sidebar render functions to add our handlers
+  if (window.renderRightSidebarChannels) {
+    const originalRenderChannels = window.renderRightSidebarChannels;
+    window.renderRightSidebarChannels = function(communityId) {
+      originalRenderChannels(communityId);
+      setupRightSidebarChannelHandlers();
+    };
   }
 
   // ===== Boot & events =====
@@ -705,51 +698,63 @@
   if (msgInput) msgInput.addEventListener("keypress", (e) => { if(e.key === "Enter"){ e.preventDefault(); sendMessage(); } });
 
   async function boot(){
-  try{
-    await Promise.all([fetchJoinedCommunities(), fetchChannels()]);
-    
-    // Initialize selected community from channel if available
-    if (channelId) {
-      const ch = (CHANNELSCACHE || []).find(c => String(c.id) === String(channelId));
-      if (ch) {
-        SELECTEDCOMMUNITYID = ch.community;
+    try{
+      await Promise.all([fetchJoinedCommunities(), fetchChannels()]);
+      
+      // Initialize selected community from channel if available
+      if (channelId) {
+        const ch = (CHANNELSCACHE || []).find(c => String(c.id) === String(channelId));
+        if (ch) {
+          SELECTEDCOMMUNITYID = ch.community;
+        }
       }
-    }
-    
-    // NEW: Handle community parameter from URL
-    const communityParam = params.get("community");
-    if (communityParam && !SELECTEDCOMMUNITYID) {
-      SELECTEDCOMMUNITYID = communityParam;
-    }
-    
-    // If no community selected, pick first one
-    if (!SELECTEDCOMMUNITYID && COMMUNITIESCACHE.length > 0){
-      SELECTEDCOMMUNITYID = COMMUNITIESCACHE[0].id;
-    }
+      
+      // Handle community parameter from URL
+      const communityParam = params.get("community");
+      if (communityParam && !SELECTEDCOMMUNITYID) {
+        SELECTEDCOMMUNITYID = communityParam;
+      }
+      
+      // If no community selected, pick first one
+      if (!SELECTEDCOMMUNITYID && COMMUNITIESCACHE.length > 0){
+        SELECTEDCOMMUNITYID = COMMUNITIESCACHE[0].id;
+      }
 
-    renderCommunityList();
-    if (SELECTEDCOMMUNITYID) {
-      syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-      renderRightSidebarChannels(SELECTEDCOMMUNITYID);
-    }
+      renderCommunityList();
+      
+      if (SELECTEDCOMMUNITYID) {
+        // Sync right sidebar using global functions
+        if (typeof window.syncRightSidebarFromCommunity === 'function') {
+          window.syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
+        }
+        if (typeof window.renderRightSidebarChannels === 'function') {
+          window.renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+        }
+        if (typeof window.renderRightSidebarEvents === 'function') {
+          window.renderRightSidebarEvents(SELECTEDCOMMUNITYID);
+        }
+        
+        // Setup channel handlers after render
+        setupRightSidebarChannelHandlers();
+      }
 
-    // Only auto-select general if no channel is specified
-    if (!channelId && SELECTEDCOMMUNITYID){
-      const general = (CHANNELSCACHE || []).find(c => 
-        String(c.community) === String(SELECTEDCOMMUNITYID) && 
-        (c.name || '').toLowerCase() === 'general'
-      );
-      if (general) channelId = general.id;
-    }
+      // Only auto-select general if no channel is specified
+      if (!channelId && SELECTEDCOMMUNITYID){
+        const general = (CHANNELSCACHE || []).find(c => 
+          String(c.community) === String(SELECTEDCOMMUNITYID) && 
+          (c.name || '').toLowerCase() === 'general'
+        );
+        if (general) channelId = general.id;
+      }
 
-    if (channelId) await loadMessages();
-    updateChatHeader();
-  } catch(e){
-    console.warn(e);
-    const container = document.getElementById('communitiesContainer');
-    if (container) container.innerHTML = `<div style="color:#b00020;padding:20px;text-align:center">Gagal memuat data</div>`;
+      if (channelId) await loadMessages();
+      updateChatHeader();
+    } catch(e){
+      console.warn(e);
+      const container = document.getElementById('communitiesContainer');
+      if (container) container.innerHTML = `<div style="color:#b00020;padding:20px;text-align:center">Gagal memuat data</div>`;
+    }
   }
-}
 
   boot();
 

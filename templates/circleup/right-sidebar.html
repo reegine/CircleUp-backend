@@ -1,87 +1,359 @@
-{% with current=request.resolver_match.url_name %}
 <style>
-  .right-sidebar{flex:0 0 320px;width:320px;height:100vh;overflow:auto;background:#f9f9f9;border-left:1px solid #eee;padding:16px}
-  .community-header{margin-bottom:12px}
-  .community-cover{width:100%;height:150px;object-fit:cover;border-radius:12px;background:#eaeaea}
-  .community-name{font-weight:700;font-size:18px;margin-top:10px}
-  .community-stats{font-size:13px;color:#666;margin-top:4px}
+  .right-sidebar{
+    flex:0 0 340px;
+    width:340px;
+    height:100vh;
+    overflow-y:auto;
+    background:#fff;
+    border-left:1px solid #e0e0e0;
+    padding:20px 16px;
+    position:sticky;
+    top:0;
+  }
+  
+  .right-sidebar::-webkit-scrollbar{width:6px}
+  .right-sidebar::-webkit-scrollbar-thumb{background:#ddd;border-radius:6px}
+  
+  .community-header{
+    margin-bottom:20px;
+  }
+  
+  .community-cover{
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    border-radius:12px;
+    background:#f0f0f0;
+    display:block;
+    margin-bottom:16px;
+  }
+  
+  .community-name{
+    font-weight:700;
+    font-size:20px;
+    margin-bottom:6px;
+    color:#1a1a1a;
+  }
+  
+  .community-stats{
+    font-size:13px;
+    color:#666;
+  }
 
-  .sidebar-menu{list-style:none;margin:12px 0 8px 0;padding:0}
-  .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#333}
-  .sidebar-menu-item:hover{background:#fff}
-  .sidebar-menu-item.active{background:#fff3e0;border:1px solid #e59d2c}
-  .sidebar-menu-item svg{width:18px;height:18px;flex:0 0 18px}
+  .sidebar-menu{
+    list-style:none;
+    margin:0 0 24px 0;
+    padding:0;
+  }
+  
+  .sidebar-menu-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 16px;
+    border-radius:12px;
+    text-decoration:none;
+    color:#1a1a1a;
+    font-weight:500;
+    font-size:15px;
+    background:transparent;
+    border:2px solid transparent;
+    transition:all .2s ease;
+    margin-bottom:6px;
+    cursor:pointer;
+    width:100%;
+    text-align:left;
+  }
+  
+  .sidebar-menu-item:hover{
+    background:#f8f8f8;
+  }
+  
+  .sidebar-menu-item.active{
+    background:#fff3e0;
+    border-color:#e59d2c;
+    color:#1a1a1a;
+    font-weight:600;
+  }
+  
+  .sidebar-menu-item svg{
+    width:20px;
+    height:20px;
+    flex-shrink:0;
+    fill:currentColor;
+  }
 
-  .sidebar-section{margin-top:14px}
-  .section-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;color:#666;padding:8px 0}
-  .section-toggle svg{width:16px;height:16px}
-  #channels-list,#events-list{margin-top:6px}
-  .channel-item,.event-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;text-decoration:none;color:#333}
-  .channel-item:hover,.event-item:hover{background:#fff}
-  .channel-item.active{background:#f5f5f5}
-  .channel-item svg,.event-item svg{width:16px;height:16px;flex:0 0 16px}
+  .sidebar-section{
+    margin-top:24px;
+  }
+  
+  .section-toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    color:#888;
+    padding:8px 8px;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  
+  .section-toggle svg{
+    width:14px;
+    height:14px;
+    fill:currentColor;
+    transition:transform .2s;
+  }
+  
+  .section-toggle.collapsed svg{
+    transform:rotate(-90deg);
+  }
+
+  #channels-list,
+  #events-list{
+    margin-top:8px;
+  }
+  
+  .channel-item,
+  .event-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 16px;
+    border-radius:8px;
+    text-decoration:none;
+    color:#1a1a1a;
+    background:transparent;
+    margin-bottom:4px;
+    /* transition:background .2s; */
+    font-weight:400;
+    font-size:14px;
+  }
+  
+  .channel-item:hover,
+  .event-item:hover{
+    background:#f8f8f8;
+  }
+  
+  .channel-item.active{
+    background:#f0f0f0;
+    font-weight:500;
+  }
+  
+  .channel-item svg,
+  .event-item svg{
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+    fill:currentColor;
+  }
 </style>
 
 <aside id="rightSidebar" class="right-sidebar">
-  <!-- HEADER komunitas -->
   <div class="community-header">
     <img data-rs="image" class="community-cover" alt="Community banner">
     <div data-rs="name" class="community-name">Community</div>
-    <div data-rs="counts" class="community-stats"></div>
+    <div data-rs="counts" class="community-stats">0 Members · 0 Online</div>
   </div>
-
-  <!-- MENU -->
+  
   <ul class="sidebar-menu">
     <li>
-      <a href="{% url 'about' %}" class="sidebar-menu-item {% if current == 'about' %}active{% endif %}">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span>About</span>
+      <a href="/about/" class="sidebar-menu-item" data-page="about">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+        About
       </a>
     </li>
     <li>
-      <a href="{% url 'event_info' %}" class="sidebar-menu-item {% if current == 'event_info' %}active{% endif %}">
-        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-        <span>Event Info</span>
+      <a href="/event-info/" class="sidebar-menu-item" data-page="event-info">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+        </svg>
+        Event Info
       </a>
     </li>
     <li>
-      <a href="{% url 'feeds' %}" class="sidebar-menu-item {% if current == 'feeds' %}active{% endif %}">
-        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        <span>Feeds</span>
+      <a href="/feeds/" class="sidebar-menu-item" data-page="feeds">
+        <svg viewBox="0 0 24 24">
+          <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2zm10 6c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
+        </svg>
+        Feeds
       </a>
     </li>
     <li>
-      <a href="{% url 'members' %}" class="sidebar-menu-item {% if current == 'members' %}active{% endif %}">
-        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        <span>Members</span>
+      <a href="/members/" class="sidebar-menu-item" data-page="members">
+        <svg viewBox="0 0 24 24">
+          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+        </svg>
+        Members
       </a>
     </li>
   </ul>
-
-  <!-- CHANNELS -->
+  
   <div class="sidebar-section">
-    <div class="section-toggle" onclick="toggleSection('channels')">
-      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-      <div class="sidebar-section-title">CHANNELS</div>
+    <div class="section-toggle" onclick="toggleRightSidebarSection('channels')">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 10l5 5 5-5z"/>
+      </svg>
+      Channels
     </div>
-    <div id="channels-list"><!-- diisi via JS --></div>
+    <div id="channels-list"></div>
   </div>
-
-  <!-- EVENTS -->
+  
   <div class="sidebar-section">
-    <div class="section-toggle" onclick="toggleSection('events')">
-      <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-      <div class="sidebar-section-title">EVENTS</div>
+    <div class="section-toggle" onclick="toggleRightSidebarSection('events')">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 10l5 5 5-5z"/>
+      </svg>
+      Events
     </div>
-    <div id="events-list"><!-- diisi via JS --></div>
+    <div id="events-list"></div>
   </div>
 </aside>
-{% endwith %}
 
 <script>
-  function toggleSection(sectionId){
-    const list = document.getElementById(sectionId + '-list');
-    if (!list) return;
-    list.style.display = (list.style.display === 'none' ? 'block' : 'none');
+(function(){
+  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+  const ACCESS = localStorage.getItem("access");
+  const H = ACCESS ? { Authorization: `Bearer ${ACCESS}` } : {};
+  
+  const abs = (u) => {
+    if (!u) return "";
+    if (/^https?:\/\//.test(u)) return u;
+    const root = API_BASE.replace(/\/api\/?$/, "");
+    return root + (u.startsWith("/") ? "" : "/") + u;
+  };
+
+  // Get community ID from URL
+  function getCommunityIdFromURL() {
+    const params = new URLSearchParams(location.search);
+    return params.get("community");
   }
+
+  // Sync community data to right sidebar
+  window.syncRightSidebarFromCommunity = function(communityId) {
+    if (!communityId) return;
+    
+    fetch(`${API_BASE}/communities/${communityId}/`, { headers: H })
+      .then(r => r.ok ? r.json() : null)
+      .then(c => {
+        if (!c) return;
+        
+        const imgEl = document.querySelector('[data-rs="image"]');
+        const nameEl = document.querySelector('[data-rs="name"]');
+        const countEl = document.querySelector('[data-rs="counts"]');
+        
+        if (imgEl) imgEl.src = abs(c.background_banner || c.profile_pic);
+        if (nameEl) nameEl.textContent = c.name || "Community";
+        if (countEl) countEl.textContent = `${c.member_count || 0} Members, ${c.online_count || 0} Online`;
+        
+        // Update menu links with community parameter
+        document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+          const href = item.getAttribute('href');
+          if (href && !href.includes('?')) {
+            item.setAttribute('href', `${href}?community=${communityId}`);
+          }
+        });
+        
+        // Set active menu item based on current page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+          item.classList.remove('active');
+          const href = item.getAttribute('href');
+          if (href && currentPath.includes(href.split('?')[0].replace(/\/$/, ''))) {
+            item.classList.add('active');
+          }
+        });
+      })
+      .catch(err => console.warn('Failed to sync right sidebar:', err));
+  };
+
+  // Render channels in right sidebar
+  window.renderRightSidebarChannels = function(communityId) {
+    if (!communityId) return;
+    
+    const box = document.getElementById("channels-list");
+    if (!box) return;
+    
+    fetch(`${API_BASE}/channels/`, { headers: H })
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        const channels = Array.isArray(data) ? data : (data.results || []);
+        const filtered = channels.filter(c => String(c.community) === String(communityId));
+        
+        if (!filtered.length) {
+          box.innerHTML = '<div style="color:#888;padding:8px;font-size:13px">No channels</div>';
+          return;
+        }
+        
+        box.innerHTML = filtered.map(c => `
+          <a href="/chat/?channel=${c.id}&community=${communityId}" class="channel-item">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+            <span>${c.name}</span>
+          </a>
+        `).join('');
+      })
+      .catch(err => console.warn('Failed to render channels:', err));
+  };
+
+  // Render events in right sidebar
+  window.renderRightSidebarEvents = function(communityId) {
+    if (!communityId) return;
+    
+    const box = document.getElementById("events-list");
+    if (!box) return;
+    
+    fetch(`${API_BASE}/events/`, { headers: H })
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        const events = Array.isArray(data) ? data : (data.results || []);
+        const filtered = events.filter(e => 
+          e.community && String(e.community.id || e.community) === String(communityId)
+        );
+        
+        if (!filtered.length) {
+          box.innerHTML = '<div style="color:#888;padding:8px;font-size:13px">No events</div>';
+          return;
+        }
+        
+        box.innerHTML = filtered.map(e => `
+          <a href="/event-info/?community=${communityId}#${e.id}" class="event-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            <span>${e.name}</span>
+          </a>
+        `).join('');
+      })
+      .catch(err => console.warn('Failed to render events:', err));
+  };
+
+  // Toggle section visibility
+  window.toggleRightSidebarSection = function(section) {
+    const toggle = document.querySelector(`.section-toggle[onclick*="${section}"]`);
+    const list = document.getElementById(`${section}-list`);
+    if (toggle && list) {
+      toggle.classList.toggle('collapsed');
+      list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    }
+  };
+
+  // Initialize right sidebar when DOM is ready
+  function initRightSidebar() {
+    const communityId = getCommunityIdFromURL();
+    if (communityId) {
+      syncRightSidebarFromCommunity(communityId);
+      renderRightSidebarChannels(communityId);
+      renderRightSidebarEvents(communityId);
+    }
+  }
+
+  // Run initialization
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRightSidebar);
+  } else {
+    initRightSidebar();
+  }
+})();
 </script>

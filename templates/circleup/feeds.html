@@ -13,7 +13,7 @@
     
     /* ===== COMMUNITY LIST SIDEBAR ===== */
     .community-list-sidebar {
-      width: 400px;
+      width: 250px;
       height: 100vh;
       background: #fff;
       border-right: 1px solid #e0e0e0;
@@ -117,7 +117,7 @@
     }
 
     .layout{display:flex;min-height:100vh}
-    .main{flex:1;display:flex;gap:20px;padding:20px;margin-left:600px;overflow:hidden;height:100vh}
+    .main{flex:1;display:flex;gap:20px;padding:20px;margin-left:450px;overflow:hidden;height:100vh}
     .content{flex:1;max-width:920px;overflow-y:auto;display:flex;flex-direction:column}
     .content::-webkit-scrollbar{width:10px}
     .content::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
@@ -185,20 +185,6 @@
     .post-submit-btn:hover{background:#d48d1f}
     .post-submit-btn:disabled{background:#ccc;cursor:not-allowed}
     
-    .right-sidebar{flex:0 0 320px;width:320px;max-height:100vh;overflow:auto;background:var(--bg);border-left:1px solid var(--bd);padding:16px}
-    .right-sidebar::-webkit-scrollbar{width:8px}
-    .right-sidebar::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
-    .community-cover{width:100%;height:150px;object-fit:cover;border-radius:12px;background:#eaeaea}
-    .community-name{font-weight:700;font-size:18px;margin-top:10px}
-    .community-stats{font-size:13px;color:var(--muted);margin-top:4px}
-    .sidebar-menu{list-style:none;margin:12px 0 8px 0;padding:0}
-    .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text)}
-    .sidebar-menu-item:hover{background:#fff}
-    .sidebar-menu-item.active{background:#fff3e0;border:1px solid var(--brand)}
-    .sidebar-section{margin-top:14px}
-    .section-title{color:var(--muted);font-size:12px;margin:8px 0;font-weight:600;letter-spacing:0.5px}
-    .channel-item,.event-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;color:var(--text);font-size:13px;margin-bottom:4px}
-    .channel-item:hover,.event-item:hover{background:#fff}
     .sort-dropdown{position:relative}
     .sort-menu{display:none;position:absolute;top:100%;right:0;background:#fff;border:1px solid var(--bd);border-radius:12px;margin-top:8px;min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100}
     .sort-menu.active{display:block}
@@ -207,7 +193,7 @@
     .sort-option.active{background:#fff3e0;color:var(--brand);font-weight:600}
     
     @media (max-width: 1400px){
-      .main{margin-left:600px}
+      .main{margin-left:450px}
       .feeds-grid{grid-template-columns:repeat(2, 1fr)}
     }
     @media (max-width: 1200px){.feeds-grid{grid-template-columns:repeat(2, 1fr)}}
@@ -215,7 +201,6 @@
       .community-list-sidebar{display:none}
       .main{margin-left:200px;padding:12px}
       .feeds-grid{grid-template-columns:1fr}
-      .right-sidebar{display:none}
     }
     @media (max-width: 768px){
       .main{margin-left:0}
@@ -272,27 +257,7 @@
         <div id="loading" class="spinner" style="display:none"></div>
       </section>
       
-      <aside id="rightSidebar" class="right-sidebar">
-        <div class="community-header">
-          <img data-rs="image" class="community-cover" alt="Community banner">
-          <div data-rs="name" class="community-name">Community</div>
-          <div data-rs="counts" class="community-stats"></div>
-        </div>
-        <ul class="sidebar-menu">
-          <li><a href="/about/" class="sidebar-menu-item">About</a></li>
-          <li><a href="/event-info/" class="sidebar-menu-item">Event Info</a></li>
-          <li><a href="/feeds/" class="sidebar-menu-item active">Feeds</a></li>
-          <li><a href="/members/" class="sidebar-menu-item">Members</a></li>
-        </ul>
-        <div class="sidebar-section">
-          <div class="section-title">CHANNELS</div>
-          <div id="channels-list" class="empty">Loading…</div>
-        </div>
-        <div class="sidebar-section">
-          <div class="section-title">EVENTS</div>
-          <div id="events-list" class="empty">Loading…</div>
-        </div>
-      </aside>
+      {% include "circleup/right-sidebar.html" %}
     </main>
   </div>
   
@@ -430,20 +395,21 @@
     history.replaceState(null, '', url);
     
     renderCommunitiesList();
-    updateSidebarLinks();
+    
+    // Use global right sidebar functions from right-sidebar.html
+    if (typeof window.syncRightSidebarFromCommunity === 'function') {
+      window.syncRightSidebarFromCommunity(COMM_ID);
+    }
+    if (typeof window.renderRightSidebarChannels === 'function') {
+      window.renderRightSidebarChannels(COMM_ID);
+    }
+    if (typeof window.renderRightSidebarEvents === 'function') {
+      window.renderRightSidebarEvents(COMM_ID);
+    }
+    
     loadCommunity();
-    loadChannels();
-    loadEvents();
     loadPosts();
   };
-
-  function updateSidebarLinks(){
-    document.querySelectorAll('.sidebar-menu a').forEach(a=>{
-      const url = new URL(a.getAttribute('href'), location.origin);
-      url.searchParams.set('community', COMM_ID);
-      a.setAttribute('href', url.pathname + '?' + url.searchParams.toString());
-    });
-  }
 
   if(!COMM_ID){
     loadCommunitiesList().then(() => {
@@ -465,48 +431,10 @@
       const c = await fetchJSON(`${API_BASE}/communities/${COMM_ID}/`);
       const pageName = document.querySelector('[data-page="name"]');
       const pageCnts = document.querySelector('[data-page="counts"]');
-      const sImg = document.querySelector('[data-rs="image"]');
-      const sNm = document.querySelector('[data-rs="name"]');
-      const sCt = document.querySelector('[data-rs="counts"]');
       if(pageName) pageName.textContent = c.name || 'Community Feeds';
       const counts = `${c.member_count||0} Members, ${c.online_count||0} Online`;
       if(pageCnts) pageCnts.textContent = counts;
-      if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
-      if(sNm) sNm.textContent = c.name || 'Community';
-      if(sCt) sCt.textContent = counts;
     }catch(e){console.warn('Community load failed', e);}
-  }
-
-  async function loadChannels(){
-    if(!COMM_ID) return;
-    const list = document.getElementById('channels-list');
-    try{
-      const data = await fetchJSON(`${API_BASE}/channels/`);
-      const allChannels = Array.isArray(data) ? data : (data.results||[]);
-      const items = allChannels.filter(c => String(c.community) === String(COMM_ID));
-      list.innerHTML = items.length
-        ? items.map(c=>`<a class="channel-item" href="/chat/?channel=${encodeURIComponent(c.id)}&community=${encodeURIComponent(COMM_ID)}">💬 ${escapeHtml(c.name)}</a>`).join('')
-        : '<div class="empty">No channels</div>';
-    }catch(e){
-      console.warn('Channels load failed', e);
-      list.innerHTML = '<div class="empty">Gagal memuat channels</div>';
-    }
-  }
-
-  async function loadEvents(){
-    if(!COMM_ID) return;
-    const list = document.getElementById('events-list');
-    try{
-      const data = await fetchJSON(`${API_BASE}/events/`);
-      const items = Array.isArray(data) ? data : (data.results||data||[]);
-      const events = items.filter(e => (e.community && (String(e.community.id||e.community) === String(COMM_ID))));
-      list.innerHTML = events.length
-        ? events.map(e=>`<a class="event-item" href="/event-info/?community=${encodeURIComponent(COMM_ID)}#${e.id}">📅 ${escapeHtml(e.name)}</a>`).join('')
-        : '<div class="empty">No events</div>';
-    }catch(e){
-      console.warn('Events load failed', e);
-      list.innerHTML = '<div class="empty">Gagal memuat events</div>';
-    }
   }
 
   async function loadPosts(){
@@ -737,9 +665,21 @@
   });
 
   function boot(){
-    updateSidebarLinks();
-    Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
+    Promise.all([loadCommunity()]).then(()=>{
       loadPosts();
+      
+      // Use global right sidebar functions from right-sidebar.html
+      if (COMM_ID) {
+        if (typeof window.syncRightSidebarFromCommunity === 'function') {
+          window.syncRightSidebarFromCommunity(COMM_ID);
+        }
+        if (typeof window.renderRightSidebarChannels === 'function') {
+          window.renderRightSidebarChannels(COMM_ID);
+        }
+        if (typeof window.renderRightSidebarEvents === 'function') {
+          window.renderRightSidebarEvents(COMM_ID);
+        }
+      }
     });
   }
 })();

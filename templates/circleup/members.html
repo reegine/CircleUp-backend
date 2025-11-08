@@ -55,8 +55,113 @@
       width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 2;
     }
 
+    /* ===== COMMUNITY LIST SIDEBAR ===== */
+    .community-list-sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #fff;
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+      position: fixed;
+      left: 200px;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .community-list-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid #eee;
+      background: #fafafa;
+    }
+
+    .community-list-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .community-list-stats {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .communities-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .communities-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .communities-container::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 8px;
+    }
+
+    .community-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #fff;
+      border: 2px solid #eee;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .community-card:hover {
+      border-color: #e59d2c;
+      background: #fef9f2;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .community-card.active {
+      border-color: #e59d2c;
+      background: #fff3e0;
+      border-left: 4px solid #e59d2c;
+    }
+
+    .community-card-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #eaeaea;
+      flex-shrink: 0;
+    }
+
+    .community-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .community-card-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .community-card-members {
+      font-size: 13px;
+      color: #666;
+    }
+
     /* Main Container */
-    .main-container{display:flex;flex:1;height:100vh;margin-left:200px}
+    .main-container{display:flex;flex:1;height:100vh;margin-left:450px}
 
     .members-container{
       flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;
@@ -75,26 +180,6 @@
     .members-body{
       flex:1;display:flex;min-height:0;background:#fff;
     }
-
-    /* Left Rail - Community List (PERUBAHAN BESAR DI SINI) */
-    .left-rail{
-      width:280px;padding:16px 10px;border-right:1px solid #eee;
-      background:#fff;overflow-y:auto;flex-shrink:0;
-    }
-    .left-rail::-webkit-scrollbar{width:8px}
-    .left-rail::-webkit-scrollbar-thumb{background:#e4e4e4;border-radius:8px}
-    
-    .community-card{
-      display:flex;align-items:center;gap:10px;padding:12px;
-      margin-bottom:12px;border-radius:10px;background:#f9f9f9;
-      cursor:pointer;transition:all .2s;border-left:3px solid transparent;
-    }
-    .community-card:hover{background:#f0f0f0}
-    .community-card.active{background:#fff3e0;border-left-color:#e59d2c}
-    .community-thumb{width:50px;height:50px;border-radius:8px;object-fit:cover;flex-shrink:0}
-    .community-info{flex:1;min-width:0}
-    .community-title{font-size:14px;font-weight:600;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .community-subtitle{font-size:11px;color:#666;margin-top:2px}
 
     /* Members List */
     .members-main{
@@ -136,39 +221,13 @@
     .action-button.remove:hover{background:#ffe5e5}
     .action-button:disabled{opacity:0.5;cursor:not-allowed}
 
-    /* RIGHT SIDEBAR - menggunakan style dari right-sidebar.html */
-    .right-sidebar{
-      flex:0 0 320px;width:320px;height:100vh;overflow:auto;
-      background:#f9f9f9;border-left:1px solid #eee;padding:16px
-    }
-    .community-header{margin-bottom:12px}
-    .community-cover{width:100%;height:150px;object-fit:cover;border-radius:12px;background:#eaeaea}
-    .community-name{font-weight:700;font-size:18px;margin-top:10px}
-    .community-stats{font-size:13px;color:#666;margin-top:4px}
-
-    .sidebar-menu{list-style:none;margin:12px 0 8px 0;padding:0}
-    .sidebar-menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:#333}
-    .sidebar-menu-item:hover{background:#fff}
-    .sidebar-menu-item.active{background:#fff3e0;border:1px solid #e59d2c}
-    .sidebar-menu-item svg{width:18px;height:18px;flex:0 0 18px;fill:currentColor}
-
-    .sidebar-section{margin-top:14px}
-    .section-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;color:#666;padding:8px 0}
-    .section-toggle svg{width:16px;height:16px;fill:currentColor}
-    .sidebar-section-title{font-size:14px;font-weight:600}
-    #channels-list,#events-list{margin-top:6px}
-    .channel-item,.event-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;text-decoration:none;color:#333}
-    .channel-item:hover,.event-item:hover{background:#fff}
-    .channel-item.active{background:#f5f5f5}
-    .channel-item svg,.event-item svg{width:16px;height:16px;flex:0 0 16px;fill:currentColor}
-
     .loading{text-align:center;padding:40px;color:#666}
     .error{text-align:center;padding:40px;color:#e74c3c}
 
     @media (max-width: 1024px){
       .sidebar{display:none}
+      .community-list-sidebar{display:none}
       .main-container{margin-left:0}
-      .left-rail{display:none}
     }
   </style>
 </head>
@@ -225,6 +284,18 @@
     </div>
   </aside>
 
+  <!-- COMMUNITY LIST SIDEBAR -->
+  <aside class="community-list-sidebar">
+    <div class="community-list-header">
+      <div class="community-list-title" id="currentCommunityName">Community</div>
+      <div class="community-list-stats" id="currentCommunityStats">0 Members · 0 Online</div>
+    </div>
+    
+    <div class="communities-container" id="communitiesContainer">
+      <div class="loading">Loading communities...</div>
+    </div>
+  </aside>
+
   <div class="main-container">
     <div class="members-container">
       <!-- Header -->
@@ -235,13 +306,8 @@
         </div>
       </div>
 
-      <!-- Body: Left Rail + Members List -->
+      <!-- Body: Members List -->
       <div class="members-body">
-        <!-- Left Rail: Community List (PERUBAHAN DARI MEDIA GALLERY KE COMMUNITY LIST) -->
-        <aside class="left-rail" id="leftRail">
-          <!-- Community list akan diisi di sini -->
-        </aside>
-
         <!-- Members List -->
         <div class="members-main">
           <div class="members-content" id="membersContent">
@@ -251,57 +317,7 @@
       </div>
     </div>
 
-    <!-- RIGHT SIDEBAR - menggunakan struktur dari right-sidebar.html -->
-    <aside id="rightSidebar" class="right-sidebar">
-      <div class="community-header">
-        <img data-rs="image" class="community-cover" id="communityBanner" alt="Community banner">
-        <div data-rs="name" class="community-name" id="sidebarCommunityName">Community</div>
-        <div data-rs="counts" class="community-stats" id="sidebarStats"></div>
-      </div>
-
-      <ul class="sidebar-menu">
-        <li>
-          <a href="#" class="sidebar-menu-item" onclick="navigateToAbout()">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            <span>About</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="sidebar-menu-item" onclick="navigateToEvents()">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-            <span>Event Info</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="sidebar-menu-item" onclick="navigateToFeeds()">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            <span>Feeds</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="sidebar-menu-item active">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            <span>Members</span>
-          </a>
-        </li>
-      </ul>
-
-      <div class="sidebar-section">
-        <div class="section-toggle" onclick="toggleSection('channels')">
-          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-          <div class="sidebar-section-title">CHANNELS</div>
-        </div>
-        <div id="channels-list"></div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="section-toggle" onclick="toggleSection('events')">
-          <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-          <div class="sidebar-section-title">EVENTS</div>
-        </div>
-        <div id="events-list"></div>
-      </div>
-    </aside>
+    {% include "circleup/right-sidebar.html" %}
   </div>
 
 <script>
@@ -326,6 +342,7 @@
   let communityData = null;
   let isCurrentUserAdmin = false;
   let allMembers = [];
+  let allCommunities = [];
 
   // Helper: absolute URL for media
   const abs = (u) => {
@@ -371,48 +388,38 @@
     }
   }
 
-  // PERUBAHAN: Get community members (bukan semua users)
-  async function getCommunityMembers(communityId) {
-    try {
-      // Ambil data community untuk mendapatkan info members
-      const r = await fetch(`${API_BASE}/communities/${communityId}/`, { headers: H });
-      if (!r.ok) throw new Error("Failed to get community");
-      const community = await r.json();
-      
-      // Di sini kita perlu endpoint khusus untuk members, tapi karena tidak ada,
-      // kita simulasikan dengan data yang ada
-      // Idealnya: GET /api/communities/{id}/members/
-      
-      return community;
-    } catch (e) {
-      console.error("Get community members error:", e);
-      return null;
-    }
-  }
-
-  // PERUBAHAN: Load joined communities for LEFT RAIL (bukan sidebar kiri)
+  // Load joined communities for community list sidebar
   async function loadCommunityList() {
     try {
       const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
       if (!r.ok) return;
       const communities = await r.json();
+      allCommunities = Array.isArray(communities) ? communities : [];
       
-      const box = document.getElementById("leftRail");
-      if (!communities || !communities.length) {
+      const box = document.getElementById("communitiesContainer");
+      if (!allCommunities || !allCommunities.length) {
         box.innerHTML = '<div style="color:#888;padding:10px;font-size:12px">No communities</div>';
         return;
       }
       
-      box.innerHTML = communities.map(c => `
+      box.innerHTML = allCommunities.map(c => `
         <div class="community-card ${String(c.id) === String(COMMUNITY_ID) ? 'active' : ''}" 
              data-id="${c.id}" onclick="switchCommunity('${c.id}')">
-          <img class="community-thumb" src="${abs(c.profile_pic)}" alt="${c.name}">
-          <div class="community-info">
-            <div class="community-title">${c.name}</div>
-            <div class="community-subtitle">${c.member_count || 0} members</div>
+          <img class="community-card-avatar" src="${abs(c.profile_pic || c.background_banner)}" alt="${c.name}" onerror="this.src='https://via.placeholder.com/60?text=C'">
+          <div class="community-card-info">
+            <div class="community-card-name">${c.name}</div>
+            <div class="community-card-members">${c.member_count || 0} members</div>
           </div>
         </div>
       `).join("");
+
+      // Update header
+      const currentComm = allCommunities.find(comm => String(comm.id) === String(COMMUNITY_ID));
+      if(currentComm){
+        document.getElementById('currentCommunityName').textContent = currentComm.name || 'Community';
+        document.getElementById('currentCommunityStats').textContent = 
+          `${currentComm.member_count || 0} Members · ${currentComm.online_count || 0} Online`;
+      }
     } catch (e) {
       console.error("Load community list error:", e);
     }
@@ -430,82 +437,12 @@
       `${community.member_count || 0} Members · ${community.online_count || 0} Online`;
   }
 
-  // Render right sidebar
-  function renderRightSidebar(community) {
-    const banner = document.getElementById("communityBanner");
-    const name = document.getElementById("sidebarCommunityName");
-    const stats = document.getElementById("sidebarStats");
-    
-    banner.src = abs(community.background_banner || community.profile_pic);
-    name.textContent = community.name || "Community";
-    stats.textContent = `${community.member_count || 0} Members · ${community.online_count || 0} Online`;
-  }
-
-  // Render channels
-  async function renderChannels() {
-    try {
-      const r = await fetch(`${API_BASE}/channels/`, { headers: H });
-      const data = await r.json();
-      const channels = Array.isArray(data) ? data : (data.results || []);
-      
-      const communityChannels = channels.filter(c => 
-        String(c.community) === String(COMMUNITY_ID)
-      );
-      
-      const box = document.getElementById("channels-list");
-      if (!communityChannels.length) {
-        box.innerHTML = '<div style="color:#888;padding:6px;font-size:12px">No channels</div>';
-        return;
-      }
-      
-      box.innerHTML = communityChannels.map(c => `
-        <a href="/chat/?community=${COMMUNITY_ID}&channel=${c.id}" class="channel-item">
-          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          <span>${c.name}</span>
-        </a>
-      `).join("");
-    } catch (e) {
-      console.error("Render channels error:", e);
-    }
-  }
-
-  // Render events
-  async function renderEvents() {
-    try {
-      const r = await fetch(`${API_BASE}/events/`, { headers: H });
-      const events = await r.json();
-      
-      const communityEvents = (Array.isArray(events) ? events : []).filter(e => 
-        e.community && String(e.community.id) === String(COMMUNITY_ID)
-      );
-      
-      const box = document.getElementById("events-list");
-      if (!communityEvents.length) {
-        box.innerHTML = '<div style="color:#888;padding:6px;font-size:12px">No events</div>';
-        return;
-      }
-      
-      box.innerHTML = communityEvents.map(ev => `
-        <a href="/event-info/?community=${COMMUNITY_ID}#${ev.id}" class="event-item">
-          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
-          <span>${ev.name}</span>
-        </a>
-      `).join("");
-    } catch (e) {
-      console.error("Render events error:", e);
-    }
-  }
-
-  // PERUBAHAN: Render members dari community yang dipilih
+  // Render members dari community yang dipilih
   async function renderMembers() {
     const content = document.getElementById("membersContent");
     
     try {
-      // Cara 1: Jika ada endpoint khusus members (ideal)
-      // const r = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/members/`, { headers: H });
-      
-      // Cara 2: Gunakan data dari community (workaround)
-      // Karena tidak ada endpoint members, kita simulasikan
+      // Get all users (in production, this should be a specific members endpoint)
       const allUsersResponse = await fetch(`${API_BASE}/users/`, { headers: H });
       const allUsersData = await allUsersResponse.json();
       const allUsers = Array.isArray(allUsersData) ? allUsersData : (allUsersData.results || []);
@@ -531,7 +468,7 @@
         });
       }
       
-      // Add some other users as members (sample - dalam produksi ini harus dari endpoint members)
+      // Add some other users as members (sample - in production this should come from members endpoint)
       const otherUsers = allUsers
         .filter(u => 
           String(u.id) !== String(communityData.created_by?.id) && 
@@ -579,7 +516,7 @@
         return `
           <div class="member-item" data-member-idx="${idx}">
             <div class="member-info">
-              <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar">
+              <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar" onerror="this.src='https://via.placeholder.com/45?text=U'">
               <div class="member-details">
                 <div class="member-name">
                   ${user.username || user.first_name || user.email}
@@ -627,26 +564,6 @@
     
     alert('Member kicked successfully!\n\nNote: This is a demo. In production, this would call:\nPOST /api/communities/{id}/kick_member/');
     renderMembers();
-  };
-
-  // Toggle section for right sidebar
-  window.toggleSection = function(sectionId) {
-    const list = document.getElementById(sectionId + '-list');
-    if (!list) return;
-    list.style.display = (list.style.display === 'none' ? 'block' : 'none');
-  };
-
-  // Navigation functions
-  window.navigateToAbout = function() {
-    window.location.href = `/about/?community=${COMMUNITY_ID}`;
-  };
-
-  window.navigateToEvents = function() {
-    window.location.href = `/event-info/?community=${COMMUNITY_ID}`;
-  };
-
-  window.navigateToFeeds = function() {
-    window.location.href = `/feeds/?community=${COMMUNITY_ID}`;
   };
 
   // Dropdown toggle for sidebar
@@ -810,11 +727,19 @@
       }
       
       renderHeader(community);
-      renderRightSidebar(community);
-      await loadCommunityList(); // Load communities di left rail
+      await loadCommunityList();
       await renderMembers();
-      await renderChannels();
-      await renderEvents();
+      
+      // Sync right sidebar using global functions
+      if (typeof window.syncRightSidebarFromCommunity === 'function') {
+        window.syncRightSidebarFromCommunity(COMMUNITY_ID);
+      }
+      if (typeof window.renderRightSidebarChannels === 'function') {
+        window.renderRightSidebarChannels(COMMUNITY_ID);
+      }
+      if (typeof window.renderRightSidebarEvents === 'function') {
+        window.renderRightSidebarEvents(COMMUNITY_ID);
+      }
       
     } catch (e) {
       console.error("Init error:", e);
