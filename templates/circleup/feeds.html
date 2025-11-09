@@ -5,10 +5,10 @@
   <title>CircleUP – Feeds</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+  <style>
     :root{--bg:#f9f9fb;--bd:#ececec;--text:#1f2937;--muted:#6b7280;--brand:#e59d2c;--card:#ffffff}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Poppins',sans-serif;color:var(--text);background:var(--bg);display:flex;overflow:hidden}
+    body{font-family:'Poppins',sans-serif;color:var(--text);background:var(--bg);display:flex;overflow:hidden;height:100vh}
     a{color:inherit;text-decoration:none}
     
     /* ===== COMMUNITY LIST SIDEBAR ===== */
@@ -30,6 +30,7 @@
       padding: 24px 20px;
       border-bottom: 1px solid #eee;
       background: #fafafa;
+      flex-shrink: 0;
     }
 
     .community-list-title {
@@ -116,20 +117,86 @@
       color: #666;
     }
 
-    .layout{display:flex;min-height:100vh}
-    .main{flex:1;display:flex;gap:20px;padding:20px;margin-left:450px;overflow:hidden;height:100vh}
-    .content{flex:1;max-width:920px;overflow-y:auto;display:flex;flex-direction:column}
+    /* ===== MAIN LAYOUT ===== */
+    .layout{
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      margin-left: 450px; /* sidebar (200px) + community-list (250px) */
+    }
+    
+    .main{
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      padding: 20px;
+      overflow: hidden;
+      height: 100vh;
+      min-width: 0; /* IMPORTANT: Allow flex shrinking */
+    }
+    
+    .content{
+      flex: 1;
+      width: 100%; /* IMPORTANT: Take available space */
+      max-width: 920px;
+      min-width: 0; /* IMPORTANT: Allow shrinking */
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    
     .content::-webkit-scrollbar{width:10px}
     .content::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
     
     .page-head{margin-bottom:20px;flex-shrink:0}
     .page-head h2{margin:0 0 6px 0;font-size:24px;font-weight:600}
     .page-head .meta{color:var(--muted);font-size:14px}
-    .toolbar{display:flex;justify-content:flex-start;align-items:center;margin-bottom:20px;gap:12px;flex-shrink:0}
-    .post-btn{background:var(--brand);color:#fff;border:none;border-radius:25px;padding:12px 24px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s}
+    
+    .toolbar{
+      display:flex;
+      justify-content:flex-start;
+      align-items:center;
+      margin-bottom:20px;
+      gap:12px;
+      flex-shrink:0;
+    }
+    
+    .post-btn{
+      background:var(--brand);
+      color:#fff;
+      border:none;
+      border-radius:25px;
+      padding:12px 24px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:14px;
+      transition:all 0.2s;
+    }
     .post-btn:hover{background:#d48d1f;transform:translateY(-1px)}
-    .feeds-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:24px;flex:1;align-content:start}
-    .feed-card{background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;height:fit-content}
+    
+    /* ===== FEEDS GRID - FIXED WIDTH ===== */
+    .feeds-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+      margin-bottom:24px;
+      flex:1;
+      align-content:start;
+      width: 100%; /* IMPORTANT: Take full width */
+      min-height: 200px; /* IMPORTANT: Maintain space even when empty */
+    }
+    
+    .feed-card{
+      background:var(--card);
+      border-radius:14px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform 0.2s,box-shadow 0.2s;
+      height:fit-content;
+    }
     .feed-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
     .feed-card-img{width:100%;aspect-ratio:1;object-fit:cover}
     .feed-card-content{padding:12px}
@@ -140,25 +207,98 @@
     .feed-card-caption{font-size:13px;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
     .feed-card-reactions{display:flex;gap:6px;margin-top:8px;font-size:12px}
     .reaction-count-badge{background:#f5f5f5;padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px}
-    .empty{color:#94a3b8;padding:40px;text-align:center;background:#fff;border-radius:14px}
-    .warn{background:#fff8e1;border:1px solid #ffe08a;color:#6b5b00;border-radius:10px;padding:12px;margin-bottom:12px;flex-shrink:0}
-    .spinner{width:40px;height:40px;border-radius:50%;border:4px solid #e5e7eb;border-top-color:var(--brand);animation:spin .8s linear infinite;margin:40px auto}
+    
+    .empty{
+      color:#94a3b8;
+      padding:40px;
+      text-align:center;
+      background:#fff;
+      border-radius:14px;
+      grid-column: 1 / -1; /* Span all columns */
+    }
+    
+    .warn{
+      background:#fff8e1;
+      border:1px solid #ffe08a;
+      color:#6b5b00;
+      border-radius:10px;
+      padding:12px;
+      margin-bottom:12px;
+      flex-shrink:0;
+    }
+    
+    .spinner{
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:4px solid #e5e7eb;
+      border-top-color:var(--brand);
+      animation:spin .8s linear infinite;
+      margin:40px auto;
+      grid-column: 1 / -1; /* Span all columns */
+    }
     @keyframes spin{to{transform:rotate(360deg)}}
     
-    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;align-items:center;justify-content:center;padding:20px}
+    /* ===== MODAL STYLES ===== */
+    .modal-overlay{
+      display:none;
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      background:rgba(0,0,0,0.7);
+      z-index:10000;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
     .modal-overlay.active{display:flex}
-    .modal-content{background:#fff;border-radius:20px;max-width:900px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modalIn 0.3s ease}
+    .modal-content{
+      background:#fff;
+      border-radius:20px;
+      max-width:900px;
+      width:100%;
+      max-height:90vh;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      animation:modalIn 0.3s ease;
+    }
     @keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
-    .modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--bd)}
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:20px 24px;
+      border-bottom:1px solid var(--bd);
+    }
     .modal-header h3{font-size:18px;font-weight:600}
-    .modal-close{background:none;border:none;font-size:28px;cursor:pointer;color:var(--muted);line-height:1;padding:0;width:32px;height:32px}
+    .modal-close{
+      background:none;
+      border:none;
+      font-size:28px;
+      cursor:pointer;
+      color:var(--muted);
+      line-height:1;
+      padding:0;
+      width:32px;
+      height:32px;
+    }
     .modal-close:hover{color:var(--text)}
     .modal-body{padding:24px;overflow-y:auto;flex:1}
     .post-detail{display:flex;gap:24px}
     .post-image-large{flex:1;max-width:500px}
     .post-image-large img{width:100%;border-radius:14px;display:block}
     .post-info{flex:1;display:flex;flex-direction:column}
-    .post-author-detail{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+    .post-author-detail{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:20px;
+      padding-bottom:20px;
+      border-bottom:1px solid var(--bd);
+    }
     .post-avatar-large{width:42px;height:42px;border-radius:50%;object-fit:cover}
     .post-author-name{font-weight:600;font-size:15px}
     .post-author-time{font-size:12px;color:var(--muted);margin-top:2px}
@@ -173,10 +313,7 @@
       position:relative;
     }
     
-    .modal-reaction-wrapper{
-      position:relative;
-      display:inline-block;
-    }
+    .modal-reaction-wrapper{position:relative;display:inline-block}
     
     .modal-main-reaction-btn{
       border:none;
@@ -200,10 +337,7 @@
       box-shadow:0 4px 12px rgba(0,0,0,.12);
     }
     
-    .modal-main-reaction-btn.reacted{
-      background:#ffd93d;
-      color:#333;
-    }
+    .modal-main-reaction-btn.reacted{background:#ffd93d;color:#333}
     
     .modal-reaction-picker{
       position:absolute;
@@ -220,19 +354,11 @@
     }
     
     @keyframes popIn{
-      from{
-        opacity:0;
-        transform:scale(0.8) translateY(10px);
-      }
-      to{
-        opacity:1;
-        transform:scale(1) translateY(0);
-      }
+      from{opacity:0;transform:scale(0.8) translateY(10px)}
+      to{opacity:1;transform:scale(1) translateY(0)}
     }
     
-    .modal-reaction-picker.show{
-      display:flex;
-    }
+    .modal-reaction-picker.show{display:flex}
     
     .modal-reaction-option{
       border:none;
@@ -249,128 +375,58 @@
       height:48px;
     }
     
-    .modal-reaction-option:hover{
-      transform:scale(1.3);
-      background:#f5f5f5;
-    }
+    .modal-reaction-option:hover{transform:scale(1.3);background:#f5f5f5}
+    .modal-reaction-option:active{transform:scale(1.1)}
     
-    .modal-reaction-option:active{
-      transform:scale(1.1);
+    /* ===== CREATE POST MODAL ===== */
+    .create-post-body{padding:24px}
+    .upload-area{
+      border:2px dashed var(--bd);
+      border-radius:14px;
+      padding:60px 40px;
+      text-align:center;
+      margin-bottom:20px;
+      cursor:pointer;
+      transition:all 0.2s;
     }
-    
-    .create-post-body{padding:24px;overflow-y:auto;max-height:calc(90vh - 80px)}
-    .create-post-body::-webkit-scrollbar{width:8px}
-    .create-post-body::-webkit-scrollbar-thumb{background:#ddd;border-radius:8px}
-    .upload-area{border:2px dashed var(--bd);border-radius:14px;padding:60px 40px;text-align:center;margin-bottom:20px;cursor:pointer;transition:all 0.2s}
     .upload-area:hover{border-color:var(--brand);background:#fafafa}
+    .upload-area.has-image{padding:0;border:none}
     .upload-icon{font-size:48px;margin-bottom:12px;color:var(--muted)}
     .upload-text{color:var(--muted);margin-bottom:16px;font-size:14px}
-    .upload-btn{background:#333;color:#fff;border:none;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:14px;transition:all .2s}
-    .upload-btn:hover{background:#1a1a1a;transform:translateY(-1px)}
-    .preview-image{width:100%;border-radius:14px;display:block;max-height:400px;object-fit:contain;background:#f5f5f5}
-    #imagePreviewContainer{margin-bottom:20px}
-    .photo-actions{display:flex;gap:8px;margin-top:12px}
-    .change-photo-btn,.cancel-photo-btn{padding:10px 20px;border-radius:20px;cursor:pointer;font-size:14px;font-weight:500;transition:all .2s;border:none;flex:1}
-    .change-photo-btn{background:var(--brand);color:#fff}
-    .change-photo-btn:hover{background:#d48d1f;transform:translateY(-1px)}
-    .cancel-photo-btn{background:#f5f5f5;color:#666}
-    .cancel-photo-btn:hover{background:#e0e0e0}
-    .caption-area{width:100%;border:1px solid var(--bd);border-radius:14px;padding:16px;font-size:14px;font-family:'Poppins',sans-serif;resize:vertical;min-height:120px;margin-bottom:16px}
-    .post-submit-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:14px;border-radius:25px;font-weight:600;cursor:pointer;font-size:15px;transition:all .2s}
-    .post-submit-btn:hover{background:#d48d1f;transform:translateY(-1px)}
-    .post-submit-btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
-    /* RIGHT SIDEBAR - konsisten dengan chat.html */
-    .right-sidebar {
-      width: 280px;
-      background: white;
-      border-left: 1px solid #e0e0e0;
-      overflow-y: auto;
-      height: 100vh;
-      flex-shrink: 0;
+    .upload-btn{
+      background:#333;
+      color:#fff;
+      border:none;
+      padding:10px 24px;
+      border-radius:20px;
+      cursor:pointer;
+      font-size:14px;
     }
-
-    .right-sidebar::-webkit-scrollbar {
-      width: 8px;
+    .preview-image{width:100%;border-radius:14px;display:block}
+    .caption-area{
+      width:100%;
+      border:1px solid var(--bd);
+      border-radius:14px;
+      padding:16px;
+      font-size:14px;
+      font-family:'Poppins',sans-serif;
+      resize:vertical;
+      min-height:120px;
+      margin-bottom:16px;
     }
-
-    .right-sidebar::-webkit-scrollbar-thumb {
-      background: #ddd;
-      border-radius: 8px;
+    .post-submit-btn{
+      width:100%;
+      background:var(--brand);
+      color:#fff;
+      border:none;
+      padding:14px;
+      border-radius:25px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:15px;
     }
-
-    .rs-banner {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-    }
-
-    .rs-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .rs-name {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #333;
-    }
-
-    .rs-counts {
-      font-size: 13px;
-      color: #666;
-    }
-
-    .rs-section {
-      padding: 20px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .rs-section-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-
-    .channel-item, .event-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #333;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .channel-item:hover, .event-item:hover {
-      background: #f5f5f5;
-    }
-
-    .channel-item.active {
-      background: #fff3e0;
-      font-weight: 600;
-      color: #e59d2c;
-    }
-
-    .channel-item svg, .event-item svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
-
-    .empty {
-      padding: 12px;
-      color: #888;
-      font-size: 13px;
-      text-align: center;
-    }
-
+    .post-submit-btn:hover{background:#d48d1f}
+    .post-submit-btn:disabled{background:#ccc;cursor:not-allowed}
   </style>
 </head>
 <body>
@@ -408,12 +464,11 @@
         <div id="loading" class="spinner" style="display:none"></div>
       </section>
       
-      <!-- PINDAHKAN RIGHT SIDEBAR KE DALAM .main -->
       {% include "circleup/right-sidebar.html" %}
-      
     </main>
   </div>
   
+  <!-- POST DETAIL MODAL -->
   <div id="postModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
@@ -426,7 +481,8 @@
     </div>
   </div>
   
-<div id="createPostModal" class="modal-overlay">
+  <!-- CREATE POST MODAL -->
+  <div id="createPostModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <h3>Create new post</h3>
@@ -439,21 +495,11 @@
           <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Select from computer</button>
           <input type="file" id="fileInput" accept="image/*" style="display:none">
         </div>
-        <div id="imagePreviewContainer" style="display:none;">
-          <div style="position:relative;">
-            <img id="previewImage" class="preview-image" alt="Preview">
-            <div style="display:flex;gap:8px;margin-top:12px;">
-              <button class="change-photo-btn" onclick="document.getElementById('fileInput').click()">Change Photo</button>
-              <button class="cancel-photo-btn" onclick="cancelPhoto()">Cancel</button>
-            </div>
-          </div>
-        </div>
         <textarea id="captionInput" class="caption-area" placeholder="Type something here!"></textarea>
         <button id="submitPost" class="post-submit-btn">Post</button>
       </div>
     </div>
   </div>
-
 
 <script>
 (function(){
@@ -466,54 +512,10 @@
   const spinner = document.getElementById('loading');
   let allPosts = [];
   let allCommunities = [];
-  let currentSort = 'newest';
   let selectedFile = null;
   let currentPostForModal = null;
 
-  // === TAMBAHAN BARU ===
-  let currentUserProfile = null;
-
-  // Fungsi untuk mendapatkan profil user saat ini
-  async function getCurrentUserProfile(){
-    try{
-      const data = await fetchJSON(`${API_BASE}/users/profile/`);
-      currentUserProfile = data;
-      return data;
-    }catch(e){
-      console.warn('Failed to get user profile', e);
-      return null;
-    }
-  }
-
-  // Fungsi untuk mengecek apakah user adalah creator atau admin
-  function checkPostPermission(community){
-    const postBtn = document.getElementById('createPostBtn');
-    if(!postBtn) return;
-    
-    // Jika belum ada data user atau community, hide button
-    if(!currentUserProfile || !community){
-      postBtn.style.display = 'none';
-      return;
-    }
-    
-    // Check if user is creator
-    const isCreator = community.created_by && 
-                      String(community.created_by.id || community.created_by) === String(currentUserProfile.id);
-    
-    // Check if user is admin (dari user_role yang ada di community serializer)
-    const isAdmin = community.user_role === 'admin';
-    
-    // Show button hanya jika creator atau admin
-    if(isCreator || isAdmin){
-      postBtn.style.display = 'flex';
-    } else {
-      postBtn.style.display = 'none';
-    }
-  }
-  // === END TAMBAHAN BARU ===
-
-
-  // 6 REACTION TYPES sesuai API (sama dengan home.html)
+  // 6 REACTION TYPES
   const REACTIONS = [
     { type: 'like', emoji: '👍', label: 'Like' },
     { type: 'love', emoji: '❤️', label: 'Love' },
@@ -542,8 +544,7 @@
     return r.json();
   }
 
-  
-  // ===== COMMUNITY LIST SIDEBAR =====
+  // ===== COMMUNITY LIST FUNCTIONS =====
   async function loadCommunitiesList(){
     try{
       const data = await fetchJSON(`${API_BASE}/communities/joined/`);
@@ -613,9 +614,19 @@
     
     renderCommunitiesList();
     updateSidebarLinks();
+    
+    // Sync right sidebar using window function
+    if(window.syncRightSidebarFromCommunity) {
+      window.syncRightSidebarFromCommunity(COMM_ID);
+    }
+    if(window.renderRightSidebarChannels) {
+      window.renderRightSidebarChannels(COMM_ID);
+    }
+    if(window.renderRightSidebarEvents) {
+      window.renderRightSidebarEvents(COMM_ID);
+    }
+    
     loadCommunity();
-    loadChannels();
-    loadEvents();
     loadPosts();
   };
 
@@ -627,6 +638,7 @@
     });
   }
 
+  // ===== INITIALIZATION =====
   if(!COMM_ID){
     loadCommunitiesList().then(() => {
       if(COMM_ID){
@@ -641,66 +653,26 @@
     boot();
   }
 
-  // === MODIFIKASI loadCommunity() ===
   async function loadCommunity(){
     if(!COMM_ID) return;
     try{
       const c = await fetchJSON(`${API_BASE}/communities/${COMM_ID}/`);
       const pageName = document.querySelector('[data-page="name"]');
       const pageCnts = document.querySelector('[data-page="counts"]');
-      const sImg = document.querySelector('[data-rs="image"]');
-      const sNm = document.querySelector('[data-rs="name"]');
-      const sCt = document.querySelector('[data-rs="counts"]');
+      
       if(pageName) pageName.textContent = c.name || 'Community Feeds';
       const counts = `${c.member_count||0} Members, ${c.online_count||0} Online`;
       if(pageCnts) pageCnts.textContent = counts;
-      if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
-      if(sNm) sNm.textContent = c.name || 'Community';
-      if(sCt) sCt.textContent = counts;
-
-      // **TAMBAHAN BARU: Check post permission**
-      checkPostPermission(c);
-
-    }catch(e){console.warn('Community load failed', e);}
-  }
-  // === END MODIFIKASI loadCommunity() ===
-
-
-  async function loadChannels(){
-    if(!COMM_ID) return;
-    const list = document.getElementById('channels-list');
-    try{
-      const data = await fetchJSON(`${API_BASE}/channels/`);
-      const allChannels = Array.isArray(data) ? data : (data.results||[]);
-      const items = allChannels.filter(c => String(c.community) === String(COMM_ID));
-      list.innerHTML = items.length
-        ? items.map(c=>`<a class="channel-item" href="/chat/?channel=${encodeURIComponent(c.id)}&community=${encodeURIComponent(COMM_ID)}">💬 ${escapeHtml(c.name)}</a>`).join('')
-        : '<div class="empty">No channels</div>';
     }catch(e){
-      console.warn('Channels load failed', e);
-      list.innerHTML = '<div class="empty">Gagal memuat channels</div>';
-    }
-  }
-
-  async function loadEvents(){
-    if(!COMM_ID) return;
-    const list = document.getElementById('events-list');
-    try{
-      const data = await fetchJSON(`${API_BASE}/events/`);
-      const items = Array.isArray(data) ? data : (data.results||data||[]);
-      const events = items.filter(e => (e.community && (String(e.community.id||e.community) === String(COMM_ID))));
-      list.innerHTML = events.length
-        ? events.map(e=>`<a class="event-item" href="/event-info/?community=${encodeURIComponent(COMM_ID)}#${e.id}">📅 ${escapeHtml(e.name)}</a>`).join('')
-        : '<div class="empty">No events</div>';
-    }catch(e){
-      console.warn('Events load failed', e);
-      list.innerHTML = '<div class="empty">Gagal memuat events</div>';
+      console.warn('Community load failed', e);
     }
   }
 
   async function loadPosts(){
     if(!COMM_ID) return;
     spinner.style.display = 'block';
+    feedEl.innerHTML = ''; // Clear existing content
+    
     try{
       const url = `${API_BASE}/posts/?community=${encodeURIComponent(COMM_ID)}`;
       const data = await fetchJSON(url);
@@ -721,32 +693,19 @@
     }
   }
 
-  function sortPosts(posts, sortType){
-    const sorted = [...posts];
-    if(sortType === 'newest'){
-      sorted.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-    } else if(sortType === 'oldest'){
-      sorted.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
-    } else if(sortType === 'popular'){
-      sorted.sort((a,b) => (b.like_count||0) - (a.like_count||0));
-    }
-    return sorted;
-  }
-
   function renderPosts(){
-    const sorted = sortPosts(allPosts, currentSort);
-    if(!sorted.length){
+    if(!allPosts.length){
       feedEl.innerHTML = '<div class="empty">Belum ada posting.</div>';
       return;
     }
-    feedEl.innerHTML = sorted.map(p => {
+    
+    feedEl.innerHTML = allPosts.map(p => {
       const author = p.posted_by?.username || p.posted_by?.email || 'Anon';
       const avatar = abs(p.posted_by?.profile_pic);
       const when = p.created_at ? new Date(p.created_at).toLocaleDateString() : '';
       const img = abs(p.image);
       const caption = p.caption || '';
       
-      // Get user's current reaction
       const userReaction = p.user_reaction;
       const reactionEmoji = userReaction ? (REACTIONS.find(r => r.type === userReaction)?.emoji || '😊') : '😊';
       
@@ -769,87 +728,219 @@
     }).join('');
   }
 
-  // === MODIFIKASI boot() ===
-  async function boot(){
-    // **Load user profile dulu**
-    await getCurrentUserProfile();
+  // ===== MODAL FUNCTIONS =====
+  window.openPostModal = function(postId){
+    const post = allPosts.find(p => String(p.id) === String(postId));
+    if(!post) return;
+    currentPostForModal = post;
+    
+    const author = post.posted_by?.username || post.posted_by?.email || 'Anon';
+    const avatar = abs(post.posted_by?.profile_pic);
+    const when = post.created_at ? new Date(post.created_at).toLocaleString() : '';
+    const img = abs(post.image);
+    const caption = post.caption || 'No caption';
+    
+    const userReaction = post.user_reaction;
+    let buttonText = '😊 React';
+    let buttonClass = '';
+    
+    if (userReaction) {
+      const reaction = REACTIONS.find(r => r.type === userReaction);
+      if (reaction) {
+        buttonText = reaction.emoji + ' ' + reaction.label;
+        buttonClass = 'reacted';
+      }
+    }
+    
+    const reactionOptions = REACTIONS.map(r => 
+      `<button class="modal-reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
+    ).join('');
+    
+    document.getElementById('postDetailContent').innerHTML = `
+      ${img ? `<div class="post-image-large"><img src="${img}" alt="post"></div>` : ''}
+      <div class="post-info">
+        <div class="post-author-detail">
+          <img class="post-avatar-large" src="${avatar||'https://via.placeholder.com/42'}" alt="${escapeHtml(author)}">
+          <div>
+            <div class="post-author-name">${escapeHtml(author)}</div>
+            <div class="post-author-time">${when}</div>
+          </div>
+        </div>
+        <div class="post-caption-full">${escapeHtml(caption)}</div>
+        <div class="post-reactions-full">
+          <div class="modal-reaction-wrapper">
+            <button class="modal-main-reaction-btn ${buttonClass}" data-post-id="${post.id}">
+              ${buttonText}
+            </button>
+            <div class="modal-reaction-picker">
+              ${reactionOptions}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('postModal').classList.add('active');
+    setupModalReactionHandlers();
+  };
 
+  function setupModalReactionHandlers() {
+    const modalBody = document.querySelector('#postModal .modal-body');
+    
+    modalBody.addEventListener('click', (e) => {
+      const mainBtn = e.target.closest('.modal-main-reaction-btn');
+      if (mainBtn) {
+        e.stopPropagation();
+        const picker = mainBtn.nextElementSibling;
+        picker.classList.toggle('show');
+        return;
+      }
+      
+      const reactionOption = e.target.closest('.modal-reaction-option');
+      if (reactionOption) {
+        e.stopPropagation();
+        handleModalReactionSelect(reactionOption);
+        return;
+      }
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.modal-reaction-wrapper')) {
+        document.querySelectorAll('.modal-reaction-picker.show').forEach(p => {
+          p.classList.remove('show');
+        });
+      }
+    });
+  }
+
+  let isProcessingReaction = false;
+  async function handleModalReactionSelect(optionBtn) {
+    if (isProcessingReaction || !currentPostForModal) return;
+    isProcessingReaction = true;
+    
+    const type = optionBtn.dataset.type;
+    const postId = currentPostForModal.id;
+    const wrapper = optionBtn.closest('.modal-reaction-wrapper');
+    const mainBtn = wrapper.querySelector('.modal-main-reaction-btn');
+    const picker = wrapper.querySelector('.modal-reaction-picker');
+    
+    optionBtn.style.transform = 'scale(1.4)';
+    setTimeout(() => optionBtn.style.transform = '', 150);
+    
+    try {
+      const response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ reaction_type: type })
+      });
+      
+      if (!response.ok) throw new Error('Failed to react');
+      
+      const data = await response.json();
+      const reaction = REACTIONS.find(r => r.type === type);
+      
+      if (data.message.includes('removed')) {
+        mainBtn.textContent = '😊 React';
+        mainBtn.classList.remove('reacted');
+        currentPostForModal.user_reaction = null;
+      } else {
+        mainBtn.textContent = reaction.emoji + ' ' + reaction.label;
+        mainBtn.classList.add('reacted');
+        currentPostForModal.user_reaction = type;
+      }
+      
+      picker.classList.remove('show');
+      
+      const postIndex = allPosts.findIndex(p => String(p.id) === String(postId));
+      if (postIndex !== -1) {
+        allPosts[postIndex].user_reaction = currentPostForModal.user_reaction;
+        renderPosts();
+      }
+      
+    } catch (err) {
+      console.error('Reaction error:', err);
+      alert('Gagal mengirim reaksi. Coba lagi.');
+    } finally {
+      isProcessingReaction = false;
+    }
+  }
+
+  window.closePostModal = function(){
+    document.getElementById('postModal').classList.remove('active');
+    currentPostForModal = null;
+  };
+
+  // ===== CREATE POST FUNCTIONS =====
+  document.getElementById('createPostBtn').addEventListener('click', ()=>{
+    document.getElementById('createPostModal').classList.add('active');
+  });
+
+  window.closeCreatePostModal = function(){
+    document.getElementById('createPostModal').classList.remove('active');
+    document.getElementById('captionInput').value = '';
+    document.getElementById('uploadArea').classList.remove('has-image');
+    document.getElementById('uploadArea').innerHTML = `
+      <div class="upload-icon">🖼️ 🎥</div>
+      <div class="upload-text">Drag photos and videos here</div>
+      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Select from computer</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    `;
+    selectedFile = null;
+    document.getElementById('fileInput').addEventListener('change', handleFileChange);
+  };
+
+  function handleFileChange(e){
+    const file = e.target.files[0];
+    if(file){
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        const area = document.getElementById('uploadArea');
+        area.classList.add('has-image');
+        area.innerHTML = `<img class="preview-image" src="${ev.target.result}" alt="preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  document.getElementById('fileInput').addEventListener('change', handleFileChange);
+
+  document.getElementById('submitPost').addEventListener('click', async ()=>{
+    const caption = document.getElementById('captionInput').value.trim();
+    if(!caption && !selectedFile){
+      alert('Tambahkan caption atau gambar!');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('community_uuid', COMM_ID);
+    formData.append('caption', caption);
+    if(selectedFile) formData.append('image', selectedFile);
+    try{
+      const headers = ACCESS ? {Authorization:`Bearer ${ACCESS}`} : {};
+      const r = await fetch(`${API_BASE}/posts/`, {
+        method: 'POST',
+        headers: headers,
+        body: formData
+      });
+      if(!r.ok){
+        const err = await r.json();
+        throw new Error(JSON.stringify(err));
+      }
+      closeCreatePostModal();
+      await loadPosts();
+    }catch(e){
+      console.error('Post creation failed', e);
+      alert('Gagal membuat post: ' + e.message);
+    }
+  });
+
+  function boot(){
     updateSidebarLinks();
-    Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
+    Promise.all([loadCommunity()]).then(()=>{
       loadPosts();
     });
   }
-  // === END MODIFIKASI boot() ===
-
 })();
-// Handle file input change
-document.getElementById('fileInput').addEventListener('change', function(e){
-  const file = e.target.files[0];
-  if(file){
-    selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = function(evt){
-      document.getElementById('previewImage').src = evt.target.result;
-      document.getElementById('uploadArea').style.display = 'none';
-      document.getElementById('imagePreviewContainer').style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-// Cancel photo function
-window.cancelPhoto = function(){
-  selectedFile = null;
-  document.getElementById('fileInput').value = '';
-  document.getElementById('previewImage').src = '';
-  document.getElementById('uploadArea').style.display = 'block';
-  document.getElementById('imagePreviewContainer').style.display = 'none';
-};
-
-// Create post button handler
-document.getElementById('createPostBtn').addEventListener('click', function(){
-  document.getElementById('createPostModal').classList.add('active');
-});
-
-// Close modal function
-window.closeCreatePostModal = function(){
-  document.getElementById('createPostModal').classList.remove('active');
-  cancelPhoto();
-  document.getElementById('captionInput').value = '';
-};
-
-// Submit post handler
-document.getElementById('submitPost').addEventListener('click', async function(){
-  const caption = document.getElementById('captionInput').value.trim();
-  
-  if(!selectedFile && !caption){
-    alert('Please add a photo or write something!');
-    return;
-  }
-  
-  try{
-    const formData = new FormData();
-    if(selectedFile) formData.append('image', selectedFile);
-    if(caption) formData.append('caption', caption);
-    formData.append('community', COMM_ID);
-    
-    const response = await fetch(`${API_BASE}/posts/`, {
-      method: 'POST',
-      headers: {Authorization: `Bearer ${ACCESS}`},
-      body: formData
-    });
-    
-    if(!response.ok) throw new Error('Failed to create post');
-    
-    closeCreatePostModal();
-    loadPosts(); // Reload posts
-    alert('Post created successfully!');
-  }catch(e){
-    console.error('Post creation failed:', e);
-    alert('Failed to create post. Please try again.');
-  }
-});
 </script>
-
 </body>
 </html>
