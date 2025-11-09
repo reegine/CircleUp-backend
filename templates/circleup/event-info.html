@@ -11,9 +11,8 @@
     body{font-family:'Poppins',sans-serif;background:#f5f5f5;display:flex;overflow:hidden}
     #sidebar-container{flex-shrink:0}
     
-    /* ===== COMMUNITY LIST SIDEBAR ===== */
     .community-list-sidebar {
-      width: 250px;
+      width: 280px;
       height: 100vh;
       background: #fff;
       border-right: 1px solid #e0e0e0;
@@ -27,47 +26,40 @@
     }
 
     .community-list-header {
-      padding: 24px 20px;
+      padding: 20px 16px;
       border-bottom: 1px solid #eee;
       background: #fafafa;
     }
 
     .community-list-title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
       color: #333;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .community-list-stats {
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
-    }
+    } 
 
     .communities-container {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
+      padding: 12px;
     }
-
-    .communities-container::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .communities-container::-webkit-scrollbar-thumb {
-      background: #ddd;
-      border-radius: 8px;
-    }
+    .communities-container::-webkit-scrollbar {width: 8px}
+    .communities-container::-webkit-scrollbar-thumb {background: #ddd;border-radius: 8px}
 
     .community-card {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 16px;
-      border-radius: 12px;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
       background: #fff;
       border: 2px solid #eee;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       cursor: pointer;
       transition: all 0.2s;
       text-decoration: none;
@@ -88,69 +80,34 @@
     }
 
     .community-card-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
       object-fit: cover;
       background: #eaeaea;
       flex-shrink: 0;
     }
 
-    .community-card-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .community-card-info {flex: 1;min-width: 0}
 
     .community-card-name {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: #333;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .community-card-members {
-      font-size: 13px;
-      color: #666;
-    }
+    .community-card-members {font-size: 12px;color: #666}
 
-    /* Main container needs to account for both sidebars */
-    .main-container{
-      display:flex;
-      flex:1;
-      height:100vh;
-      overflow:hidden;
-      margin-left:450px;/* 200px sidebar + 250px community list */
-    }
+    .main-container{display:flex;flex:1;height:100vh;overflow:hidden;margin-left:480px}
+    .event-container{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+    .event-body{flex:1;display:flex;min-height:0;background:#fff}
+    .left-rail{display:none}
+    .events-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
 
-    .event-container{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      background:#fff;
-      overflow:hidden;
-    }
-
-    /* Body 2 kolom */
-    .event-body{
-      flex:1;
-      display:flex;
-      min-height:0;
-      background:#fff;
-    }
-
-    /* Kolom kanan */
-    .events-main{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      min-width:0;
-      overflow:hidden;
-    }
-
-    /* Header */
     .event-header{
       padding:30px 40px;
       background:#ffffff;
@@ -158,7 +115,7 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      flex-shrink: 0; /* Prevent header from shrinking */
+      flex-shrink: 0;
     }
     
     .header-left{display:flex;align-items:center;gap:15px}
@@ -180,6 +137,7 @@
     .add-event-btn:hover{background:#d48b1f}
     .add-event-btn svg{width:18px;height:18px;fill:#fff}
 
+    .sort-container{position:relative;display:inline-block}
     .sort-btn{
       padding:10px 20px;
       background:transparent;
@@ -195,29 +153,38 @@
     }
     .sort-btn:hover{color:#d48b1f}
     .sort-btn svg{width:20px;height:20px;fill:#e59d2c}
-
-    .event-content{
-      padding:30px 40px;
-      flex:1;
-      overflow-y:auto;
-      overflow-x: hidden;
+    
+    .sort-dropdown{
+      position:absolute;
+      top:100%;
+      right:0;
+      margin-top:8px;
+      background:#fff;
+      border:1px solid #e0e0e0;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      min-width:180px;
+      z-index:1000;
+      display:none;
     }
-
-    .event-content::-webkit-scrollbar {
-      width: 10px;
+    .sort-dropdown.show{display:block}
+    .sort-option{
+      padding:12px 16px;
+      cursor:pointer;
+      font-size:14px;
+      color:#333;
+      transition:background .2s;
     }
+    .sort-option:first-child{border-radius:12px 12px 0 0}
+    .sort-option:last-child{border-radius:0 0 12px 12px}
+    .sort-option:hover{background:#f5f5f5}
+    .sort-option.active{background:#fff3e0;color:#e59d2c;font-weight:600}
 
-    .event-content::-webkit-scrollbar-thumb {
-      background: #ddd;
-      border-radius: 10px;
-    }
+    .event-content{padding:30px 40px;flex:1;overflow-y:auto;overflow-x: hidden;max-width: 100%}
+    .event-content::-webkit-scrollbar {width: 10px}
+    .event-content::-webkit-scrollbar-thumb {background: #ddd;border-radius: 10px}
 
-    .event-table{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      min-width: 800px; /* Ensure table doesn't shrink too much */
-    }
+    .event-table{width:100%;border-collapse:separate;border-spacing:0;min-width: 800px}
     .event-table thead{background:#f5f5f5}
     .event-table th{
       padding:18px 20px;
@@ -234,19 +201,8 @@
     .event-table tbody tr:hover{background:#f9f9f9}
     .event-table tbody tr.highlighted{background:#fff3e0}
     .event-table tbody tr.highlighted:hover{background:#ffe8cc}
-    .event-table td{
-      padding:20px;
-      font-size:14px;
-      color:#333;
-      border-bottom:1px solid #f0f0f0;
-    }
-    .event-name{
-      font-weight:500;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 200px;
-    }
+    .event-table td{padding:20px;font-size:14px;color:#333;border-bottom:1px solid #f0f0f0}
+    .event-name{font-weight:500;display:flex;align-items:center;gap:10px;min-width: 200px}
     .edit-icon{cursor:pointer;opacity:0;transition:opacity .2s ease}
     .event-table tbody tr:hover .edit-icon{opacity:1}
     .edit-icon svg{width:16px;height:16px;fill:#888}
@@ -268,114 +224,42 @@
     .participation-btn.cancel{background:#f5f5f5;color:#333}
     .participation-btn.cancel:hover{background:#e0e0e0}
 
+    #right-sidebar-container{flex-shrink:0}
 
-    /* Modal Add Event */
-    .modal{
-      display:none;
-      position:fixed;
-      inset:0;
-      z-index:10000;
-      background:rgba(0,0,0,.35);
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
+    .modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.35);align-items:center;justify-content:center;padding:24px}
     .modal.show{display:flex}
-    .modal-content{
-      width:100%;
-      max-width:560px;
-      background:#fff;
-      border-radius:16px;
-      box-shadow:0 10px 40px rgba(0,0,0,.18);
-      overflow:hidden;
-      animation:slideIn .3s ease;
-    }
-    @keyframes slideIn{
-      from{transform:translateY(-20px);opacity:0}
-      to{transform:translateY(0);opacity:1}
-    }
-    .modal-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:16px 20px;
-      border-bottom:1px solid #eee;
-    }
+    .modal-content{width:100%;max-width:560px;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.18);overflow:hidden;animation:slideIn .3s ease}
+    @keyframes slideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #eee}
     .modal-header h2{font-size:18px;margin:0 auto}
-    .close-modal{
-      font-size:24px;
-      line-height:1;
-      cursor:pointer;
-      padding:4px 8px;
-      border-radius:8px;
-      position:absolute;
-      left:20px;
-    }
+    .close-modal{font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px;position:absolute;left:20px}
     .close-modal:hover{background:#f5f5f5}
-    .add-btn{
-      padding:8px 16px;
-      border:none;
-      border-radius:10px;
-      background:#e59d2c;
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
-    }
+    .add-btn{padding:8px 16px;border:none;border-radius:10px;background:#e59d2c;color:#fff;font-weight:600;cursor:pointer}
     .add-btn:hover{background:#d48b1f}
     .add-btn:disabled{background:#ccc;cursor:not-allowed}
     .modal-body{padding:18px 20px}
     .form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
     .form-group label{font-size:13px;color:#333;font-weight:500}
-    .form-group input, .form-group textarea, .form-group select{
-      padding:10px 12px;
-      border:1px solid #e5e5e5;
-      border-radius:10px;
-      font-size:14px;
-      outline:none;
-      font-family:'Poppins',sans-serif;
-    }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus{
-      border-color:#e59d2c;
-      box-shadow:0 0 0 3px rgba(229,157,44,.15);
-    }
+    .form-group input, .form-group textarea{padding:10px 12px;border:1px solid #e5e5e5;border-radius:10px;font-size:14px;outline:none;font-family:'Poppins',sans-serif}
+    .form-group input:focus, .form-group textarea:focus{border-color:#e59d2c;box-shadow:0 0 0 3px rgba(229,157,44,.15)}
     .form-group textarea{resize:vertical;min-height:80px}
     
     .loading{text-align:center;padding:40px;color:#888}
     .error-message{background:#fee;color:#c33;padding:12px;border-radius:8px;margin-bottom:16px}
 
-    /* Responsive */
-    @media (max-width:1400px){
-      .main-container{margin-left:450px}
-      .event-content{padding:20px 30px}
-    }
-
-    @media (max-width:1024px){
-      .community-list-sidebar{display:none}
-      .main-container{margin-left:200px}
-      .event-header{padding:20px 30px}
-      .event-content{padding:20px 30px}
-    }
-
-    @media (max-width:768px){
-      #sidebar-container{display:none}
-      .main-container{margin-left:0}
-      .event-header{padding:15px 20px;flex-direction:column;gap:10px}
-      .event-content{padding:15px 20px}
-      .event-table{font-size:13px}
-      .event-table th, .event-table td{padding:12px 10px}
-    }
+    @media (max-width:1400px){.main-container{margin-left:600px}.event-content{padding:20px 30px}}
+    @media (max-width:1024px){.community-list-sidebar{display:none}.main-container{margin-left:200px}.event-header{padding:20px 30px}.event-content{padding:20px 30px}}
+    @media (max-width:768px){#sidebar-container{display:none}.main-container{margin-left:0}.event-header{padding:15px 20px;flex-direction:column;gap:10px}.event-content{padding:15px 20px}.event-table{font-size:13px}.event-table th, .event-table td{padding:12px 10px}}
   </style>
 </head>
 <body>
   {% include "circleup/sidebar.html" %}
 
-  <!-- COMMUNITY LIST SIDEBAR -->
   <aside class="community-list-sidebar">
     <div class="community-list-header">
       <div class="community-list-title" id="currentCommunityName">Community</div>
       <div class="community-list-stats" id="currentCommunityStats">0 Members · 0 Online</div>
     </div>
-    
     <div class="communities-container" id="communitiesContainer">
       <div class="loading">Loading communities...</div>
     </div>
@@ -384,9 +268,7 @@
   <div class="main-container">
     <div class="event-container">
       <div class="event-body">
-        <!-- KANAN: header + tabel -->
         <div class="events-main">
-          <!-- HEADER -->
           <div class="event-header">
             <div class="header-left">
               <button class="add-event-btn" onclick="openAddEventModal()">
@@ -394,10 +276,17 @@
                 Add event
               </button>
             </div>
-            <button class="sort-btn" onclick="toggleSort()">
-              <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
-              Sort
-            </button>
+            <div class="sort-container">
+              <button class="sort-btn" onclick="toggleSortDropdown()">
+                <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
+                Sort
+              </button>
+              <div class="sort-dropdown" id="sortDropdown">
+                <div class="sort-option active" onclick="setSortFilter('all')">All Events</div>
+                <div class="sort-option" onclick="setSortFilter('upcoming')">Upcoming Events</div>
+                <div class="sort-option" onclick="setSortFilter('past')">Past Events</div>
+              </div>
+            </div>
           </div>
 
           <div class="event-content">
@@ -415,10 +304,9 @@
         </div>
       </div>
     </div>
-    {% include "circleup/right-sidebar.html" %}
+    <div id="right-sidebar-container"></div>
   </div>
 
-  <!-- Modal Add Event -->
   <div id="addEventModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -428,41 +316,31 @@
       </div>
       <div class="modal-body">
         <div id="modalError" style="display:none" class="error-message"></div>
-        
         <div class="form-group">
           <label>Event Name *</label>
           <input type="text" id="eventName" placeholder="Enter event name" required>
         </div>
-        
         <div class="form-group">
           <label>Description</label>
           <textarea id="eventDescription" placeholder="Enter event description"></textarea>
         </div>
-        
         <div class="form-group">
           <label>Date *</label>
           <input type="date" id="eventDate" required>
         </div>
-        
         <div class="form-group">
           <label>Time *</label>
           <input type="time" id="eventTime" required>
         </div>
-        
         <div class="form-group">
           <label>Location *</label>
           <input type="text" id="eventLocation" placeholder="Enter location" required>
         </div>
-        
-        <div class="form-group">
-          <label>Channel *</label>
-          <select id="eventChannel" required>
-            <option value="">Select a channel</option>
-          </select>
-        </div>
       </div>
     </div>
   </div>
+
+  {% include "circleup/right-sidebar.html" %}
   
   <script>
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
@@ -472,11 +350,10 @@
 
     const params = new URLSearchParams(location.search);
     let COMMUNITY_ID = params.get("community");
-    
     let COMMUNITIES_CACHE = [];
     let CHANNELS_CACHE = [];
     let EVENTS_CACHE = [];
-    let sortAscending = true;
+    let sortFilter = 'all';
 
     const absUrl = (u) => {
       if (!u) return "";
@@ -485,21 +362,17 @@
       return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
     };
 
-    // Fetch functions
     async function fetchCommunities(){
       const r = await fetch(`${API_BASE}/home/`, { headers: H });
       if (!r.ok) throw new Error("Failed to load communities");
       const home = await r.json();
       COMMUNITIES_CACHE = Array.isArray(home.joined_communities) ? home.joined_communities : [];
-      
-      // Set default community if not specified
       if (!COMMUNITY_ID && COMMUNITIES_CACHE.length > 0) {
         COMMUNITY_ID = COMMUNITIES_CACHE[0].id;
         const url = new URL(location.href);
         url.searchParams.set("community", COMMUNITY_ID);
         history.replaceState(null, "", url);
       }
-      
       return COMMUNITIES_CACHE;
     }
 
@@ -519,114 +392,86 @@
       return EVENTS_CACHE;
     }
 
-    // Render community list sidebar
     function renderCommunityList(){
       const container = document.getElementById('communitiesContainer');
       if(!container) return;
-
       if(!COMMUNITIES_CACHE.length){
         container.innerHTML = '<div class="loading">No communities joined yet</div>';
         return;
       }
-
       container.innerHTML = COMMUNITIES_CACHE.map(comm => `
-        <div class="community-card ${String(comm.id) === String(COMMUNITY_ID) ? 'active' : ''}"
-             onclick="selectCommunity('${comm.id}')"
-             data-community-id="${comm.id}">
-          <img src="${absUrl(comm.profile_pic || comm.background_banner)}" 
-               alt="${comm.name}" 
-               class="community-card-avatar"
-               onerror="this.src='https://via.placeholder.com/60?text=C'">
+        <div class="community-card ${String(comm.id) === String(COMMUNITY_ID) ? 'active' : ''}" onclick="selectCommunity('${comm.id}')">
+          <img src="${absUrl(comm.profile_pic || comm.background_banner)}" alt="${comm.name}" class="community-card-avatar" onerror="this.src='https://via.placeholder.com/60?text=C'">
           <div class="community-card-info">
             <div class="community-card-name">${comm.name || 'Unnamed Community'}</div>
             <div class="community-card-members">${comm.member_count || 0} members</div>
           </div>
         </div>
       `).join('');
-
-      // Update header
       const currentComm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
       if(currentComm){
         document.getElementById('currentCommunityName').textContent = currentComm.name || 'Community';
-        document.getElementById('currentCommunityStats').textContent = 
-          `${currentComm.member_count || 0} Members · ${currentComm.online_count || 0} Online`;
+        document.getElementById('currentCommunityStats').textContent = `${currentComm.member_count || 0} Members · ${currentComm.online_count || 0} Online`;
       }
     }
 
-    // Select community
     function selectCommunity(commId){
       COMMUNITY_ID = commId;
       const url = new URL(location.href);
       url.searchParams.set("community", COMMUNITY_ID);
       history.replaceState(null, "", url);
-      
       renderCommunityList();
+      syncRightSidebar();
       renderEvents();
-      populateChannelDropdown();
-      
-      // Sync right sidebar
-      if (typeof window.syncRightSidebarFromCommunity === 'function') {
-        window.syncRightSidebarFromCommunity(COMMUNITY_ID);
-      }
-      if (typeof window.renderRightSidebarChannels === 'function') {
-        window.renderRightSidebarChannels(COMMUNITY_ID);
-      }
-      if (typeof window.renderRightSidebarEvents === 'function') {
-        window.renderRightSidebarEvents(COMMUNITY_ID);
-      }
     }
 
-    // Render events table
     function renderEvents(){
       const tbody = document.getElementById("eventsTableBody");
       if (!tbody) return;
-
-      const filteredEvents = EVENTS_CACHE.filter(e => 
-        e.community && String(e.community.id) === String(COMMUNITY_ID)
-      );
-
+      let filteredEvents = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (sortFilter === 'upcoming') {
+        filteredEvents = filteredEvents.filter(e => new Date(e.date) >= today);
+      } else if (sortFilter === 'past') {
+        filteredEvents = filteredEvents.filter(e => new Date(e.date) < today);
+      }
+      filteredEvents.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return sortFilter === 'past' ? dateB - dateA : dateA - dateB;
+      });
       if (!filteredEvents.length){
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:40px">No events yet. Click "Add event" to create one!</td></tr>`;
+        const message = sortFilter === 'upcoming' ? 'No upcoming events' : sortFilter === 'past' ? 'No past events' : 'No events yet. Click "Add event" to create one!';
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:40px">${message}</td></tr>`;
         return;
       }
-
-      tbody.innerHTML = filteredEvents.map(ev => {
-        const isParticipant = ev.is_participant;
-        return `
-          <tr class="${isParticipant ? 'highlighted' : ''}" data-event-id="${ev.id}">
-            <td>
-              <div class="event-name">${ev.name || 'Untitled Event'}
-                <span class="edit-icon" onclick="editEvent('${ev.id}')">
-                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                </span>
-              </div>
-            </td>
-            <td class="event-date">${ev.date || ''}</td>
-            <td class="event-time">${ev.time || ''}</td>
-            <td class="event-location">${ev.location || ''}</td>
-            <td>
-              <button class="participation-btn ${isParticipant ? 'cancel' : 'join'}" 
-                      onclick="toggleParticipation('${ev.id}', ${isParticipant})">
-                ${isParticipant ? 'Cancel' : 'Join'}
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join("");
+      tbody.innerHTML = filteredEvents.map(ev => `
+        <tr class="${ev.is_participant ? 'highlighted' : ''}" data-event-id="${ev.id}">
+          <td>
+            <div class="event-name">${ev.name || 'Untitled Event'}
+              <span class="edit-icon" onclick="editEvent('${ev.id}')">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              </span>
+            </div>
+          </td>
+          <td class="event-date">${ev.date || ''}</td>
+          <td class="event-time">${ev.time || ''}</td>
+          <td class="event-location">${ev.location || ''}</td>
+          <td>
+            <button class="participation-btn ${ev.is_participant ? 'cancel' : 'join'}" onclick="toggleParticipation('${ev.id}', ${ev.is_participant})">
+              ${ev.is_participant ? 'Cancel' : 'Join'}
+            </button>
+          </td>
+        </tr>
+      `).join("");
     }
 
-    // Toggle participation
     async function toggleParticipation(eventId, isCurrentlyParticipant){
       try {
         const endpoint = isCurrentlyParticipant ? 'cancel' : 'join';
-        const r = await fetch(`${API_BASE}/events/${eventId}/${endpoint}/`, {
-          method: 'POST',
-          headers: H
-        });
-        
+        const r = await fetch(`${API_BASE}/events/${eventId}/${endpoint}/`, {method: 'POST', headers: H});
         if (!r.ok) throw new Error(`Failed to ${endpoint} event`);
-        
-        // Refresh events
         await fetchEvents();
         renderEvents();
       } catch(e){
@@ -635,21 +480,27 @@
       }
     }
 
-    // Sort events
-    function toggleSort(){
-      sortAscending = !sortAscending;
-      EVENTS_CACHE.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return sortAscending ? dateA - dateB : dateB - dateA;
-      });
+    function toggleSortDropdown(){
+      document.getElementById('sortDropdown').classList.toggle('show');
+    }
+
+    function setSortFilter(filter){
+      sortFilter = filter;
+      document.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('sortDropdown').classList.remove('show');
       renderEvents();
     }
 
-    // Modal functions
+    document.addEventListener('click', function(e){
+      const sortContainer = document.querySelector('.sort-container');
+      if (sortContainer && !sortContainer.contains(e.target)){
+        document.getElementById('sortDropdown').classList.remove('show');
+      }
+    });
+
     function openAddEventModal(){
       document.getElementById('addEventModal').classList.add('show');
-      populateChannelDropdown();
     }
 
     function closeModal(){
@@ -663,7 +514,6 @@
       document.getElementById('eventDate').value = '';
       document.getElementById('eventTime').value = '';
       document.getElementById('eventLocation').value = '';
-      document.getElementById('eventChannel').value = '';
       document.getElementById('modalError').style.display = 'none';
     }
 
@@ -673,74 +523,43 @@
       el.style.display = 'block';
     }
 
-    function populateChannelDropdown(){
-      const select = document.getElementById('eventChannel');
-      if (!select) return;
-      
-      const channels = CHANNELS_CACHE.filter(c => String(c.community) === String(COMMUNITY_ID));
-      
-      select.innerHTML = '<option value="">Select a channel</option>' + 
-        channels.map(ch => `<option value="${ch.id}">${ch.name}</option>`).join('');
-    }
-
     async function saveNewEvent(){
       const name = document.getElementById('eventName').value.trim();
       const description = document.getElementById('eventDescription').value.trim();
       const date = document.getElementById('eventDate').value;
       const time = document.getElementById('eventTime').value;
       const location = document.getElementById('eventLocation').value.trim();
-      const channelId = document.getElementById('eventChannel').value;
-
-      if (!name || !date || !time || !location || !channelId){
+      if (!name || !date || !time || !location){
         showModalError('Please fill all required fields');
         return;
       }
-
       const btn = document.getElementById('saveEventBtn');
       btn.disabled = true;
       btn.textContent = 'Adding...';
-
       try {
-        const formattedTime = time.includes(':') ? `${time}:00` : time;
-        
+        const formattedTime = time.length === 5 ? `${time}:00` : time;
         const payload = {
           community_uuid: COMMUNITY_ID,
-          channel_uuid: channelId,
-          name,
-          description,
-          date,
+          create_new_channel: true,
+          channel_name: `Event: ${name}`,
+          name, description, date,
           time: formattedTime,
           location
         };
-
-        const r = await fetch(`${API_BASE}/events/`, {
-          method: 'POST',
-          headers: H,
-          body: JSON.stringify(payload)
-        });
-
-        const responseText = await r.text();
-
+        const r = await fetch(`${API_BASE}/events/`, {method: 'POST', headers: H, body: JSON.stringify(payload)});
         if (!r.ok) {
+          const errorText = await r.text();
           let errorMsg = 'Failed to create event';
           try {
-            const error = JSON.parse(responseText);
+            const error = JSON.parse(errorText);
             errorMsg = error.detail || error.message || JSON.stringify(error);
-          } catch(parseError) {
-            errorMsg = `Server error (${r.status}): ${r.statusText}`;
+          } catch(e) {
+            errorMsg = `Server error (${r.status})`;
           }
           throw new Error(errorMsg);
         }
-
-        const newEvent = JSON.parse(responseText);
         await fetchEvents();
         renderEvents();
-        
-        // Update right sidebar events
-        if (typeof window.renderRightSidebarEvents === 'function') {
-          window.renderRightSidebarEvents(COMMUNITY_ID);
-        }
-        
         closeModal();
         alert('Event created successfully!');
       } catch(e){
@@ -756,25 +575,57 @@
       alert('Edit event functionality coming soon!');
     }
 
-    // Boot
+    function syncRightSidebar(){
+      const comm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
+      if (!comm) return;
+      const img = document.querySelector('[data-rs="image"]');
+      const name = document.querySelector('[data-rs="name"]');
+      const counts = document.querySelector('[data-rs="counts"]');
+      if (img) img.src = absUrl(comm.background_banner || comm.profile_pic) || "";
+      if (name) name.textContent = comm.name || "Community";
+      if (counts) counts.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
+      renderRightSidebarChannels();
+      renderRightSidebarEvents();
+    }
+
+    function renderRightSidebarChannels(){
+      const box = document.getElementById("channels-list");
+      if (!box) return;
+      const channels = CHANNELS_CACHE.filter(c => String(c.community) === String(COMMUNITY_ID));
+      if (!channels.length){
+        box.innerHTML = `<div style="color:#888;padding:6px">No channels</div>`;
+        return;
+      }
+      box.innerHTML = channels.map(c => `
+        <a href="/chat/?community=${encodeURIComponent(COMMUNITY_ID)}&channel=${encodeURIComponent(c.id)}" class="channel-item">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+          <span>${c.name}</span>
+        </a>
+      `).join("");
+    }
+
+    function renderRightSidebarEvents(){
+      const box = document.getElementById("events-list");
+      if (!box) return;
+      const events = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
+      if (!events.length){
+        box.innerHTML = `<div style="color:#888;padding:6px">No events</div>`;
+        return;
+      }
+      box.innerHTML = events.map(ev => `
+        <a href="/event-info/?community=${encodeURIComponent(COMMUNITY_ID)}#${ev.id}" class="event-item">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
+          <span>${ev.name}</span>
+        </a>
+      `).join("");
+    }
+
     async function boot(){
       try {
         await Promise.all([fetchCommunities(), fetchChannels(), fetchEvents()]);
         renderCommunityList();
         renderEvents();
-        
-        // Sync right sidebar
-        if (COMMUNITY_ID) {
-          if (typeof window.syncRightSidebarFromCommunity === 'function') {
-            window.syncRightSidebarFromCommunity(COMMUNITY_ID);
-          }
-          if (typeof window.renderRightSidebarChannels === 'function') {
-            window.renderRightSidebarChannels(COMMUNITY_ID);
-          }
-          if (typeof window.renderRightSidebarEvents === 'function') {
-            window.renderRightSidebarEvents(COMMUNITY_ID);
-          }
-        }
+        syncRightSidebar();
       } catch(e){
         console.error('Boot error:', e);
         const tbody = document.getElementById("eventsTableBody");
@@ -784,13 +635,11 @@
 
     boot();
 
-    // Close modal on outside click
     window.addEventListener('click', (e) => {
       const modal = document.getElementById('addEventModal');
       if (e.target === modal) closeModal();
     });
 
-    // Close modal on Esc
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeModal();
     });

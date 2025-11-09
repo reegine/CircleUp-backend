@@ -377,12 +377,14 @@
       "Content-Type": "application/json" 
     };
 
+    // 6 REACTION TYPES sesuai API
     const REACTIONS = [
-      { type: 'love', emoji: '❤️', label: 'Love' },
       { type: 'like', emoji: '👍', label: 'Like' },
+      { type: 'love', emoji: '❤️', label: 'Love' },
       { type: 'laugh', emoji: '😂', label: 'Haha' },
       { type: 'wow', emoji: '😮', label: 'Wow' },
-      { type: 'sad', emoji: '😢', label: 'Sad' }
+      { type: 'sad', emoji: '😢', label: 'Sad' },
+      { type: 'angry', emoji: '😠', label: 'Angry' }
     ];
 
     const toAbs = (u) => {
@@ -465,51 +467,44 @@
     })();
 
     function renderStories(items){
-  console.log("Rendering", items.length, "stories");
-  storiesEl.innerHTML = items.slice(0,10).map(c => 
-    '<div class="story" title="' + (c.name || '') + '" onclick="goToCommunityChat(\'' + c.id + '\')">' +
-      '<div class="story-container">' +
-        '<img src="' + (toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20') + '" alt="' + (c.name || '') + '">' +
-      '</div>' +
-      '<div class="name">' + (c.name || '') + '</div>' +
-    '</div>'
-  ).join("");
-}
+      console.log("Rendering", items.length, "stories");
+      storiesEl.innerHTML = items.slice(0,10).map(c => 
+        '<div class="story" title="' + (c.name || '') + '" onclick="goToCommunityChat(\'' + c.id + '\')">' +
+          '<div class="story-container">' +
+            '<img src="' + (toAbs(c.profile_pic) || 'https://via.placeholder.com/160x110?text=%20') + '" alt="' + (c.name || '') + '">' +
+          '</div>' +
+          '<div class="name">' + (c.name || '') + '</div>' +
+        '</div>'
+      ).join("");
+    }
 
-async function goToCommunityChat(communityId) {
-  try {
-    // Fetch channels untuk komunitas ini
-    const response = await fetch(API_BASE + "/channels/", { headers: authHeaders });
-    
-    if (!response.ok) {
-      throw new Error("Failed to fetch channels");
+    async function goToCommunityChat(communityId) {
+      try {
+        const response = await fetch(API_BASE + "/channels/", { headers: authHeaders });
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch channels");
+        }
+        
+        const channels = await response.json();
+        const channelsList = Array.isArray(channels) ? channels : (channels.results || []);
+        
+        const generalChannel = channelsList.find(ch => 
+          String(ch.community) === String(communityId) && 
+          (ch.name || '').toLowerCase() === 'general'
+        );
+        
+        if (generalChannel) {
+          window.location.href = `/chat/?channel=${generalChannel.id}`;
+        } else {
+          window.location.href = `/chat/?community=${communityId}`;
+        }
+        
+      } catch (error) {
+        console.error("Error navigating to community chat:", error);
+        window.location.href = `/chat/`;
+      }
     }
-    
-    const channels = await response.json();
-    const channelsList = Array.isArray(channels) ? channels : (channels.results || []);
-    
-    // Cari channel "general" untuk komunitas ini
-    const generalChannel = channelsList.find(ch => 
-      String(ch.community) === String(communityId) && 
-      (ch.name || '').toLowerCase() === 'general'
-    );
-    
-    // Redirect ke halaman chat
-    if (generalChannel) {
-      // Jika ada channel general, langsung ke channel tersebut
-      window.location.href = `/chat/?channel=${generalChannel.id}`;
-    } else {
-      // Jika belum ada channel general, ke halaman chat dengan community ID
-      // Halaman chat akan handle pembuatan/penampilan channel
-      window.location.href = `/chat/?community=${communityId}`;
-    }
-    
-  } catch (error) {
-    console.error("Error navigating to community chat:", error);
-    // Fallback: tetap ke halaman chat
-    window.location.href = `/chat/`;
-  }
-}
 
     function renderPosts(list){
       console.log("Rendering", list.length, "posts");
@@ -525,7 +520,6 @@ async function goToCommunityChat(communityId) {
         const t = p.created_at ? new Date(p.created_at).toLocaleString() : "";
         
         const userReaction = p.user_reaction;
-        const userLiked = p.user_liked;
         
         let currentReaction = null;
         let buttonText = '😊 React';
@@ -536,13 +530,6 @@ async function goToCommunityChat(communityId) {
           if (reaction) {
             currentReaction = reaction;
             buttonText = reaction.emoji + ' ' + reaction.label;
-            buttonClass = 'reacted';
-          }
-        } else if (userLiked) {
-          const likeReaction = REACTIONS.find(r => r.type === 'like');
-          if (likeReaction) {
-            currentReaction = likeReaction;
-            buttonText = likeReaction.emoji + ' ' + likeReaction.label;
             buttonClass = 'reacted';
           }
         }
@@ -629,27 +616,19 @@ async function goToCommunityChat(communityId) {
       setTimeout(() => optionBtn.style.transform = '', 150);
       
       try {
-        let response;
-        
-        if (type === "like") {
-          response = await fetch(API_BASE + "/posts/" + postId + "/like/", {
-            method: "POST",
-            headers: authHeaders
-          });
-        } else {
-          response = await fetch(API_BASE + "/posts/" + postId + "/react/", {
-            method: "POST",
-            headers: authHeaders,
-            body: JSON.stringify({ reaction_type: type })
-          });
-        }
+        // GUNAKAN API /react/ UNTUK SEMUA REACTION TYPES
+        const response = await fetch(API_BASE + "/posts/" + postId + "/react/", {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({ reaction_type: type })
+        });
 
         if (!response.ok) throw new Error('Failed to react');
         
         const data = await response.json();
         const reaction = REACTIONS.find(r => r.type === type);
         
-        if (data.message.includes('removed') || data.message.includes('unliked')) {
+        if (data.message.includes('removed')) {
           mainBtn.textContent = '😊 React';
           mainBtn.classList.remove('reacted');
         } else {
