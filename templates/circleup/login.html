@@ -364,18 +364,6 @@
       font-size: 14px;
       margin: 8px 0;
     }
-
-    .debug-info {
-      background: #f0f0f0;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      font-size: 12px;
-      font-family: monospace;
-      max-height: 150px;
-      overflow-y: auto;
-      display: none;
-    }
   </style>
 </head>
 
@@ -427,7 +415,6 @@
 
         <button type="submit" class="login-btn" id="loginButton">Login</button>
         <p id="loginMsg" class="small"></p>
-        <div id="debugInfo" class="debug-info"></div>
 
         <p class="signup-link">
           Don't have an account? <a href="/register/">Sign up now.</a>
@@ -472,15 +459,7 @@
 
     const form = document.getElementById("loginForm");
     const msg = document.getElementById("loginMsg");
-    const debugInfo = document.getElementById("debugInfo");
     const loginButton = document.getElementById("loginButton");
-
-    // Debug helper
-    function showDebug(info) {
-      debugInfo.style.display = "block";
-      debugInfo.textContent = JSON.stringify(info, null, 2);
-      console.log("Debug Info:", info);
-    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -491,7 +470,6 @@
       
       msg.textContent = "Logging in...";
       msg.className = "small";
-      debugInfo.style.display = "none";
 
       const email = document.getElementById("emailInput").value.trim();
       const password = document.getElementById("passwordInput").value;
@@ -529,11 +507,6 @@
         console.log("Response data:", data);
 
         if (!res.ok) {
-          showDebug({ 
-            status: res.status, 
-            error: data,
-            url: `${BASE}/auth/login/`
-          });
           throw data;
         }
 
@@ -577,11 +550,6 @@
         
         msg.textContent = errorMessage;
         msg.className = "error small";
-        
-        showDebug({
-          error: err,
-          timestamp: new Date().toISOString()
-        });
       }
     });
 
