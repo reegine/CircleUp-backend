@@ -5,7 +5,7 @@
   <title>CircleUP – Feeds</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
+    <style>
     :root{--bg:#f9f9fb;--bd:#ececec;--text:#1f2937;--muted:#6b7280;--brand:#e59d2c;--card:#ffffff}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Poppins',sans-serif;color:var(--text);background:var(--bg);display:flex;overflow:hidden}
@@ -258,18 +258,27 @@
       transform:scale(1.1);
     }
     
-    .create-post-body{padding:24px}
+    .create-post-body{padding:24px;overflow-y:auto;max-height:calc(90vh - 80px)}
+    .create-post-body::-webkit-scrollbar{width:8px}
+    .create-post-body::-webkit-scrollbar-thumb{background:#ddd;border-radius:8px}
     .upload-area{border:2px dashed var(--bd);border-radius:14px;padding:60px 40px;text-align:center;margin-bottom:20px;cursor:pointer;transition:all 0.2s}
     .upload-area:hover{border-color:var(--brand);background:#fafafa}
-    .upload-area.has-image{padding:0;border:none}
     .upload-icon{font-size:48px;margin-bottom:12px;color:var(--muted)}
     .upload-text{color:var(--muted);margin-bottom:16px;font-size:14px}
-    .upload-btn{background:#333;color:#fff;border:none;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:14px}
-    .preview-image{width:100%;border-radius:14px;display:block}
+    .upload-btn{background:#333;color:#fff;border:none;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:14px;transition:all .2s}
+    .upload-btn:hover{background:#1a1a1a;transform:translateY(-1px)}
+    .preview-image{width:100%;border-radius:14px;display:block;max-height:400px;object-fit:contain;background:#f5f5f5}
+    #imagePreviewContainer{margin-bottom:20px}
+    .photo-actions{display:flex;gap:8px;margin-top:12px}
+    .change-photo-btn,.cancel-photo-btn{padding:10px 20px;border-radius:20px;cursor:pointer;font-size:14px;font-weight:500;transition:all .2s;border:none;flex:1}
+    .change-photo-btn{background:var(--brand);color:#fff}
+    .change-photo-btn:hover{background:#d48d1f;transform:translateY(-1px)}
+    .cancel-photo-btn{background:#f5f5f5;color:#666}
+    .cancel-photo-btn:hover{background:#e0e0e0}
     .caption-area{width:100%;border:1px solid var(--bd);border-radius:14px;padding:16px;font-size:14px;font-family:'Poppins',sans-serif;resize:vertical;min-height:120px;margin-bottom:16px}
-    .post-submit-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:14px;border-radius:25px;font-weight:600;cursor:pointer;font-size:15px}
-    .post-submit-btn:hover{background:#d48d1f}
-    .post-submit-btn:disabled{background:#ccc;cursor:not-allowed}
+    .post-submit-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:14px;border-radius:25px;font-weight:600;cursor:pointer;font-size:15px;transition:all .2s}
+    .post-submit-btn:hover{background:#d48d1f;transform:translateY(-1px)}
+    .post-submit-btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
     /* RIGHT SIDEBAR - konsisten dengan chat.html */
     .right-sidebar {
       width: 280px;
@@ -398,6 +407,10 @@
         <div id="feed" class="feeds-grid"></div>
         <div id="loading" class="spinner" style="display:none"></div>
       </section>
+      
+      <!-- PINDAHKAN RIGHT SIDEBAR KE DALAM .main -->
+      {% include "circleup/right-sidebar.html" %}
+      
     </main>
   </div>
   
@@ -413,7 +426,7 @@
     </div>
   </div>
   
-  <div id="createPostModal" class="modal-overlay">
+<div id="createPostModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <h3>Create new post</h3>
@@ -426,13 +439,21 @@
           <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Select from computer</button>
           <input type="file" id="fileInput" accept="image/*" style="display:none">
         </div>
+        <div id="imagePreviewContainer" style="display:none;">
+          <div style="position:relative;">
+            <img id="previewImage" class="preview-image" alt="Preview">
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="change-photo-btn" onclick="document.getElementById('fileInput').click()">Change Photo</button>
+              <button class="cancel-photo-btn" onclick="cancelPhoto()">Cancel</button>
+            </div>
+          </div>
+        </div>
         <textarea id="captionInput" class="caption-area" placeholder="Type something here!"></textarea>
         <button id="submitPost" class="post-submit-btn">Post</button>
       </div>
     </div>
   </div>
 
-  {% include "circleup/right-sidebar.html" %}
 
 <script>
 (function(){
@@ -448,6 +469,49 @@
   let currentSort = 'newest';
   let selectedFile = null;
   let currentPostForModal = null;
+
+  // === TAMBAHAN BARU ===
+  let currentUserProfile = null;
+
+  // Fungsi untuk mendapatkan profil user saat ini
+  async function getCurrentUserProfile(){
+    try{
+      const data = await fetchJSON(`${API_BASE}/users/profile/`);
+      currentUserProfile = data;
+      return data;
+    }catch(e){
+      console.warn('Failed to get user profile', e);
+      return null;
+    }
+  }
+
+  // Fungsi untuk mengecek apakah user adalah creator atau admin
+  function checkPostPermission(community){
+    const postBtn = document.getElementById('createPostBtn');
+    if(!postBtn) return;
+    
+    // Jika belum ada data user atau community, hide button
+    if(!currentUserProfile || !community){
+      postBtn.style.display = 'none';
+      return;
+    }
+    
+    // Check if user is creator
+    const isCreator = community.created_by && 
+                      String(community.created_by.id || community.created_by) === String(currentUserProfile.id);
+    
+    // Check if user is admin (dari user_role yang ada di community serializer)
+    const isAdmin = community.user_role === 'admin';
+    
+    // Show button hanya jika creator atau admin
+    if(isCreator || isAdmin){
+      postBtn.style.display = 'flex';
+    } else {
+      postBtn.style.display = 'none';
+    }
+  }
+  // === END TAMBAHAN BARU ===
+
 
   // 6 REACTION TYPES sesuai API (sama dengan home.html)
   const REACTIONS = [
@@ -478,6 +542,7 @@
     return r.json();
   }
 
+  
   // ===== COMMUNITY LIST SIDEBAR =====
   async function loadCommunitiesList(){
     try{
@@ -576,6 +641,7 @@
     boot();
   }
 
+  // === MODIFIKASI loadCommunity() ===
   async function loadCommunity(){
     if(!COMM_ID) return;
     try{
@@ -591,8 +657,14 @@
       if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
       if(sNm) sNm.textContent = c.name || 'Community';
       if(sCt) sCt.textContent = counts;
+
+      // **TAMBAHAN BARU: Check post permission**
+      checkPostPermission(c);
+
     }catch(e){console.warn('Community load failed', e);}
   }
+  // === END MODIFIKASI loadCommunity() ===
+
 
   async function loadChannels(){
     if(!COMM_ID) return;
@@ -697,223 +769,87 @@
     }).join('');
   }
 
-  window.openPostModal = function(postId){
-    const post = allPosts.find(p => String(p.id) === String(postId));
-    if(!post) return;
-    currentPostForModal = post;
-    
-    const author = post.posted_by?.username || post.posted_by?.email || 'Anon';
-    const avatar = abs(post.posted_by?.profile_pic);
-    const when = post.created_at ? new Date(post.created_at).toLocaleString() : '';
-    const img = abs(post.image);
-    const caption = post.caption || 'No caption';
-    
-    const userReaction = post.user_reaction;
-    let buttonText = '😊 React';
-    let buttonClass = '';
-    
-    if (userReaction) {
-      const reaction = REACTIONS.find(r => r.type === userReaction);
-      if (reaction) {
-        buttonText = reaction.emoji + ' ' + reaction.label;
-        buttonClass = 'reacted';
-      }
-    }
-    
-    const reactionOptions = REACTIONS.map(r => 
-      `<button class="modal-reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
-    ).join('');
-    
-    document.getElementById('postDetailContent').innerHTML = `
-      ${img ? `<div class="post-image-large"><img src="${img}" alt="post"></div>` : ''}
-      <div class="post-info">
-        <div class="post-author-detail">
-          <img class="post-avatar-large" src="${avatar||'https://via.placeholder.com/42'}" alt="${escapeHtml(author)}">
-          <div>
-            <div class="post-author-name">${escapeHtml(author)}</div>
-            <div class="post-author-time">${when}</div>
-          </div>
-        </div>
-        <div class="post-caption-full">${escapeHtml(caption)}</div>
-        <div class="post-reactions-full">
-          <div class="modal-reaction-wrapper">
-            <button class="modal-main-reaction-btn ${buttonClass}" data-post-id="${post.id}">
-              ${buttonText}
-            </button>
-            <div class="modal-reaction-picker">
-              ${reactionOptions}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    document.getElementById('postModal').classList.add('active');
-    setupModalReactionHandlers();
-  };
+  // === MODIFIKASI boot() ===
+  async function boot(){
+    // **Load user profile dulu**
+    await getCurrentUserProfile();
 
-  function setupModalReactionHandlers() {
-    const modalBody = document.querySelector('#postModal .modal-body');
-    
-    // Handler untuk main button
-    modalBody.addEventListener('click', (e) => {
-      const mainBtn = e.target.closest('.modal-main-reaction-btn');
-      if (mainBtn) {
-        e.stopPropagation();
-        const picker = mainBtn.nextElementSibling;
-        picker.classList.toggle('show');
-        return;
-      }
-      
-      const reactionOption = e.target.closest('.modal-reaction-option');
-      if (reactionOption) {
-        e.stopPropagation();
-        handleModalReactionSelect(reactionOption);
-        return;
-      }
-    });
-    
-    // Close picker when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.modal-reaction-wrapper')) {
-        document.querySelectorAll('.modal-reaction-picker.show').forEach(p => {
-          p.classList.remove('show');
-        });
-      }
-    });
-  }
-
-  let isProcessingReaction = false;
-  async function handleModalReactionSelect(optionBtn) {
-    if (isProcessingReaction || !currentPostForModal) return;
-    isProcessingReaction = true;
-    
-    const type = optionBtn.dataset.type;
-    const postId = currentPostForModal.id;
-    const wrapper = optionBtn.closest('.modal-reaction-wrapper');
-    const mainBtn = wrapper.querySelector('.modal-main-reaction-btn');
-    const picker = wrapper.querySelector('.modal-reaction-picker');
-    
-    // Animation
-    optionBtn.style.transform = 'scale(1.4)';
-    setTimeout(() => optionBtn.style.transform = '', 150);
-    
-    try {
-      // GUNAKAN API /react/ untuk semua reaction types
-      const response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
-        method: 'POST',
-        headers: HEADERS,
-        body: JSON.stringify({ reaction_type: type })
-      });
-      
-      if (!response.ok) throw new Error('Failed to react');
-      
-      const data = await response.json();
-      const reaction = REACTIONS.find(r => r.type === type);
-      
-      // Update button state
-      if (data.message.includes('removed')) {
-        mainBtn.textContent = '😊 React';
-        mainBtn.classList.remove('reacted');
-        currentPostForModal.user_reaction = null;
-      } else {
-        mainBtn.textContent = reaction.emoji + ' ' + reaction.label;
-        mainBtn.classList.add('reacted');
-        currentPostForModal.user_reaction = type;
-      }
-      
-      picker.classList.remove('show');
-      
-      // Update post in allPosts array
-      const postIndex = allPosts.findIndex(p => String(p.id) === String(postId));
-      if (postIndex !== -1) {
-        allPosts[postIndex].user_reaction = currentPostForModal.user_reaction;
-        renderPosts(); // Re-render feed to show updated reaction
-      }
-      
-    } catch (err) {
-      console.error('Reaction error:', err);
-      alert('Gagal mengirim reaksi. Coba lagi.');
-    } finally {
-      isProcessingReaction = false;
-    }
-  }
-
-  window.closePostModal = function(){
-    document.getElementById('postModal').classList.remove('active');
-    currentPostForModal = null;
-  };
-
-  document.getElementById('createPostBtn').addEventListener('click', ()=>{
-    document.getElementById('createPostModal').classList.add('active');
-  });
-
-  window.closeCreatePostModal = function(){
-    document.getElementById('createPostModal').classList.remove('active');
-    document.getElementById('captionInput').value = '';
-    document.getElementById('uploadArea').classList.remove('has-image');
-    document.getElementById('uploadArea').innerHTML = `
-      <div class="upload-icon">🖼️ 🎥</div>
-      <div class="upload-text">Drag photos and videos here</div>
-      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Select from computer</button>
-      <input type="file" id="fileInput" accept="image/*" style="display:none">
-    `;
-    selectedFile = null;
-    document.getElementById('fileInput').addEventListener('change', handleFileChange);
-  };
-
-  function handleFileChange(e){
-    const file = e.target.files[0];
-    if(file){
-      selectedFile = file;
-      const reader = new FileReader();
-      reader.onload = (ev)=>{
-        const area = document.getElementById('uploadArea');
-        area.classList.add('has-image');
-        area.innerHTML = `<img class="preview-image" src="${ev.target.result}" alt="preview">`;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  document.getElementById('fileInput').addEventListener('change', handleFileChange);
-
-  document.getElementById('submitPost').addEventListener('click', async ()=>{
-    const caption = document.getElementById('captionInput').value.trim();
-    if(!caption && !selectedFile){
-      alert('Tambahkan caption atau gambar!');
-      return;
-    }
-    const formData = new FormData();
-    formData.append('community_uuid', COMM_ID);
-    formData.append('caption', caption);
-    if(selectedFile) formData.append('image', selectedFile);
-    try{
-      const headers = ACCESS ? {Authorization:`Bearer ${ACCESS}`} : {};
-      const r = await fetch(`${API_BASE}/posts/`, {
-        method: 'POST',
-        headers: headers,
-        body: formData
-      });
-      if(!r.ok){
-        const err = await r.json();
-        throw new Error(JSON.stringify(err));
-      }
-      closeCreatePostModal();
-      await loadPosts();
-    }catch(e){
-      console.error('Post creation failed', e);
-      alert('Gagal membuat post: ' + e.message);
-    }
-  });
-
-  function boot(){
     updateSidebarLinks();
     Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
       loadPosts();
     });
   }
+  // === END MODIFIKASI boot() ===
+
 })();
+// Handle file input change
+document.getElementById('fileInput').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(file){
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = function(evt){
+      document.getElementById('previewImage').src = evt.target.result;
+      document.getElementById('uploadArea').style.display = 'none';
+      document.getElementById('imagePreviewContainer').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Cancel photo function
+window.cancelPhoto = function(){
+  selectedFile = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('previewImage').src = '';
+  document.getElementById('uploadArea').style.display = 'block';
+  document.getElementById('imagePreviewContainer').style.display = 'none';
+};
+
+// Create post button handler
+document.getElementById('createPostBtn').addEventListener('click', function(){
+  document.getElementById('createPostModal').classList.add('active');
+});
+
+// Close modal function
+window.closeCreatePostModal = function(){
+  document.getElementById('createPostModal').classList.remove('active');
+  cancelPhoto();
+  document.getElementById('captionInput').value = '';
+};
+
+// Submit post handler
+document.getElementById('submitPost').addEventListener('click', async function(){
+  const caption = document.getElementById('captionInput').value.trim();
+  
+  if(!selectedFile && !caption){
+    alert('Please add a photo or write something!');
+    return;
+  }
+  
+  try{
+    const formData = new FormData();
+    if(selectedFile) formData.append('image', selectedFile);
+    if(caption) formData.append('caption', caption);
+    formData.append('community', COMM_ID);
+    
+    const response = await fetch(`${API_BASE}/posts/`, {
+      method: 'POST',
+      headers: {Authorization: `Bearer ${ACCESS}`},
+      body: formData
+    });
+    
+    if(!response.ok) throw new Error('Failed to create post');
+    
+    closeCreatePostModal();
+    loadPosts(); // Reload posts
+    alert('Post created successfully!');
+  }catch(e){
+    console.error('Post creation failed:', e);
+    alert('Failed to create post. Please try again.');
+  }
+});
 </script>
+
 </body>
 </html>

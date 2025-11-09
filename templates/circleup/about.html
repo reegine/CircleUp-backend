@@ -687,12 +687,12 @@ img{max-width:100%;display:block}
             </div>
             
             <div class="action-buttons">
-              <button class="btn-action btn-icon" onclick="openAddChannelModal()" title="Add Channel">
+              <button class="btn-action btn-icon" onclick="openAddChannelModal()" title="Add Channel" id="addChannelBtn" style="display:none;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
               </button>
-              <button class="btn-action btn-primary" onclick="openEditBioModal()">Edit Bio</button>
+              <button class="btn-action btn-primary" onclick="openEditBioModal()" id="editBioBtn" style="display:none;">Edit Bio</button>
               <button class="btn-action btn-secondary" id="joinedBtn" onclick="openLeaveConfirmModal()">Joined</button>
               <button class="btn-action btn-icon" onclick="openShareLinkModal()" title="Share Link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -917,6 +917,7 @@ img{max-width:100%;display:block}
     return id || null;
   }
 
+
   function renderCommunityHeader(c){
     currentCommunity = c;
     
@@ -959,6 +960,56 @@ img{max-width:100%;display:block}
     if(c.invite_link){
       document.getElementById('inviteLink').value = `${window.location.origin}/invite/${c.invite_link}`;
     }
+
+    // **TAMBAHAN BARU: Check user role and show/hide Edit Bio button**
+    checkUserPermissions(c);
+  }
+
+  // **FUNGSI BARU: Check if user is creator or admin**
+ // **FUNGSI BARU: Check if user is creator or admin**
+  async function checkUserPermissions(community){
+    const editBioBtn = document.getElementById('editBioBtn');
+    const addChannelBtn = document.getElementById('addChannelBtn');  // ← Sudah ada
+    
+    if(!editBioBtn || !addChannelBtn) return;
+    
+    try {
+      // Check if current user is the creator
+      const currentUserId = await getCurrentUserId();
+      const isCreator = community.created_by && String(community.created_by.id) === String(currentUserId);
+      
+      // Check if current user is admin by getting their role
+      const userRole = community.user_role;
+      const isAdmin = userRole === 'admin';
+      
+      // Show Edit Bio button only if user is creator or admin
+      if(isCreator || isAdmin){
+        editBioBtn.style.display = 'flex';
+        addChannelBtn.style.display = 'flex';  // ← Sudah ditampilkan
+      } else {
+        editBioBtn.style.display = 'none';
+        addChannelBtn.style.display = 'none';  // ← Sudah disembunyikan
+      }
+      
+    } catch(e){
+      console.warn('Failed to check user permissions:', e);
+      editBioBtn.style.display = 'none';
+      addChannelBtn.style.display = 'none';  // ← Default hidden jika error
+    }
+  }
+
+  // **FUNGSI BARU: Get current user ID from profile endpoint**
+  async function getCurrentUserId(){
+    try {
+      const response = await fetch(`${API_BASE}/users/profile/`, {headers: H});
+      if(response.ok){
+        const user = await response.json();
+        return user.id;
+      }
+    } catch(e){
+      console.warn('Failed to get current user:', e);
+    }
+    return null;
   }
 
   async function boot(){

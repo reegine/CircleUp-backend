@@ -579,10 +579,18 @@
     const stats = document.getElementById("chatStats");
     if (stats) stats.textContent = memberCount ? `- ${memberCount} members` : "";
 
-    if (wrap){
+   if (wrap){
       wrap.innerHTML = list.map(m => {
         const u = m.user || m.sender || {};
-        const avatar = absUrl(u.profilepic || u.profile_pic) || 'https://via.placeholder.com/80?text=%20';
+        const firstName = u.first_name || u.firstname || '';
+        const lastName = u.last_name || u.lastname || '';
+        const userName = u.username || u.email || 'User';
+        const fullName = (firstName + ' ' + lastName).trim() || userName;
+        
+        // Generate default avatar like in profile-and-edit.html
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&size=80&background=d4a044&color=fff`;
+        const avatar = absUrl(u.profilepic || u.profile_pic) || defaultAvatar;
+        
         const when = m.created_at ? new Date(m.created_at).toLocaleString() : "";
         const reacts = (m.reactions || []).map(r => {
           const label = Object.keys(REACT_MAP).find(k => REACT_MAP[k] === r.reaction_type) || "👍";
@@ -591,8 +599,8 @@
         return `
           <div class="message">
             <div class="message-header">
-              <img class="message-avatar" src="${escapeHtml(avatar)}" alt="${escapeHtml(u.username || u.email || 'User')}" />
-              <span class="message-author">${escapeHtml(u.username || u.email || 'User')}</span>
+              <img class="message-avatar" src="${escapeHtml(avatar)}" alt="${escapeHtml(userName)}" onerror="this.src='${defaultAvatar}'" />
+              <span class="message-author">${escapeHtml(userName)}</span>
               <span class="message-time">${escapeHtml(when)}</span>
             </div>
             ${m.message ? `<div class="message-content">${escapeHtml(m.message)}</div>` : ""}

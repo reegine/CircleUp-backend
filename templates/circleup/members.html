@@ -340,7 +340,7 @@
   
   let currentUser = null;
   let communityData = null;
-  let isCurrentUserAdmin = false;
+  let isCurrentUserCreator = false;
   let allMembers = [];
   let allCommunities = [];
 
@@ -372,13 +372,9 @@
       if (!r.ok) throw new Error("Failed to get community");
       communityData = await r.json();
       
-      // Check if current user is admin or creator
+      // Check if current user is creator
       if (currentUser && communityData.created_by) {
-        isCurrentUserAdmin = String(currentUser.id) === String(communityData.created_by.id);
-      }
-      
-      if (communityData.user_role === 'admin') {
-        isCurrentUserAdmin = true;
+        isCurrentUserCreator = String(currentUser.id) === String(communityData.created_by.id);
       }
       
       return communityData;
@@ -437,113 +433,70 @@
       `${community.member_count || 0} Members · ${community.online_count || 0} Online`;
   }
 
-  // Render members dari community yang dipilih
- async function renderMembers() {
+  // Render members menggunakan API /api/communities/{community_id}/members/
+  async function renderMembers() {
     const content = document.getElementById("membersContent");
     
     try {
-      // Ambil data community untuk mendapatkan member_count yang akurat
-      const communityResponse = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/`, { headers: H });
-      const community = await communityResponse.json();
+      // Ambil data members dari API
+      const membersResponse = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/members/`, { headers: H });
       
-      // Ambil daftar semua users
-      const allUsersResponse = await fetch(`${API_BASE}/users/`, { headers: H });
-      const allUsersData = await allUsersResponse.json();
-      const allUsers = Array.isArray(allUsersData) ? allUsersData : (allUsersData.results || []);
-      
-      // Build member list: creator first
-      const members = [];
-      
-      // Add creator
-      if (communityData.created_by) {
-        members.push({
-          user: communityData.created_by,
-          role: 'creator',
-          is_online: true
-        });
+      if (!membersResponse.ok) {
+        throw new Error("Failed to load members");
       }
       
-      // Add current user if not creator
-      if (currentUser && String(currentUser.id) !== String(communityData.created_by?.id)) {
-        members.push({
-          user: currentUser,
-          role: communityData.user_role || 'member',
-          is_online: true
-        });
-      }
+      const membersData = await membersResponse.json();
+      allMembers = Array.isArray(membersData) ? membersData : [];
       
-      // PERBAIKAN: Hitung berapa member lain yang perlu ditambahkan
-      const remainingMemberCount = Math.max(0, (community.member_count || 0) - members.length);
+      console.log('Current User ID:', currentUser?.id);
+      console.log('Creator ID:', communityData?.created_by?.id);
+      console.log('Is Creator:', isCurrentUserCreator);
       
-      // Add other users sebanyak remainingMemberCount
-      const otherUsers = allUsers
-        .filter(u => 
-          String(u.id) !== String(communityData.created_by?.id) && 
-          String(u.id) !== String(currentUser?.id)
-        )
-        .slice(0, remainingMemberCount);
-      
-      otherUsers.forEach(u => {
-        members.push({
-          user: u,
-          role: Math.random() > 0.7 ? 'admin' : 'member',
-          is_online: Math.random() > 0.5
-        });
+      // Sort members: creator first, then admins, then members
+      allMembers.sort((a, b) => {
+        if (String(a.user.id) === String(communityData.created_by?.id)) return -1;
+        if (String(b.user.id) === String(communityData.created_by?.id)) return 1;
+        if (a.role === 'admin' && b.role !== 'admin') return -1;
+        if (b.role === 'admin' && a.role !== 'admin') return 1;
+        return 0;
       });
       
-      allMembers = members;
-      
-      // PERBAIKAN: Update header
-      renderHeader(community);
-      
-      content.innerHTML = members.map((m, idx) => {
-        const user = m.user;
-        const role = m.role;
-        const isCreator = role === 'creator';
+      content.innerHTML = allMembers.map((member) => {
+        const user = member.user;
+        const role = member.role;
+        const isCreator = String(user.id) === String(communityData.created_by?.id);
         const isAdmin = role === 'admin';
         const isCurrentUserMember = String(user.id) === String(currentUser?.id);
         
-        // Cek apakah current user adalah creator
-        const isCurrentUserCreator = communityData.user_role === 'creator';
-        
         let badge = '';
-        if (isCreator) badge = '<span class="member-badge creator">Creator</span>';
-        else if (isAdmin) badge = '<span class="member-badge">Admin</span>';
+        if (isCreator) {
+          badge = '<span class="member-badge creator">Creator</span>';
+        } else if (isAdmin) {
+          badge = '<span class="member-badge">Admin</span>';
+        }
         
         let actions = '';
-        // PERBAIKAN: Creator bisa manage semua member (kecuali diri sendiri)
-        // Admin hanya bisa manage member biasa (tidak bisa manage creator atau admin lain)
-        if (!isCurrentUserMember) {
-          if (isCurrentUserCreator) {
-            // Creator bisa manage semua orang kecuali diri sendiri
-            if (!isCreator) {
-              if (isAdmin) {
-                actions = `
-                  <button class="action-button remove" onclick="handleRemoveAdmin(${idx})">Remove Admin</button>
-                  <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
-                `;
-              } else {
-                actions = `
-                  <button class="action-button admin" onclick="handleMakeAdmin(${idx})">Make Admin</button>
-                  <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
-                `;
-              }
-            }
-          } else if (isCurrentUserAdmin) {
-            // Admin hanya bisa manage member biasa (bukan creator atau admin lain)
-            if (!isCreator && !isAdmin) {
-              actions = `
-                <button class="action-button admin" onclick="handleMakeAdmin(${idx})">Make Admin</button>
-                <button class="action-button kick" onclick="handleKick(${idx})">Kick</button>
-              `;
-            }
+        // Only creator can manage members (except themselves)
+        console.log(`Member: ${user.username}, isCurrentUserCreator: ${isCurrentUserCreator}, isCurrentUserMember: ${isCurrentUserMember}, isCreator: ${isCreator}`);
+        
+        if (isCurrentUserCreator && !isCurrentUserMember && !isCreator) {
+          if (isAdmin) {
+            actions = `
+              <button class="action-button remove" onclick="handleRemoveAdmin('${user.id}')">Remove Admin</button>
+              <button class="action-button kick" onclick="handleKick('${user.id}')">Kick</button>
+            `;
+          } else {
+            actions = `
+              <button class="action-button admin" onclick="handleMakeAdmin('${user.id}')">Make Admin</button>
+              <button class="action-button kick" onclick="handleKick('${user.id}')">Kick</button>
+            `;
           }
         }
         
         return `
-          <div class="member-item" data-member-idx="${idx}">
+          <div class="member-item">
             <div class="member-info">
-              <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar">
+              <img src="${abs(user.profile_pic)}" alt="${user.username}" class="member-avatar" onerror="this.src='https://via.placeholder.com/45?text=${user.username?.charAt(0) || 'U'}'">
               <div class="member-details">
                 <div class="member-name">
                   ${user.username || user.first_name || user.email}
@@ -561,24 +514,28 @@
     }
   }
 
-  // PERBAIKAN: Fungsi-fungsi action dengan API call yang benar
-  window.handleMakeAdmin = async function(idx) {
+  // Make Admin - menggunakan API dengan action: update_role
+  window.handleMakeAdmin = async function(userId) {
     if (!confirm('Make this member an admin?')) return;
     
     try {
-      const member = allMembers[idx];
-      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/promote_admin/`, {
+      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/update_member_role/`, {
         method: 'POST',
         headers: H,
-        body: JSON.stringify({ user_id: member.user.id })
+        body: JSON.stringify({ 
+          user_id: userId,
+          action: 'update_role',
+          role: 'admin'
+        })
       });
       
       if (response.ok) {
-        alert('Member promoted to admin successfully!');
+        const result = await response.json();
+        alert(result.message || 'Member promoted to admin successfully!');
         await renderMembers(); // Refresh member list
       } else {
         const error = await response.json();
-        alert(`Failed: ${error.detail || 'Unknown error'}`);
+        alert(`Failed: ${error.error || error.detail || 'Unknown error'}`);
       }
     } catch (e) {
       console.error('Make admin error:', e);
@@ -586,23 +543,28 @@
     }
   };
 
-  window.handleRemoveAdmin = async function(idx) {
+  // Remove Admin - menggunakan API dengan action: update_role dan role: member
+  window.handleRemoveAdmin = async function(userId) {
     if (!confirm('Remove admin privileges from this member?')) return;
     
     try {
-      const member = allMembers[idx];
-      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/demote_admin/`, {
+      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/update_member_role/`, {
         method: 'POST',
         headers: H,
-        body: JSON.stringify({ user_id: member.user.id })
+        body: JSON.stringify({ 
+          user_id: userId,
+          action: 'update_role',
+          role: 'member'
+        })
       });
       
       if (response.ok) {
-        alert('Admin privileges removed successfully!');
+        const result = await response.json();
+        alert(result.message || 'Admin privileges removed successfully!');
         await renderMembers(); // Refresh member list
       } else {
         const error = await response.json();
-        alert(`Failed: ${error.detail || 'Unknown error'}`);
+        alert(`Failed: ${error.error || error.detail || 'Unknown error'}`);
       }
     } catch (e) {
       console.error('Remove admin error:', e);
@@ -610,23 +572,27 @@
     }
   };
 
-  window.handleKick = async function(idx) {
+  // Kick Member - menggunakan API dengan action: remove
+  window.handleKick = async function(userId) {
     if (!confirm('Are you sure you want to kick this member from the community?')) return;
     
     try {
-      const member = allMembers[idx];
-      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/kick_member/`, {
+      const response = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/update_member_role/`, {
         method: 'POST',
         headers: H,
-        body: JSON.stringify({ user_id: member.user.id })
+        body: JSON.stringify({ 
+          user_id: userId,
+          action: 'remove'
+        })
       });
       
       if (response.ok) {
-        alert('Member kicked successfully!');
+        const result = await response.json();
+        alert(result.message || 'Member kicked successfully!');
         await renderMembers(); // Refresh member list
       } else {
         const error = await response.json();
-        alert(`Failed: ${error.detail || 'Unknown error'}`);
+        alert(`Failed: ${error.error || error.detail || 'Unknown error'}`);
       }
     } catch (e) {
       console.error('Kick member error:', e);

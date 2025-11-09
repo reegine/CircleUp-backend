@@ -102,8 +102,39 @@
 
     .community-card-members {font-size: 13px;color: #666}
 
-    .main-container{display:flex;flex:1;height:100vh;overflow:hidden;margin-left:450px}
-    .event-container{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden}
+
+    .main-container{
+      display:flex;
+      flex:1;
+      height:100vh;
+      overflow:hidden;
+      margin-left:450px;  /* 200px sidebar + 250px community list */
+    }
+
+
+    .event-container{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+      overflow:hidden;
+      width: calc(100vw - 450px - 340px); /* Total viewport - left sidebars - right sidebar */
+      max-width: calc(100vw - 450px - 340px);
+    }
+    .event-content{
+      padding:30px 40px;
+      flex:1;
+      overflow-y:auto;
+      overflow-x:hidden;
+      max-width: 100%;
+    }
+    .event-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:auto; /* Ubah dari 800px ke auto */
+      table-layout: auto; /* Tambahkan ini */
+    }
     .event-body{flex:1;display:flex;min-height:0;background:#fff}
     .left-rail{display:none}
     .events-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
@@ -137,54 +168,11 @@
     .add-event-btn:hover{background:#d48b1f}
     .add-event-btn svg{width:18px;height:18px;fill:#fff}
 
-    .sort-container{position:relative;display:inline-block}
-    .sort-btn{
-      padding:10px 20px;
-      background:transparent;
-      color:#e59d2c;
-      border:none;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      transition:color .3s ease;
-    }
-    .sort-btn:hover{color:#d48b1f}
-    .sort-btn svg{width:20px;height:20px;fill:#e59d2c}
-    
-    .sort-dropdown{
-      position:absolute;
-      top:100%;
-      right:0;
-      margin-top:8px;
-      background:#fff;
-      border:1px solid #e0e0e0;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.1);
-      min-width:180px;
-      z-index:1000;
-      display:none;
-    }
-    .sort-dropdown.show{display:block}
-    .sort-option{
-      padding:12px 16px;
-      cursor:pointer;
-      font-size:14px;
-      color:#333;
-      transition:background .2s;
-    }
-    .sort-option:first-child{border-radius:12px 12px 0 0}
-    .sort-option:last-child{border-radius:0 0 12px 12px}
-    .sort-option:hover{background:#f5f5f5}
-    .sort-option.active{background:#fff3e0;color:#e59d2c;font-weight:600}
-
     .event-content{padding:30px 40px;flex:1;overflow-y:auto;overflow-x: hidden;max-width: 100%}
     .event-content::-webkit-scrollbar {width: 10px}
     .event-content::-webkit-scrollbar-thumb {background: #ddd;border-radius: 10px}
 
-    .event-table{width:100%;border-collapse:separate;border-spacing:0;min-width: 800px}
+    .event-table{width:100%;border-collapse:separate;border-spacing:0;min-width: 800px;}
     .event-table thead{background:#f5f5f5}
     .event-table th{
       padding:18px 20px;
@@ -224,7 +212,7 @@
     .participation-btn.cancel{background:#f5f5f5;color:#333}
     .participation-btn.cancel:hover{background:#e0e0e0}
 
-    #right-sidebar-container{flex-shrink:0}
+    #right-sidebar-container{flex-shrink:0;width: 320px;}
 
     .modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.35);align-items:center;justify-content:center;padding:24px}
     .modal.show{display:flex}
@@ -275,17 +263,6 @@
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                 Add event
               </button>
-            </div>
-            <div class="sort-container">
-              <button class="sort-btn" onclick="toggleSortDropdown()">
-                <svg viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/></svg>
-                Sort
-              </button>
-              <div class="sort-dropdown" id="sortDropdown">
-                <div class="sort-option active" onclick="setSortFilter('all')">All Events</div>
-                <div class="sort-option" onclick="setSortFilter('upcoming')">Upcoming Events</div>
-                <div class="sort-option" onclick="setSortFilter('past')">Past Events</div>
-              </div>
             </div>
           </div>
 
@@ -340,318 +317,378 @@
     </div>
   </div>
   
-  <script>
-    const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
-    const ACCESS = localStorage.getItem("access");
-    if (!ACCESS) { window.location.href = "/login/"; }
-    const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type": "application/json" };
+ <script>
+  const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
+  const ACCESS = localStorage.getItem("access");
+  if (!ACCESS) { window.location.href = "/login/"; }
+  const H = { Authorization: `Bearer ${ACCESS}`, "Content-Type": "application/json" };
 
-    const params = new URLSearchParams(location.search);
-    let COMMUNITY_ID = params.get("community");
-    let COMMUNITIES_CACHE = [];
-    let EVENTS_CACHE = [];
-    let sortFilter = 'all';
+  const params = new URLSearchParams(location.search);
+  let COMMUNITY_ID = params.get("community");
+  let COMMUNITIES_CACHE = [];
+  let EVENTS_CACHE = [];
+  let sortFilter = 'all';
 
-    const absUrl = (u) => {
-      if (!u) return "";
-      if (u.startsWith("http")) return u;
-      const root = API_BASE.replace(/\/api\/?$/,"");
-      return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
-    };
+  // ✅ Tambahan baru
+  let currentUserProfile = null;
+  let currentCommunityData = null;
 
-    const escapeHtml = (s) => {
-      return String(s).replace(/[&<>"']/g,(m)=>({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      })[m]);
-    };
+  const absUrl = (u) => {
+    if (!u) return "";
+    if (u.startsWith("http")) return u;
+    const root = API_BASE.replace(/\/api\/?$/,"");
+    return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
+  };
 
-    async function fetchCommunities(){
-      const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
-      if (!r.ok) throw new Error("Failed to load communities");
-      const data = await r.json();
-      COMMUNITIES_CACHE = Array.isArray(data) ? data : [];
-      
-      if (!COMMUNITY_ID && COMMUNITIES_CACHE.length > 0) {
-        COMMUNITY_ID = COMMUNITIES_CACHE[0].id;
-        const url = new URL(location.href);
-        url.searchParams.set("community", COMMUNITY_ID);
-        history.replaceState(null, "", url);
-      }
-      return COMMUNITIES_CACHE;
-    }
+  const escapeHtml = (s) => {
+    return String(s).replace(/[&<>"']/g,(m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    })[m]);
+  };
 
-    async function fetchEvents(){
-      const r = await fetch(`${API_BASE}/events/`, { headers: H });
-      if (!r.ok) throw new Error("Failed to load events");
-      const data = await r.json();
-      EVENTS_CACHE = Array.isArray(data) ? data : (data.results || []);
-      return EVENTS_CACHE;
-    }
-
-    function renderCommunityList(){
-      const container = document.getElementById('communitiesContainer');
-      if(!container) return;
-      
-      if(!COMMUNITIES_CACHE.length){
-        container.innerHTML = '<div style="text-align:center;padding:40px;color:#888">No communities joined yet</div>';
-        return;
-      }
-      
-      container.innerHTML = COMMUNITIES_CACHE.map(comm => {
-        const isActive = String(comm.id) === String(COMMUNITY_ID);
-        const thumb = absUrl(comm.profile_pic || comm.profilepic || comm.background_banner || comm.backgroundpic) || 'https://via.placeholder.com/60?text=C';
-        
-        return `
-          <div class="community-card ${isActive ? 'active' : ''}" onclick="selectCommunity('${comm.id}')">
-            <img src="${escapeHtml(thumb)}" alt="${escapeHtml(comm.name)}" class="community-card-avatar" onerror="this.src='https://via.placeholder.com/60?text=C'">
-            <div class="community-card-info">
-              <div class="community-card-name">${escapeHtml(comm.name || 'Unnamed Community')}</div>
-              <div class="community-card-members">${comm.member_count || comm.membercount || 0} members</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-      
-      updateCommunityListHeader();
-    }
-
-    function updateCommunityListHeader(){
-      const currentComm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
-      const titleEl = document.getElementById('currentCommunityName');
-      const statsEl = document.getElementById('currentCommunityStats');
-      
-      if(currentComm){
-        if(titleEl) titleEl.textContent = currentComm.name || 'Community';
-        if(statsEl) statsEl.textContent = `${currentComm.member_count || currentComm.membercount || 0} Members · ${currentComm.online_count || currentComm.onlinecount || 0} Online`;
-      } else {
-        if(titleEl) titleEl.textContent = 'Community';
-        if(statsEl) statsEl.textContent = '0 Members · 0 Online';
-      }
-    }
-
-    function selectCommunity(commId){
-      COMMUNITY_ID = commId;
+  async function fetchCommunities(){
+    const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
+    if (!r.ok) throw new Error("Failed to load communities");
+    const data = await r.json();
+    COMMUNITIES_CACHE = Array.isArray(data) ? data : [];
+    
+    if (!COMMUNITY_ID && COMMUNITIES_CACHE.length > 0) {
+      COMMUNITY_ID = COMMUNITIES_CACHE[0].id;
       const url = new URL(location.href);
       url.searchParams.set("community", COMMUNITY_ID);
       history.replaceState(null, "", url);
+    }
+    return COMMUNITIES_CACHE;
+  }
+
+  async function fetchEvents(){
+    const r = await fetch(`${API_BASE}/events/`, { headers: H });
+    if (!r.ok) throw new Error("Failed to load events");
+    const data = await r.json();
+    EVENTS_CACHE = Array.isArray(data) ? data : (data.results || []);
+    return EVENTS_CACHE;
+  }
+
+  function renderCommunityList(){
+    const container = document.getElementById('communitiesContainer');
+    if(!container) return;
+    
+    if(!COMMUNITIES_CACHE.length){
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:#888">No communities joined yet</div>';
+      return;
+    }
+    
+    container.innerHTML = COMMUNITIES_CACHE.map(comm => {
+      const isActive = String(comm.id) === String(COMMUNITY_ID);
+      const thumb = absUrl(comm.profile_pic || comm.profilepic || comm.background_banner || comm.backgroundpic) || 'https://via.placeholder.com/60?text=C';
       
-      renderCommunityList();
+      return `
+        <div class="community-card ${isActive ? 'active' : ''}" onclick="selectCommunity('${comm.id}')">
+          <img src="${escapeHtml(thumb)}" alt="${escapeHtml(comm.name)}" class="community-card-avatar" onerror="this.src='https://via.placeholder.com/60?text=C'">
+          <div class="community-card-info">
+            <div class="community-card-name">${escapeHtml(comm.name || 'Unnamed Community')}</div>
+            <div class="community-card-members">${comm.member_count || comm.membercount || 0} members</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    updateCommunityListHeader();
+  }
+
+  function updateCommunityListHeader(){
+    const currentComm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
+    const titleEl = document.getElementById('currentCommunityName');
+    const statsEl = document.getElementById('currentCommunityStats');
+    
+    if(currentComm){
+      if(titleEl) titleEl.textContent = currentComm.name || 'Community';
+      if(statsEl) statsEl.textContent = `${currentComm.member_count || currentComm.membercount || 0} Members · ${currentComm.online_count || currentComm.onlinecount || 0} Online`;
+    } else {
+      if(titleEl) titleEl.textContent = 'Community';
+      if(statsEl) statsEl.textContent = '0 Members · 0 Online';
+    }
+  }
+
+  // ✅ Tambahan fungsi baru
+  async function getCurrentUserProfile(){
+    try{
+      const r = await fetch(`${API_BASE}/users/profile/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to get user profile");
+      currentUserProfile = await r.json();
+      return currentUserProfile;
+    }catch(e){
+      console.warn('Failed to get user profile', e);
+      return null;
+    }
+  }
+
+  async function getCurrentCommunityData(){
+    if(!COMMUNITY_ID) return null;
+    try{
+      const r = await fetch(`${API_BASE}/communities/${COMMUNITY_ID}/`, { headers: H });
+      if (!r.ok) throw new Error("Failed to get community data");
+      currentCommunityData = await r.json();
+      return currentCommunityData;
+    }catch(e){
+      console.warn('Failed to get community data', e);
+      return null;
+    }
+  }
+
+  function checkAddEventPermission(){
+    const addEventBtn = document.querySelector('.add-event-btn');
+    if(!addEventBtn) return;
+    
+    if(!currentUserProfile || !currentCommunityData){
+      addEventBtn.style.display = 'none';
+      return;
+    }
+    
+    const isCreator = currentCommunityData.created_by && 
+                      String(currentCommunityData.created_by.id || currentCommunityData.created_by) === String(currentUserProfile.id);
+    
+    const isAdmin = currentCommunityData.user_role === 'admin';
+    
+    if(isCreator || isAdmin){
+      addEventBtn.style.display = 'flex';
+    } else {
+      addEventBtn.style.display = 'none';
+    }
+  }
+
+  // ✅ Ganti versi selectCommunity
+  async function selectCommunity(commId){
+    COMMUNITY_ID = commId;
+    const url = new URL(location.href);
+    url.searchParams.set("community", COMMUNITY_ID);
+    history.replaceState(null, "", url);
+    
+    renderCommunityList();
+    renderEvents();
+
+    await getCurrentCommunityData();
+    checkAddEventPermission();
+    
+    if (window.syncRightSidebarFromCommunity) {
+      window.syncRightSidebarFromCommunity(COMMUNITY_ID);
+    }
+    if (window.renderRightSidebarChannels) {
+      window.renderRightSidebarChannels(COMMUNITY_ID);
+    }
+    if (window.renderRightSidebarEvents) {
+      window.renderRightSidebarEvents(COMMUNITY_ID);
+    }
+  }
+
+  function renderEvents(){
+    const tbody = document.getElementById("eventsTableBody");
+    if (!tbody) return;
+    
+    let filteredEvents = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (sortFilter === 'upcoming') {
+      filteredEvents = filteredEvents.filter(e => new Date(e.date) >= today);
+    } else if (sortFilter === 'past') {
+      filteredEvents = filteredEvents.filter(e => new Date(e.date) < today);
+    }
+    
+    filteredEvents.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortFilter === 'past' ? dateB - dateA : dateA - dateB;
+    });
+    
+    if (!filteredEvents.length){
+      const message = sortFilter === 'upcoming' ? 'No upcoming events' : sortFilter === 'past' ? 'No past events' : 'No events yet. Click "Add event" to create one!';
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:40px">${message}</td></tr>`;
+      return;
+    }
+    
+    tbody.innerHTML = filteredEvents.map(ev => `
+      <tr class="${ev.is_participant ? 'highlighted' : ''}" data-event-id="${ev.id}">
+        <td>
+          <div class="event-name">${escapeHtml(ev.name || 'Untitled Event')}
+            <span class="edit-icon" onclick="editEvent('${ev.id}')">
+              <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </span>
+          </div>
+        </td>
+        <td class="event-date">${escapeHtml(ev.date || '')}</td>
+        <td class="event-time">${escapeHtml(ev.time || '')}</td>
+        <td class="event-location">${escapeHtml(ev.location || '')}</td>
+        <td>
+          <button class="participation-btn ${ev.is_participant ? 'cancel' : 'join'}" onclick="toggleParticipation('${ev.id}', ${ev.is_participant})">
+            ${ev.is_participant ? 'Cancel' : 'Join'}
+          </button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  async function toggleParticipation(eventId, isCurrentlyParticipant){
+    try {
+      const endpoint = isCurrentlyParticipant ? 'cancel' : 'join';
+      const r = await fetch(`${API_BASE}/events/${eventId}/${endpoint}/`, {method: 'POST', headers: H});
+      if (!r.ok) throw new Error(`Failed to ${endpoint} event`);
+      await fetchEvents();
+      renderEvents();
+    } catch(e){
+      console.error(e);
+      alert(`Failed to update participation: ${e.message}`);
+    }
+  }
+
+  function toggleSortDropdown(){
+    document.getElementById('sortDropdown').classList.toggle('show');
+  }
+
+  function setSortFilter(filter){
+    sortFilter = filter;
+    document.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('sortDropdown').classList.remove('show');
+    renderEvents();
+  }
+
+  document.addEventListener('click', function(e){
+    const sortContainer = document.querySelector('.sort-container');
+    if (sortContainer && !sortContainer.contains(e.target)){
+      document.getElementById('sortDropdown').classList.remove('show');
+    }
+  });
+
+  function openAddEventModal(){
+    document.getElementById('addEventModal').classList.add('show');
+  }
+
+  function closeModal(){
+    document.getElementById('addEventModal').classList.remove('show');
+    clearModalForm();
+  }
+
+  function clearModalForm(){
+    document.getElementById('eventName').value = '';
+    document.getElementById('eventDescription').value = '';
+    document.getElementById('eventDate').value = '';
+    document.getElementById('eventTime').value = '';
+    document.getElementById('eventLocation').value = '';
+    document.getElementById('modalError').style.display = 'none';
+  }
+
+  function showModalError(msg){
+    const el = document.getElementById('modalError');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  async function saveNewEvent(){
+    const name = document.getElementById('eventName').value.trim();
+    const description = document.getElementById('eventDescription').value.trim();
+    const date = document.getElementById('eventDate').value;
+    const time = document.getElementById('eventTime').value;
+    const location = document.getElementById('eventLocation').value.trim();
+    
+    if (!name || !date || !time || !location){
+      showModalError('Please fill all required fields');
+      return;
+    }
+    
+    const btn = document.getElementById('saveEventBtn');
+    btn.disabled = true;
+    btn.textContent = 'Adding...';
+    
+    try {
+      const formattedTime = time.length === 5 ? `${time}:00` : time;
+      const payload = {
+        community_uuid: COMMUNITY_ID,
+        create_new_channel: true,
+        channel_name: `Event: ${name}`,
+        name, description, date,
+        time: formattedTime,
+        location
+      };
+      
+      const r = await fetch(`${API_BASE}/events/`, {method: 'POST', headers: H, body: JSON.stringify(payload)});
+      if (!r.ok) {
+        const errorText = await r.text();
+        let errorMsg = 'Failed to create event';
+        try {
+          const error = JSON.parse(errorText);
+          errorMsg = error.detail || error.message || JSON.stringify(error);
+        } catch(e) {
+          errorMsg = `Server error (${r.status})`;
+        }
+        throw new Error(errorMsg);
+      }
+      
+      await fetchEvents();
       renderEvents();
       
-      // Sync right sidebar with new community
-      if (window.syncRightSidebarFromCommunity) {
-        window.syncRightSidebarFromCommunity(COMMUNITY_ID);
-      }
-      if (window.renderRightSidebarChannels) {
-        window.renderRightSidebarChannels(COMMUNITY_ID);
-      }
       if (window.renderRightSidebarEvents) {
         window.renderRightSidebarEvents(COMMUNITY_ID);
       }
+      
+      closeModal();
+      alert('Event created successfully!');
+    } catch(e){
+      console.error('Error creating event:', e);
+      showModalError(e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Add';
     }
+  }
 
-    function renderEvents(){
-      const tbody = document.getElementById("eventsTableBody");
-      if (!tbody) return;
-      
-      let filteredEvents = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      if (sortFilter === 'upcoming') {
-        filteredEvents = filteredEvents.filter(e => new Date(e.date) >= today);
-      } else if (sortFilter === 'past') {
-        filteredEvents = filteredEvents.filter(e => new Date(e.date) < today);
-      }
-      
-      filteredEvents.sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return sortFilter === 'past' ? dateB - dateA : dateA - dateB;
-      });
-      
-      if (!filteredEvents.length){
-        const message = sortFilter === 'upcoming' ? 'No upcoming events' : sortFilter === 'past' ? 'No past events' : 'No events yet. Click "Add event" to create one!';
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:40px">${message}</td></tr>`;
-        return;
-      }
-      
-      tbody.innerHTML = filteredEvents.map(ev => `
-        <tr class="${ev.is_participant ? 'highlighted' : ''}" data-event-id="${ev.id}">
-          <td>
-            <div class="event-name">${escapeHtml(ev.name || 'Untitled Event')}
-              <span class="edit-icon" onclick="editEvent('${ev.id}')">
-                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-              </span>
-            </div>
-          </td>
-          <td class="event-date">${escapeHtml(ev.date || '')}</td>
-          <td class="event-time">${escapeHtml(ev.time || '')}</td>
-          <td class="event-location">${escapeHtml(ev.location || '')}</td>
-          <td>
-            <button class="participation-btn ${ev.is_participant ? 'cancel' : 'join'}" onclick="toggleParticipation('${ev.id}', ${ev.is_participant})">
-              ${ev.is_participant ? 'Cancel' : 'Join'}
-            </button>
-          </td>
-        </tr>
-      `).join("");
-    }
+  function editEvent(id){
+    alert('Edit event functionality coming soon!');
+  }
 
-    async function toggleParticipation(eventId, isCurrentlyParticipant){
-      try {
-        const endpoint = isCurrentlyParticipant ? 'cancel' : 'join';
-        const r = await fetch(`${API_BASE}/events/${eventId}/${endpoint}/`, {method: 'POST', headers: H});
-        if (!r.ok) throw new Error(`Failed to ${endpoint} event`);
-        await fetchEvents();
-        renderEvents();
-      } catch(e){
-        console.error(e);
-        alert(`Failed to update participation: ${e.message}`);
-      }
-    }
-
-    function toggleSortDropdown(){
-      document.getElementById('sortDropdown').classList.toggle('show');
-    }
-
-    function setSortFilter(filter){
-      sortFilter = filter;
-      document.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById('sortDropdown').classList.remove('show');
+  // ✅ Ganti fungsi boot
+  async function boot(){
+    try {
+      await getCurrentUserProfile();
+      await Promise.all([fetchCommunities(), fetchEvents()]);
+      renderCommunityList();
       renderEvents();
-    }
-
-    document.addEventListener('click', function(e){
-      const sortContainer = document.querySelector('.sort-container');
-      if (sortContainer && !sortContainer.contains(e.target)){
-        document.getElementById('sortDropdown').classList.remove('show');
-      }
-    });
-
-    function openAddEventModal(){
-      document.getElementById('addEventModal').classList.add('show');
-    }
-
-    function closeModal(){
-      document.getElementById('addEventModal').classList.remove('show');
-      clearModalForm();
-    }
-
-    function clearModalForm(){
-      document.getElementById('eventName').value = '';
-      document.getElementById('eventDescription').value = '';
-      document.getElementById('eventDate').value = '';
-      document.getElementById('eventTime').value = '';
-      document.getElementById('eventLocation').value = '';
-      document.getElementById('modalError').style.display = 'none';
-    }
-
-    function showModalError(msg){
-      const el = document.getElementById('modalError');
-      el.textContent = msg;
-      el.style.display = 'block';
-    }
-
-    async function saveNewEvent(){
-      const name = document.getElementById('eventName').value.trim();
-      const description = document.getElementById('eventDescription').value.trim();
-      const date = document.getElementById('eventDate').value;
-      const time = document.getElementById('eventTime').value;
-      const location = document.getElementById('eventLocation').value.trim();
       
-      if (!name || !date || !time || !location){
-        showModalError('Please fill all required fields');
-        return;
+      if(COMMUNITY_ID){
+        await getCurrentCommunityData();
+        checkAddEventPermission();
       }
       
-      const btn = document.getElementById('saveEventBtn');
-      btn.disabled = true;
-      btn.textContent = 'Adding...';
-      
-      try {
-        const formattedTime = time.length === 5 ? `${time}:00` : time;
-        const payload = {
-          community_uuid: COMMUNITY_ID,
-          create_new_channel: true,
-          channel_name: `Event: ${name}`,
-          name, description, date,
-          time: formattedTime,
-          location
-        };
-        
-        const r = await fetch(`${API_BASE}/events/`, {method: 'POST', headers: H, body: JSON.stringify(payload)});
-        if (!r.ok) {
-          const errorText = await r.text();
-          let errorMsg = 'Failed to create event';
-          try {
-            const error = JSON.parse(errorText);
-            errorMsg = error.detail || error.message || JSON.stringify(error);
-          } catch(e) {
-            errorMsg = `Server error (${r.status})`;
-          }
-          throw new Error(errorMsg);
+      if (COMMUNITY_ID) {
+        if (window.syncRightSidebarFromCommunity) {
+          window.syncRightSidebarFromCommunity(COMMUNITY_ID);
         }
-        
-        await fetchEvents();
-        renderEvents();
-        
-        // Update right sidebar events
+        if (window.renderRightSidebarChannels) {
+          window.renderRightSidebarChannels(COMMUNITY_ID);
+        }
         if (window.renderRightSidebarEvents) {
           window.renderRightSidebarEvents(COMMUNITY_ID);
         }
-        
-        closeModal();
-        alert('Event created successfully!');
-      } catch(e){
-        console.error('Error creating event:', e);
-        showModalError(e.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Add';
       }
+    } catch(e){
+      console.error('Boot error:', e);
+      const tbody = document.getElementById("eventsTableBody");
+      if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="color:#c33;text-align:center;padding:40px">Failed to load data. Please refresh the page.</td></tr>`;
     }
+  }
 
-    function editEvent(id){
-      alert('Edit event functionality coming soon!');
-    }
+  boot();
 
-    async function boot(){
-      try {
-        await Promise.all([fetchCommunities(), fetchEvents()]);
-        renderCommunityList();
-        renderEvents();
-        
-        // Initialize right sidebar
-        if (COMMUNITY_ID) {
-          if (window.syncRightSidebarFromCommunity) {
-            window.syncRightSidebarFromCommunity(COMMUNITY_ID);
-          }
-          if (window.renderRightSidebarChannels) {
-            window.renderRightSidebarChannels(COMMUNITY_ID);
-          }
-          if (window.renderRightSidebarEvents) {
-            window.renderRightSidebarEvents(COMMUNITY_ID);
-          }
-        }
-      } catch(e){
-        console.error('Boot error:', e);
-        const tbody = document.getElementById("eventsTableBody");
-        if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="color:#c33;text-align:center;padding:40px">Failed to load data. Please refresh the page.</td></tr>`;
-      }
-    }
+  window.addEventListener('click', (e) => {
+    const modal = document.getElementById('addEventModal');
+    if (e.target === modal) closeModal();
+  });
 
-    boot();
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
 
-    window.addEventListener('click', (e) => {
-      const modal = document.getElementById('addEventModal');
-      if (e.target === modal) closeModal();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-  </script>
 </body>
 </html>
