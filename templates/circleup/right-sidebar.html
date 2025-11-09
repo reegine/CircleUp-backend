@@ -127,7 +127,6 @@
     color:#1a1a1a;
     background:transparent;
     margin-bottom:4px;
-    /* transition:background .2s; */
     font-weight:400;
     font-size:14px;
   }
@@ -227,6 +226,12 @@
     return root + (u.startsWith("/") ? "" : "/") + u;
   };
 
+  const escapeHtml = (s) => {
+    return String(s).replace(/[&<>"']/g,(m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    })[m]);
+  };
+
   // Get community ID from URL
   function getCommunityIdFromURL() {
     const params = new URLSearchParams(location.search);
@@ -246,15 +251,16 @@
         const nameEl = document.querySelector('[data-rs="name"]');
         const countEl = document.querySelector('[data-rs="counts"]');
         
-        if (imgEl) imgEl.src = abs(c.background_banner || c.profile_pic);
+        if (imgEl) imgEl.src = abs(c.background_banner || c.backgroundpic || c.profile_pic || c.profilepic) || 'https://via.placeholder.com/300x120';
         if (nameEl) nameEl.textContent = c.name || "Community";
-        if (countEl) countEl.textContent = `${c.member_count || 0} Members, ${c.online_count || 0} Online`;
+        if (countEl) countEl.textContent = `${c.member_count || c.membercount || 0} Members, ${c.online_count || c.onlinecount || 0} Online`;
         
         // Update menu links with community parameter
         document.querySelectorAll('.sidebar-menu-item').forEach(item => {
           const href = item.getAttribute('href');
-          if (href && !href.includes('?')) {
-            item.setAttribute('href', `${href}?community=${communityId}`);
+          if (href) {
+            const baseHref = href.split('?')[0];
+            item.setAttribute('href', `${baseHref}?community=${communityId}`);
           }
         });
         
@@ -289,17 +295,20 @@
           return;
         }
         
+        // Get current channel from URL if on chat page
+        const currentChannelId = new URLSearchParams(location.search).get('channel');
+        
         box.innerHTML = filtered.map(c => `
-          <a href="/chat/?channel=${c.id}&community=${communityId}" class="channel-item">
+          <a href="/chat/?community=${communityId}&channel=${c.id}" class="channel-item ${String(c.id) === String(currentChannelId) ? 'active' : ''}">
             <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-            <span>${c.name}</span>
+            <span>${escapeHtml(c.name)}</span>
           </a>
         `).join('');
       })
       .catch(err => console.warn('Failed to render channels:', err));
   };
 
-  // Render events in right sidebar
+  // Render events in right sidebar - FIXED: Keep community ID consistent
   window.renderRightSidebarEvents = function(communityId) {
     if (!communityId) return;
     
@@ -319,10 +328,11 @@
           return;
         }
         
+        // IMPORTANT: Always use the current communityId, not from event data
         box.innerHTML = filtered.map(e => `
           <a href="/event-info/?community=${communityId}#${e.id}" class="event-item">
             <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-            <span>${e.name}</span>
+            <span>${escapeHtml(e.name)}</span>
           </a>
         `).join('');
       })

@@ -12,7 +12,7 @@
     #sidebar-container{flex-shrink:0}
     
     .community-list-sidebar {
-      width: 280px;
+      width: 250px;
       height: 100vh;
       background: #fff;
       border-right: 1px solid #e0e0e0;
@@ -26,27 +26,27 @@
     }
 
     .community-list-header {
-      padding: 20px 16px;
+      padding: 24px 20px;
       border-bottom: 1px solid #eee;
       background: #fafafa;
     }
 
     .community-list-title {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 700;
       color: #333;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .community-list-stats {
-      font-size: 12px;
+      font-size: 14px;
       color: #666;
     } 
 
     .communities-container {
       flex: 1;
       overflow-y: auto;
-      padding: 12px;
+      padding: 16px;
     }
     .communities-container::-webkit-scrollbar {width: 8px}
     .communities-container::-webkit-scrollbar-thumb {background: #ddd;border-radius: 8px}
@@ -54,12 +54,12 @@
     .community-card {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 10px;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 12px;
       background: #fff;
       border: 2px solid #eee;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       cursor: pointer;
       transition: all 0.2s;
       text-decoration: none;
@@ -80,9 +80,9 @@
     }
 
     .community-card-avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 10px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
       object-fit: cover;
       background: #eaeaea;
       flex-shrink: 0;
@@ -91,18 +91,18 @@
     .community-card-info {flex: 1;min-width: 0}
 
     .community-card-name {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
       color: #333;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .community-card-members {font-size: 12px;color: #666}
+    .community-card-members {font-size: 13px;color: #666}
 
-    .main-container{display:flex;flex:1;height:100vh;overflow:hidden;margin-left:480px}
+    .main-container{display:flex;flex:1;height:100vh;overflow:hidden;margin-left:450px}
     .event-container{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden}
     .event-body{flex:1;display:flex;min-height:0;background:#fff}
     .left-rail{display:none}
@@ -247,7 +247,7 @@
     .loading{text-align:center;padding:40px;color:#888}
     .error-message{background:#fee;color:#c33;padding:12px;border-radius:8px;margin-bottom:16px}
 
-    @media (max-width:1400px){.main-container{margin-left:600px}.event-content{padding:20px 30px}}
+    @media (max-width:1400px){.main-container{margin-left:450px}.event-content{padding:20px 30px}}
     @media (max-width:1024px){.community-list-sidebar{display:none}.main-container{margin-left:200px}.event-header{padding:20px 30px}.event-content{padding:20px 30px}}
     @media (max-width:768px){#sidebar-container{display:none}.main-container{margin-left:0}.event-header{padding:15px 20px;flex-direction:column;gap:10px}.event-content{padding:15px 20px}.event-table{font-size:13px}.event-table th, .event-table td{padding:12px 10px}}
   </style>
@@ -304,7 +304,7 @@
         </div>
       </div>
     </div>
-    <div id="right-sidebar-container"></div>
+    <div id="right-sidebar-container">{% include "circleup/right-sidebar.html" %}</div>
   </div>
 
   <div id="addEventModal" class="modal">
@@ -339,8 +339,6 @@
       </div>
     </div>
   </div>
-
-  {% include "circleup/right-sidebar.html" %}
   
   <script>
     const API_BASE = localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api";
@@ -351,7 +349,6 @@
     const params = new URLSearchParams(location.search);
     let COMMUNITY_ID = params.get("community");
     let COMMUNITIES_CACHE = [];
-    let CHANNELS_CACHE = [];
     let EVENTS_CACHE = [];
     let sortFilter = 'all';
 
@@ -362,11 +359,18 @@
       return `${root}${u.startsWith("/") ? "" : "/"}${u}`;
     };
 
+    const escapeHtml = (s) => {
+      return String(s).replace(/[&<>"']/g,(m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      })[m]);
+    };
+
     async function fetchCommunities(){
-      const r = await fetch(`${API_BASE}/home/`, { headers: H });
+      const r = await fetch(`${API_BASE}/communities/joined/`, { headers: H });
       if (!r.ok) throw new Error("Failed to load communities");
-      const home = await r.json();
-      COMMUNITIES_CACHE = Array.isArray(home.joined_communities) ? home.joined_communities : [];
+      const data = await r.json();
+      COMMUNITIES_CACHE = Array.isArray(data) ? data : [];
+      
       if (!COMMUNITY_ID && COMMUNITIES_CACHE.length > 0) {
         COMMUNITY_ID = COMMUNITIES_CACHE[0].id;
         const url = new URL(location.href);
@@ -374,14 +378,6 @@
         history.replaceState(null, "", url);
       }
       return COMMUNITIES_CACHE;
-    }
-
-    async function fetchChannels(){
-      const r = await fetch(`${API_BASE}/channels/`, { headers: H });
-      if (!r.ok) throw new Error("Failed to load channels");
-      const data = await r.json();
-      CHANNELS_CACHE = Array.isArray(data) ? data : (data.results || []);
-      return CHANNELS_CACHE;
     }
 
     async function fetchEvents(){
@@ -395,23 +391,41 @@
     function renderCommunityList(){
       const container = document.getElementById('communitiesContainer');
       if(!container) return;
+      
       if(!COMMUNITIES_CACHE.length){
-        container.innerHTML = '<div class="loading">No communities joined yet</div>';
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:#888">No communities joined yet</div>';
         return;
       }
-      container.innerHTML = COMMUNITIES_CACHE.map(comm => `
-        <div class="community-card ${String(comm.id) === String(COMMUNITY_ID) ? 'active' : ''}" onclick="selectCommunity('${comm.id}')">
-          <img src="${absUrl(comm.profile_pic || comm.background_banner)}" alt="${comm.name}" class="community-card-avatar" onerror="this.src='https://via.placeholder.com/60?text=C'">
-          <div class="community-card-info">
-            <div class="community-card-name">${comm.name || 'Unnamed Community'}</div>
-            <div class="community-card-members">${comm.member_count || 0} members</div>
+      
+      container.innerHTML = COMMUNITIES_CACHE.map(comm => {
+        const isActive = String(comm.id) === String(COMMUNITY_ID);
+        const thumb = absUrl(comm.profile_pic || comm.profilepic || comm.background_banner || comm.backgroundpic) || 'https://via.placeholder.com/60?text=C';
+        
+        return `
+          <div class="community-card ${isActive ? 'active' : ''}" onclick="selectCommunity('${comm.id}')">
+            <img src="${escapeHtml(thumb)}" alt="${escapeHtml(comm.name)}" class="community-card-avatar" onerror="this.src='https://via.placeholder.com/60?text=C'">
+            <div class="community-card-info">
+              <div class="community-card-name">${escapeHtml(comm.name || 'Unnamed Community')}</div>
+              <div class="community-card-members">${comm.member_count || comm.membercount || 0} members</div>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+      
+      updateCommunityListHeader();
+    }
+
+    function updateCommunityListHeader(){
       const currentComm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
+      const titleEl = document.getElementById('currentCommunityName');
+      const statsEl = document.getElementById('currentCommunityStats');
+      
       if(currentComm){
-        document.getElementById('currentCommunityName').textContent = currentComm.name || 'Community';
-        document.getElementById('currentCommunityStats').textContent = `${currentComm.member_count || 0} Members · ${currentComm.online_count || 0} Online`;
+        if(titleEl) titleEl.textContent = currentComm.name || 'Community';
+        if(statsEl) statsEl.textContent = `${currentComm.member_count || currentComm.membercount || 0} Members · ${currentComm.online_count || currentComm.onlinecount || 0} Online`;
+      } else {
+        if(titleEl) titleEl.textContent = 'Community';
+        if(statsEl) statsEl.textContent = '0 Members · 0 Online';
       }
     }
 
@@ -420,44 +434,61 @@
       const url = new URL(location.href);
       url.searchParams.set("community", COMMUNITY_ID);
       history.replaceState(null, "", url);
+      
       renderCommunityList();
-      syncRightSidebar();
       renderEvents();
+      
+      // Sync right sidebar with new community
+      if (window.syncRightSidebarFromCommunity) {
+        window.syncRightSidebarFromCommunity(COMMUNITY_ID);
+      }
+      if (window.renderRightSidebarChannels) {
+        window.renderRightSidebarChannels(COMMUNITY_ID);
+      }
+      if (window.renderRightSidebarEvents) {
+        window.renderRightSidebarEvents(COMMUNITY_ID);
+      }
     }
 
     function renderEvents(){
       const tbody = document.getElementById("eventsTableBody");
       if (!tbody) return;
+      
       let filteredEvents = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
+      
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+      
       if (sortFilter === 'upcoming') {
         filteredEvents = filteredEvents.filter(e => new Date(e.date) >= today);
       } else if (sortFilter === 'past') {
         filteredEvents = filteredEvents.filter(e => new Date(e.date) < today);
       }
+      
       filteredEvents.sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
         return sortFilter === 'past' ? dateB - dateA : dateA - dateB;
       });
+      
       if (!filteredEvents.length){
         const message = sortFilter === 'upcoming' ? 'No upcoming events' : sortFilter === 'past' ? 'No past events' : 'No events yet. Click "Add event" to create one!';
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:40px">${message}</td></tr>`;
         return;
       }
+      
       tbody.innerHTML = filteredEvents.map(ev => `
         <tr class="${ev.is_participant ? 'highlighted' : ''}" data-event-id="${ev.id}">
           <td>
-            <div class="event-name">${ev.name || 'Untitled Event'}
+            <div class="event-name">${escapeHtml(ev.name || 'Untitled Event')}
               <span class="edit-icon" onclick="editEvent('${ev.id}')">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
               </span>
             </div>
           </td>
-          <td class="event-date">${ev.date || ''}</td>
-          <td class="event-time">${ev.time || ''}</td>
-          <td class="event-location">${ev.location || ''}</td>
+          <td class="event-date">${escapeHtml(ev.date || '')}</td>
+          <td class="event-time">${escapeHtml(ev.time || '')}</td>
+          <td class="event-location">${escapeHtml(ev.location || '')}</td>
           <td>
             <button class="participation-btn ${ev.is_participant ? 'cancel' : 'join'}" onclick="toggleParticipation('${ev.id}', ${ev.is_participant})">
               ${ev.is_participant ? 'Cancel' : 'Join'}
@@ -529,13 +560,16 @@
       const date = document.getElementById('eventDate').value;
       const time = document.getElementById('eventTime').value;
       const location = document.getElementById('eventLocation').value.trim();
+      
       if (!name || !date || !time || !location){
         showModalError('Please fill all required fields');
         return;
       }
+      
       const btn = document.getElementById('saveEventBtn');
       btn.disabled = true;
       btn.textContent = 'Adding...';
+      
       try {
         const formattedTime = time.length === 5 ? `${time}:00` : time;
         const payload = {
@@ -546,6 +580,7 @@
           time: formattedTime,
           location
         };
+        
         const r = await fetch(`${API_BASE}/events/`, {method: 'POST', headers: H, body: JSON.stringify(payload)});
         if (!r.ok) {
           const errorText = await r.text();
@@ -558,8 +593,15 @@
           }
           throw new Error(errorMsg);
         }
+        
         await fetchEvents();
         renderEvents();
+        
+        // Update right sidebar events
+        if (window.renderRightSidebarEvents) {
+          window.renderRightSidebarEvents(COMMUNITY_ID);
+        }
+        
         closeModal();
         alert('Event created successfully!');
       } catch(e){
@@ -575,57 +617,24 @@
       alert('Edit event functionality coming soon!');
     }
 
-    function syncRightSidebar(){
-      const comm = COMMUNITIES_CACHE.find(c => String(c.id) === String(COMMUNITY_ID));
-      if (!comm) return;
-      const img = document.querySelector('[data-rs="image"]');
-      const name = document.querySelector('[data-rs="name"]');
-      const counts = document.querySelector('[data-rs="counts"]');
-      if (img) img.src = absUrl(comm.background_banner || comm.profile_pic) || "";
-      if (name) name.textContent = comm.name || "Community";
-      if (counts) counts.textContent = `${comm.member_count||0} Members, ${comm.online_count||0} Online`;
-      renderRightSidebarChannels();
-      renderRightSidebarEvents();
-    }
-
-    function renderRightSidebarChannels(){
-      const box = document.getElementById("channels-list");
-      if (!box) return;
-      const channels = CHANNELS_CACHE.filter(c => String(c.community) === String(COMMUNITY_ID));
-      if (!channels.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No channels</div>`;
-        return;
-      }
-      box.innerHTML = channels.map(c => `
-        <a href="/chat/?community=${encodeURIComponent(COMMUNITY_ID)}&channel=${encodeURIComponent(c.id)}" class="channel-item">
-          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-          <span>${c.name}</span>
-        </a>
-      `).join("");
-    }
-
-    function renderRightSidebarEvents(){
-      const box = document.getElementById("events-list");
-      if (!box) return;
-      const events = EVENTS_CACHE.filter(e => e.community && String(e.community.id) === String(COMMUNITY_ID));
-      if (!events.length){
-        box.innerHTML = `<div style="color:#888;padding:6px">No events</div>`;
-        return;
-      }
-      box.innerHTML = events.map(ev => `
-        <a href="/event-info/?community=${encodeURIComponent(COMMUNITY_ID)}#${ev.id}" class="event-item">
-          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 10h5v5H7z"/></svg>
-          <span>${ev.name}</span>
-        </a>
-      `).join("");
-    }
-
     async function boot(){
       try {
-        await Promise.all([fetchCommunities(), fetchChannels(), fetchEvents()]);
+        await Promise.all([fetchCommunities(), fetchEvents()]);
         renderCommunityList();
         renderEvents();
-        syncRightSidebar();
+        
+        // Initialize right sidebar
+        if (COMMUNITY_ID) {
+          if (window.syncRightSidebarFromCommunity) {
+            window.syncRightSidebarFromCommunity(COMMUNITY_ID);
+          }
+          if (window.renderRightSidebarChannels) {
+            window.renderRightSidebarChannels(COMMUNITY_ID);
+          }
+          if (window.renderRightSidebarEvents) {
+            window.renderRightSidebarEvents(COMMUNITY_ID);
+          }
+        }
       } catch(e){
         console.error('Boot error:', e);
         const tbody = document.getElementById("eventsTableBody");
