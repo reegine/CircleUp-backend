@@ -295,6 +295,75 @@ class CommunityViewSet(viewsets.ModelViewSet):
         channels = community.channels.all()
         serializer = ChannelSerializer(channels, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def members(self, request, pk=None):
+        """Get all members of a community"""
+        community = self.get_object()
+        members = community.members.all().select_related('user')
+        
+        # Serialize the data
+        member_data = []
+        for member in members:
+            member_data.append({
+                'id': str(member.user.id),
+                'user': UserSerializer(member.user).data,
+                'role': member.role,
+                'joined_at': member.joined_at,
+                'is_online': member.is_online
+            })
+        
+        return Response(member_data)
+    
+    @action(detail=True, methods=['post'], permission_classes=[IsCommunityAdmin])
+    def update_member_role(self, request, pk=None):
+        """Update member role (promote/demote) or remove member"""
+        community = self.get_object()
+        user_id = request.data.get('user_id')
+        new_role = request.data.get('role')
+        action_type = request.data.get('action')  # 'update_role' or 'remove'
+        
+        if not user_id:
+            return Response({'error': 'user_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            target_user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            member = CommunityMember.objects.get(community=community, user=target_user)
+        except CommunityMember.DoesNotExist:
+            return Response({'error': 'User is not a member of this community'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Prevent modifying the community creator's role
+        if community.created_by == target_user:
+            return Response({'error': 'Cannot modify role of community creator'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if action_type == 'remove':
+            # Remove member from community
+            member.delete()
+            return Response({'message': 'Member removed from community successfully'})
+        
+        elif action_type == 'update_role':
+            # Update member role
+            if not new_role:
+                return Response({'error': 'role is required for update action'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if new_role not in ['admin', 'moderator', 'member']:
+                return Response({'error': 'Invalid role. Must be admin, moderator, or member'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            member.role = new_role
+            member.save()
+            
+            return Response({
+                'message': f'Member role updated to {new_role} successfully',
+                'user_id': user_id,
+                'new_role': new_role
+            })
+        
+        else:
+            return Response({'error': 'Invalid action. Use "update_role" or "remove"'}, status=status.HTTP_400_BAD_REQUEST)
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
