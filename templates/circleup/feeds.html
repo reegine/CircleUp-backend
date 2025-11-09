@@ -125,14 +125,9 @@
     .page-head{margin-bottom:20px;flex-shrink:0}
     .page-head h2{margin:0 0 6px 0;font-size:24px;font-weight:600}
     .page-head .meta{color:var(--muted);font-size:14px}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-shrink:0}
-    .toolbar-left{display:flex;gap:12px;flex:1}
+    .toolbar{display:flex;justify-content:flex-start;align-items:center;margin-bottom:20px;gap:12px;flex-shrink:0}
     .post-btn{background:var(--brand);color:#fff;border:none;border-radius:25px;padding:12px 24px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s}
     .post-btn:hover{background:#d48d1f;transform:translateY(-1px)}
-    .search{flex:1;max-width:400px}
-    .search input{width:100%;border:1px solid var(--bd);border-radius:25px;padding:10px 20px;background:#fff;font-size:14px}
-    .sort-btn{border:1px solid var(--bd);background:#fff;border-radius:25px;padding:10px 20px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;transition:all 0.2s}
-    .sort-btn:hover{background:#f5f5f5}
     .feeds-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:24px;flex:1;align-content:start}
     .feed-card{background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;height:fit-content}
     .feed-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1)}
@@ -144,7 +139,7 @@
     .feed-card-time{font-size:11px;color:var(--muted);margin-left:auto}
     .feed-card-caption{font-size:13px;line-height:1.4;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     .feed-card-reactions{display:flex;gap:6px;margin-top:8px;font-size:12px}
-    .reaction-badge{background:#f5f5f5;padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px}
+    .reaction-count-badge{background:#f5f5f5;padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px}
     .empty{color:#94a3b8;padding:40px;text-align:center;background:#fff;border-radius:14px}
     .warn{background:#fff8e1;border:1px solid #ffe08a;color:#6b5b00;border-radius:10px;padding:12px;margin-bottom:12px;flex-shrink:0}
     .spinner{width:40px;height:40px;border-radius:50%;border:4px solid #e5e7eb;border-top-color:var(--brand);animation:spin .8s linear infinite;margin:40px auto}
@@ -168,10 +163,101 @@
     .post-author-name{font-weight:600;font-size:15px}
     .post-author-time{font-size:12px;color:var(--muted);margin-top:2px}
     .post-caption-full{font-size:14px;line-height:1.6;margin-bottom:20px}
-    .post-reactions-full{display:flex;gap:12px;flex-wrap:wrap;padding:16px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:16px}
-    .reaction-btn{background:#f5f5f5;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;transition:all 0.2s}
-    .reaction-btn:hover{background:#e5e5e5;transform:scale(1.05)}
-    .reaction-btn.active{background:#fff3e0;border:1px solid var(--brand)}
+    
+    /* ===== REACTION PICKER IN MODAL ===== */
+    .post-reactions-full{
+      padding:16px 0;
+      border-top:1px solid var(--bd);
+      border-bottom:1px solid var(--bd);
+      margin-bottom:16px;
+      position:relative;
+    }
+    
+    .modal-reaction-wrapper{
+      position:relative;
+      display:inline-block;
+    }
+    
+    .modal-main-reaction-btn{
+      border:none;
+      border-radius:25px;
+      padding:10px 20px;
+      font-size:16px;
+      cursor:pointer;
+      background:#f1f1f1;
+      transition:all .2s ease;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:500;
+      color:#666;
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+    }
+    
+    .modal-main-reaction-btn:hover{
+      background:#e8e8e8;
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,.12);
+    }
+    
+    .modal-main-reaction-btn.reacted{
+      background:#ffd93d;
+      color:#333;
+    }
+    
+    .modal-reaction-picker{
+      position:absolute;
+      bottom:calc(100% + 8px);
+      left:0;
+      background:white;
+      border-radius:30px;
+      padding:8px 12px;
+      box-shadow:0 4px 20px rgba(0,0,0,.15);
+      display:none;
+      gap:6px;
+      z-index:100;
+      animation:popIn .2s ease;
+    }
+    
+    @keyframes popIn{
+      from{
+        opacity:0;
+        transform:scale(0.8) translateY(10px);
+      }
+      to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+      }
+    }
+    
+    .modal-reaction-picker.show{
+      display:flex;
+    }
+    
+    .modal-reaction-option{
+      border:none;
+      background:transparent;
+      font-size:32px;
+      cursor:pointer;
+      padding:2px 4px;
+      border-radius:50%;
+      transition:all .15s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:48px;
+      height:48px;
+    }
+    
+    .modal-reaction-option:hover{
+      transform:scale(1.3);
+      background:#f5f5f5;
+    }
+    
+    .modal-reaction-option:active{
+      transform:scale(1.1);
+    }
+    
     .create-post-body{padding:24px}
     .upload-area{border:2px dashed var(--bd);border-radius:14px;padding:60px 40px;text-align:center;margin-bottom:20px;cursor:pointer;transition:all 0.2s}
     .upload-area:hover{border-color:var(--brand);background:#fafafa}
@@ -184,29 +270,98 @@
     .post-submit-btn{width:100%;background:var(--brand);color:#fff;border:none;padding:14px;border-radius:25px;font-weight:600;cursor:pointer;font-size:15px}
     .post-submit-btn:hover{background:#d48d1f}
     .post-submit-btn:disabled{background:#ccc;cursor:not-allowed}
-    
-    .sort-dropdown{position:relative}
-    .sort-menu{display:none;position:absolute;top:100%;right:0;background:#fff;border:1px solid var(--bd);border-radius:12px;margin-top:8px;min-width:180px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100}
-    .sort-menu.active{display:block}
-    .sort-option{padding:12px 16px;cursor:pointer;font-size:14px;transition:background 0.2s}
-    .sort-option:hover{background:#f5f5f5}
-    .sort-option.active{background:#fff3e0;color:var(--brand);font-weight:600}
-    
-    @media (max-width: 1400px){
-      .main{margin-left:450px}
-      .feeds-grid{grid-template-columns:repeat(2, 1fr)}
+    /* RIGHT SIDEBAR - konsisten dengan chat.html */
+    .right-sidebar {
+      width: 280px;
+      background: white;
+      border-left: 1px solid #e0e0e0;
+      overflow-y: auto;
+      height: 100vh;
+      flex-shrink: 0;
     }
-    @media (max-width: 1200px){.feeds-grid{grid-template-columns:repeat(2, 1fr)}}
-    @media (max-width: 1024px){
-      .community-list-sidebar{display:none}
-      .main{margin-left:200px;padding:12px}
-      .feeds-grid{grid-template-columns:1fr}
+
+    .right-sidebar::-webkit-scrollbar {
+      width: 8px;
     }
-    @media (max-width: 768px){
-      .main{margin-left:0}
-      .post-detail{flex-direction:column}
-      .post-image-large{max-width:100%}
+
+    .right-sidebar::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 8px;
     }
+
+    .rs-banner {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .rs-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .rs-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .rs-counts {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .rs-section {
+      padding: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .rs-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .channel-item, .event-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .channel-item:hover, .event-item:hover {
+      background: #f5f5f5;
+    }
+
+    .channel-item.active {
+      background: #fff3e0;
+      font-weight: 600;
+      color: #e59d2c;
+    }
+
+    .channel-item svg, .event-item svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .empty {
+      padding: 12px;
+      color: #888;
+      font-size: 13px;
+      text-align: center;
+    }
+
   </style>
 </head>
 <body>
@@ -237,27 +392,12 @@
         </header>
         
         <div class="toolbar">
-          <div class="toolbar-left">
-            <button id="createPostBtn" class="post-btn"><span>+</span> Post</button>
-            <div class="search">
-              <input id="q" type="search" placeholder="Cari posting…"/>
-            </div>
-          </div>
-          <div class="sort-dropdown">
-            <button id="sortBtn" class="sort-btn"><span>≡</span> Sort</button>
-            <div id="sortMenu" class="sort-menu">
-              <div class="sort-option active" data-sort="newest">Newest First</div>
-              <div class="sort-option" data-sort="oldest">Oldest First</div>
-              <div class="sort-option" data-sort="popular">Most Popular</div>
-            </div>
-          </div>
+          <button id="createPostBtn" class="post-btn"><span>+</span> Post</button>
         </div>
         
         <div id="feed" class="feeds-grid"></div>
         <div id="loading" class="spinner" style="display:none"></div>
       </section>
-      
-      {% include "circleup/right-sidebar.html" %}
     </main>
   </div>
   
@@ -292,11 +432,13 @@
     </div>
   </div>
 
+  {% include "circleup/right-sidebar.html" %}
+
 <script>
 (function(){
   const API_BASE = (localStorage.getItem("API_BASE") || "http://127.0.0.1:8000/api").replace(/\/$/,"");
   const ACCESS = localStorage.getItem("access");
-  const HEADERS = ACCESS ? {Authorization:`Bearer ${ACCESS}`} : {};
+  const HEADERS = ACCESS ? {Authorization:`Bearer ${ACCESS}`, "Content-Type": "application/json"} : {};
   const q = new URLSearchParams(location.search);
   let COMM_ID = q.get("community");
   const feedEl = document.getElementById('feed');
@@ -305,6 +447,17 @@
   let allCommunities = [];
   let currentSort = 'newest';
   let selectedFile = null;
+  let currentPostForModal = null;
+
+  // 6 REACTION TYPES sesuai API (sama dengan home.html)
+  const REACTIONS = [
+    { type: 'like', emoji: '👍', label: 'Like' },
+    { type: 'love', emoji: '❤️', label: 'Love' },
+    { type: 'laugh', emoji: '😂', label: 'Haha' },
+    { type: 'wow', emoji: '😮', label: 'Wow' },
+    { type: 'sad', emoji: '😢', label: 'Sad' },
+    { type: 'angry', emoji: '😠', label: 'Angry' }
+  ];
 
   const abs = (u) => {
     if(!u) return "";
@@ -332,7 +485,6 @@
       allCommunities = Array.isArray(data) ? data : [];
       renderCommunitiesList();
       
-      // Set default community if not specified
       if(!COMM_ID && allCommunities.length > 0){
         COMM_ID = allCommunities[0].id;
         const url = new URL(location.href);
@@ -395,21 +547,20 @@
     history.replaceState(null, '', url);
     
     renderCommunitiesList();
-    
-    // Use global right sidebar functions from right-sidebar.html
-    if (typeof window.syncRightSidebarFromCommunity === 'function') {
-      window.syncRightSidebarFromCommunity(COMM_ID);
-    }
-    if (typeof window.renderRightSidebarChannels === 'function') {
-      window.renderRightSidebarChannels(COMM_ID);
-    }
-    if (typeof window.renderRightSidebarEvents === 'function') {
-      window.renderRightSidebarEvents(COMM_ID);
-    }
-    
+    updateSidebarLinks();
     loadCommunity();
+    loadChannels();
+    loadEvents();
     loadPosts();
   };
+
+  function updateSidebarLinks(){
+    document.querySelectorAll('.sidebar-menu a').forEach(a=>{
+      const url = new URL(a.getAttribute('href'), location.origin);
+      url.searchParams.set('community', COMM_ID);
+      a.setAttribute('href', url.pathname + '?' + url.searchParams.toString());
+    });
+  }
 
   if(!COMM_ID){
     loadCommunitiesList().then(() => {
@@ -431,10 +582,48 @@
       const c = await fetchJSON(`${API_BASE}/communities/${COMM_ID}/`);
       const pageName = document.querySelector('[data-page="name"]');
       const pageCnts = document.querySelector('[data-page="counts"]');
+      const sImg = document.querySelector('[data-rs="image"]');
+      const sNm = document.querySelector('[data-rs="name"]');
+      const sCt = document.querySelector('[data-rs="counts"]');
       if(pageName) pageName.textContent = c.name || 'Community Feeds';
       const counts = `${c.member_count||0} Members, ${c.online_count||0} Online`;
       if(pageCnts) pageCnts.textContent = counts;
+      if(sImg) sImg.src = abs(c.background_banner || c.profile_pic);
+      if(sNm) sNm.textContent = c.name || 'Community';
+      if(sCt) sCt.textContent = counts;
     }catch(e){console.warn('Community load failed', e);}
+  }
+
+  async function loadChannels(){
+    if(!COMM_ID) return;
+    const list = document.getElementById('channels-list');
+    try{
+      const data = await fetchJSON(`${API_BASE}/channels/`);
+      const allChannels = Array.isArray(data) ? data : (data.results||[]);
+      const items = allChannels.filter(c => String(c.community) === String(COMM_ID));
+      list.innerHTML = items.length
+        ? items.map(c=>`<a class="channel-item" href="/chat/?channel=${encodeURIComponent(c.id)}&community=${encodeURIComponent(COMM_ID)}">💬 ${escapeHtml(c.name)}</a>`).join('')
+        : '<div class="empty">No channels</div>';
+    }catch(e){
+      console.warn('Channels load failed', e);
+      list.innerHTML = '<div class="empty">Gagal memuat channels</div>';
+    }
+  }
+
+  async function loadEvents(){
+    if(!COMM_ID) return;
+    const list = document.getElementById('events-list');
+    try{
+      const data = await fetchJSON(`${API_BASE}/events/`);
+      const items = Array.isArray(data) ? data : (data.results||data||[]);
+      const events = items.filter(e => (e.community && (String(e.community.id||e.community) === String(COMM_ID))));
+      list.innerHTML = events.length
+        ? events.map(e=>`<a class="event-item" href="/event-info/?community=${encodeURIComponent(COMM_ID)}#${e.id}">📅 ${escapeHtml(e.name)}</a>`).join('')
+        : '<div class="empty">No events</div>';
+    }catch(e){
+      console.warn('Events load failed', e);
+      list.innerHTML = '<div class="empty">Gagal memuat events</div>';
+    }
   }
 
   async function loadPosts(){
@@ -484,6 +673,11 @@
       const when = p.created_at ? new Date(p.created_at).toLocaleDateString() : '';
       const img = abs(p.image);
       const caption = p.caption || '';
+      
+      // Get user's current reaction
+      const userReaction = p.user_reaction;
+      const reactionEmoji = userReaction ? (REACTIONS.find(r => r.type === userReaction)?.emoji || '😊') : '😊';
+      
       return `
         <article class="feed-card" onclick="openPostModal('${p.id}')">
           ${img ? `<img class="feed-card-img" src="${img}" alt="post">` : ''}
@@ -495,8 +689,7 @@
             </div>
             ${caption ? `<div class="feed-card-caption">${escapeHtml(caption)}</div>` : ''}
             <div class="feed-card-reactions">
-              <span class="reaction-badge">❤️ ${p.like_count||0}</span>
-              <span class="reaction-badge">💬 ${p.reaction_count||0}</span>
+              <span class="reaction-count-badge">${reactionEmoji} ${p.like_count||0}</span>
             </div>
           </div>
         </article>
@@ -507,11 +700,30 @@
   window.openPostModal = function(postId){
     const post = allPosts.find(p => String(p.id) === String(postId));
     if(!post) return;
+    currentPostForModal = post;
+    
     const author = post.posted_by?.username || post.posted_by?.email || 'Anon';
     const avatar = abs(post.posted_by?.profile_pic);
     const when = post.created_at ? new Date(post.created_at).toLocaleString() : '';
     const img = abs(post.image);
     const caption = post.caption || 'No caption';
+    
+    const userReaction = post.user_reaction;
+    let buttonText = '😊 React';
+    let buttonClass = '';
+    
+    if (userReaction) {
+      const reaction = REACTIONS.find(r => r.type === userReaction);
+      if (reaction) {
+        buttonText = reaction.emoji + ' ' + reaction.label;
+        buttonClass = 'reacted';
+      }
+    }
+    
+    const reactionOptions = REACTIONS.map(r => 
+      `<button class="modal-reaction-option" data-type="${r.type}" title="${r.label}">${r.emoji}</button>`
+    ).join('');
+    
     document.getElementById('postDetailContent').innerHTML = `
       ${img ? `<div class="post-image-large"><img src="${img}" alt="post"></div>` : ''}
       <div class="post-info">
@@ -524,29 +736,112 @@
         </div>
         <div class="post-caption-full">${escapeHtml(caption)}</div>
         <div class="post-reactions-full">
-          <button class="reaction-btn ${post.user_liked?'active':''}" onclick="likePost('${post.id}')">❤️ ${post.like_count||0}</button>
-          <button class="reaction-btn">👍 Like</button>
-          <button class="reaction-btn">😂 Haha</button>
-          <button class="reaction-btn">😮 Wow</button>
+          <div class="modal-reaction-wrapper">
+            <button class="modal-main-reaction-btn ${buttonClass}" data-post-id="${post.id}">
+              ${buttonText}
+            </button>
+            <div class="modal-reaction-picker">
+              ${reactionOptions}
+            </div>
+          </div>
         </div>
       </div>
     `;
+    
     document.getElementById('postModal').classList.add('active');
+    setupModalReactionHandlers();
   };
+
+  function setupModalReactionHandlers() {
+    const modalBody = document.querySelector('#postModal .modal-body');
+    
+    // Handler untuk main button
+    modalBody.addEventListener('click', (e) => {
+      const mainBtn = e.target.closest('.modal-main-reaction-btn');
+      if (mainBtn) {
+        e.stopPropagation();
+        const picker = mainBtn.nextElementSibling;
+        picker.classList.toggle('show');
+        return;
+      }
+      
+      const reactionOption = e.target.closest('.modal-reaction-option');
+      if (reactionOption) {
+        e.stopPropagation();
+        handleModalReactionSelect(reactionOption);
+        return;
+      }
+    });
+    
+    // Close picker when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.modal-reaction-wrapper')) {
+        document.querySelectorAll('.modal-reaction-picker.show').forEach(p => {
+          p.classList.remove('show');
+        });
+      }
+    });
+  }
+
+  let isProcessingReaction = false;
+  async function handleModalReactionSelect(optionBtn) {
+    if (isProcessingReaction || !currentPostForModal) return;
+    isProcessingReaction = true;
+    
+    const type = optionBtn.dataset.type;
+    const postId = currentPostForModal.id;
+    const wrapper = optionBtn.closest('.modal-reaction-wrapper');
+    const mainBtn = wrapper.querySelector('.modal-main-reaction-btn');
+    const picker = wrapper.querySelector('.modal-reaction-picker');
+    
+    // Animation
+    optionBtn.style.transform = 'scale(1.4)';
+    setTimeout(() => optionBtn.style.transform = '', 150);
+    
+    try {
+      // GUNAKAN API /react/ untuk semua reaction types
+      const response = await fetch(`${API_BASE}/posts/${postId}/react/`, {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ reaction_type: type })
+      });
+      
+      if (!response.ok) throw new Error('Failed to react');
+      
+      const data = await response.json();
+      const reaction = REACTIONS.find(r => r.type === type);
+      
+      // Update button state
+      if (data.message.includes('removed')) {
+        mainBtn.textContent = '😊 React';
+        mainBtn.classList.remove('reacted');
+        currentPostForModal.user_reaction = null;
+      } else {
+        mainBtn.textContent = reaction.emoji + ' ' + reaction.label;
+        mainBtn.classList.add('reacted');
+        currentPostForModal.user_reaction = type;
+      }
+      
+      picker.classList.remove('show');
+      
+      // Update post in allPosts array
+      const postIndex = allPosts.findIndex(p => String(p.id) === String(postId));
+      if (postIndex !== -1) {
+        allPosts[postIndex].user_reaction = currentPostForModal.user_reaction;
+        renderPosts(); // Re-render feed to show updated reaction
+      }
+      
+    } catch (err) {
+      console.error('Reaction error:', err);
+      alert('Gagal mengirim reaksi. Coba lagi.');
+    } finally {
+      isProcessingReaction = false;
+    }
+  }
 
   window.closePostModal = function(){
     document.getElementById('postModal').classList.remove('active');
-  };
-
-  window.likePost = async function(postId){
-    try{
-      await fetchJSON(`${API_BASE}/posts/${postId}/like/`, {method:'POST'});
-      await loadPosts();
-      closePostModal();
-    }catch(e){
-      console.warn('Like failed', e);
-      alert('Failed to like post');
-    }
+    currentPostForModal = null;
   };
 
   document.getElementById('createPostBtn').addEventListener('click', ()=>{
@@ -612,74 +907,10 @@
     }
   });
 
-  document.getElementById('sortBtn').addEventListener('click', ()=>{
-    document.getElementById('sortMenu').classList.toggle('active');
-  });
-
-  document.querySelectorAll('.sort-option').forEach(opt=>{
-    opt.addEventListener('click', ()=>{
-      document.querySelectorAll('.sort-option').forEach(o=>o.classList.remove('active'));
-      opt.classList.add('active');
-      currentSort = opt.getAttribute('data-sort');
-      renderPosts();
-      document.getElementById('sortMenu').classList.remove('active');
-    });
-  });
-
-  document.getElementById('q').addEventListener('input', (e)=>{
-    const query = e.target.value.toLowerCase();
-    if(!query){
-      renderPosts();
-      return;
-    }
-    const filtered = allPosts.filter(p => 
-      (p.caption||'').toLowerCase().includes(query) ||
-      (p.posted_by?.username||'').toLowerCase().includes(query) ||
-      (p.posted_by?.email||'').toLowerCase().includes(query)
-    );
-    const sorted = sortPosts(filtered, currentSort);
-    feedEl.innerHTML = sorted.length ? sorted.map(p => {
-      const author = p.posted_by?.username || p.posted_by?.email || 'Anon';
-      const avatar = abs(p.posted_by?.profile_pic);
-      const when = p.created_at ? new Date(p.created_at).toLocaleDateString() : '';
-      const img = abs(p.image);
-      const caption = p.caption || '';
-      return `
-        <article class="feed-card" onclick="openPostModal('${p.id}')">
-          ${img ? `<img class="feed-card-img" src="${img}" alt="post">` : ''}
-          <div class="feed-card-content">
-            <div class="feed-card-author">
-              <img class="feed-card-avatar" src="${avatar||'https://via.placeholder.com/28'}" alt="${escapeHtml(author)}">
-              <span class="feed-card-name">${escapeHtml(author)}</span>
-              <span class="feed-card-time">${when}</span>
-            </div>
-            ${caption ? `<div class="feed-card-caption">${escapeHtml(caption)}</div>` : ''}
-            <div class="feed-card-reactions">
-              <span class="reaction-badge">❤️ ${p.like_count||0}</span>
-              <span class="reaction-badge">💬 ${p.reaction_count||0}</span>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join('') : '<div class="empty">Tidak ada hasil pencarian.</div>';
-  });
-
   function boot(){
-    Promise.all([loadCommunity()]).then(()=>{
+    updateSidebarLinks();
+    Promise.all([loadCommunity(), loadChannels(), loadEvents()]).then(()=>{
       loadPosts();
-      
-      // Use global right sidebar functions from right-sidebar.html
-      if (COMM_ID) {
-        if (typeof window.syncRightSidebarFromCommunity === 'function') {
-          window.syncRightSidebarFromCommunity(COMM_ID);
-        }
-        if (typeof window.renderRightSidebarChannels === 'function') {
-          window.renderRightSidebarChannels(COMM_ID);
-        }
-        if (typeof window.renderRightSidebarEvents === 'function') {
-          window.renderRightSidebarEvents(COMM_ID);
-        }
-      }
     });
   }
 })();

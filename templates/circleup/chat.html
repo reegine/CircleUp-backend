@@ -125,7 +125,7 @@
       margin-left:450px; /* 200px sidebar + 250px community list */
     }
 
-    /* CHAT LAYOUT */
+       /* CHAT LAYOUT */
     .chat-container{
       flex:1;
       display:flex;
@@ -146,6 +146,9 @@
     .chat-title{font-size:18px;font-weight:600}
     .chat-stats{font-size:12px;color:#888}
     .chat-body{flex:1;display:flex;min-height:0;background:#fff}
+
+    /* LEFT RAIL - Hide this as we now use community list sidebar */
+    .left-rail{display:none}
 
     /* MESSAGES */
     .messages-wrap{
@@ -249,6 +252,41 @@
     .send-btn:hover{
       background:#d48b1f;
     }
+    .send-btn:disabled{
+      background:#ccc;
+      cursor:not-allowed;
+    }
+
+    /* Empty state styling */
+    .empty-state {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #777;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .empty-state-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .empty-state-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .empty-state-text {
+      font-size: 14px;
+      color: #666;
+    }
 
     /* Responsive */
     @media (max-width:1400px){
@@ -285,21 +323,29 @@
 <div class="main-container">
   <div class="chat-container">
     <div class="chat-header">
-      <span class="chat-title" id="chatTitle">Chat</span>
+      <span class="chat-title" id="chatTitle">Select a channel</span>
       <span class="chat-stats" id="chatStats"></span>
     </div>
     <div class="chat-body">
+
       <!-- Messages -->
       <div class="messages-wrap">
         <div class="chat-messages" id="chatMessages">
-          <!-- messages injected by JS -->
+          <div class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+            </svg>
+            <div class="empty-state-title">Welcome to Chat</div>
+            <div class="empty-state-text">Select a community and channel to start chatting</div>
+          </div>
         </div>
 
         <!-- Input -->
         <div class="chat-input-container">
-          <input type="text" class="chat-input" placeholder="Type your message" id="messageInput">
-          <button class="send-btn" id="sendBtn" title="Send">➤</button>
+          <input type="text" class="chat-input" placeholder="Select a channel first" id="messageInput" disabled>
+          <button class="send-btn" id="sendBtn" title="Send" disabled>➤</button>
         </div>
+
       </div>
     </div>
   </div>
@@ -413,79 +459,58 @@
     }
   }
 
-  // Select community from list
+  // Select community from list - NO AUTO GENERAL CHANNEL
   window.selectCommunityFromList = function(commId){
     if (!commId) return;
     SELECTEDCOMMUNITYID = commId;
     
-    // Find the correct general channel for this specific community
-    const general = (CHANNELSCACHE || []).find(c => 
-      String(c.community) === String(commId) && 
-      (c.name || '').toLowerCase() === 'general'
-    );
+    // Clear current channel selection
+    channelId = null;
     
-    if (general) {
-      channelId = general.id;
-      try {
-        const url = new URL(location.href);
-        url.searchParams.set('channel', channelId);
-        url.searchParams.set('community', commId);
-        history.replaceState(null, '', url);
-      } catch(e){}
-      
-      // Sync right sidebar using global functions
-      if (typeof window.syncRightSidebarFromCommunity === 'function') {
-        window.syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-      }
-      if (typeof window.renderRightSidebarChannels === 'function') {
-        window.renderRightSidebarChannels(SELECTEDCOMMUNITYID);
-      }
-      if (typeof window.renderRightSidebarEvents === 'function') {
-        window.renderRightSidebarEvents(SELECTEDCOMMUNITYID);
-      }
-      
-      renderCommunityList();
-      updateChatHeader();
-      loadMessages();
-    } else {
-      // No general channel exists yet
-      channelId = null;
-      
-      // Still sync right sidebar even without channel
-      if (typeof window.syncRightSidebarFromCommunity === 'function') {
-        window.syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-      }
-      if (typeof window.renderRightSidebarChannels === 'function') {
-        window.renderRightSidebarChannels(SELECTEDCOMMUNITYID);
-      }
-      if (typeof window.renderRightSidebarEvents === 'function') {
-        window.renderRightSidebarEvents(SELECTEDCOMMUNITYID);
-      }
-      
-      renderCommunityList();
-      updateChatHeader();
-      const wrap = document.getElementById('chatMessages');
-      if (wrap) wrap.innerHTML = `
-        <div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#777;text-align:center;padding:24px;">
-          <div style="font-size:16px;margin-bottom:6px;">No messages yet</div>
-          <div style="font-size:14px;">Let's start our conversation.</div>
-        </div>`;
-    }
+    // Update URL to remove channel parameter
+    try {
+      const url = new URL(location.href);
+      url.searchParams.delete('channel');
+      history.replaceState(null, '', url);
+    } catch(e){}
+    
+    // Update UI
+    syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
+    renderRightSidebarChannels(SELECTEDCOMMUNITYID);
+    renderCommunityList();
+    updateChatHeader();
+    showEmptyChannelState();
   };
+
+  function showEmptyChannelState() {
+    const wrap = document.getElementById('chatMessages');
+    const input = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    
+    if (wrap) {
+      wrap.innerHTML = `
+        <div class="empty-state">
+          <svg class="empty-state-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+          <div class="empty-state-title">No channel selected</div>
+          <div class="empty-state-text">Select a channel from the right sidebar to start chatting</div>
+        </div>
+      `;
+    }
+    
+    if (input) {
+      input.disabled = true;
+      input.placeholder = "Select a channel first";
+    }
+    if (sendBtn) sendBtn.disabled = true;
+  }
 
   // ===== Chat actions =====
   async function sendMessage(){
     const input = document.getElementById("messageInput");
     const text = (input?.value || "").trim();
-    if (!text) return;
-
-    // Ensure we're sending to the correct community's general channel
-    if (!channelId && SELECTEDCOMMUNITYID) {
-      const general = (CHANNELSCACHE || []).find(
-        c => String(c.community) === String(SELECTEDCOMMUNITYID) && (c.name || '').toLowerCase() === 'general'
-      );
-      if (general) channelId = general.id;
-    }
+    if (!text || !channelId) return;
 
     // Validate that the channel belongs to the selected community
     const selectedChannel = CHANNELSCACHE.find(c => String(c.id) === String(channelId));
@@ -534,9 +559,12 @@
 
     if (!Array.isArray(list) || !list.length){
       if (wrap) wrap.innerHTML = `
-        <div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#777;text-align:center;padding:24px;">
-          <div style="font-size:16px;margin-bottom:6px;">No messages yet</div>
-          <div style="font-size:14px;">Let's start our conversation.</div>
+        <div class="empty-state">
+          <svg class="empty-state-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+          <div class="empty-state-title">No messages yet</div>
+          <div class="empty-state-text">Be the first to start the conversation!</div>
         </div>
       `;
       const stats = document.getElementById("chatStats");
@@ -544,7 +572,7 @@
       return;
     }
 
-    const ch = list?.channel || {};
+    const ch = list[0]?.channel || {};
     const titleEl = document.getElementById("chatTitle");
     if (titleEl) titleEl.textContent = ch.name || "Chat";
     const memberCount = ch.member_count ?? ch.members?.length;
@@ -590,76 +618,82 @@
     return (CHANNELSCACHE || []).find(x => String(x.id) === String(cid)) || null;
   }
 
-  // Update chat header to show community name
+  // Update chat header to show channel name or community name
   function updateChatHeader() {
     const titleEl = document.querySelector('.chat-title');
     if (!titleEl) return;
-    const comm = communityInfo(SELECTEDCOMMUNITYID);
     
-    // Show community name in header
-    if (comm) {
-      titleEl.textContent = comm.name;
+    if (channelId) {
+      const ch = channelInfo(channelId);
+      titleEl.textContent = ch ? ch.name : 'Chat';
     } else {
-      titleEl.textContent = 'Chat';
+      const comm = communityInfo(SELECTEDCOMMUNITYID);
+      titleEl.textContent = comm ? comm.name : 'Select a channel';
     }
   }
 
-  // ===== Setup channel click handlers for right sidebar =====
-  function setupRightSidebarChannelHandlers(){
-    // Wait a bit for right sidebar to render
-    setTimeout(() => {
-      const channelsList = document.getElementById('channels-list');
-      if (!channelsList) return;
-      
-      const channelLinks = channelsList.querySelectorAll('.channel-item');
-      channelLinks.forEach(link => {
-        // Clone to remove old event listeners
-        const newLink = link.cloneNode(true);
-        link.parentNode.replaceChild(newLink, link);
-        
-        newLink.addEventListener('click', async (e) => {
-          e.preventDefault();
-          
-          const href = newLink.getAttribute('href');
-          if (!href || href === '#') return;
-          
-          // Extract channel ID from href
-          const match = href.match(/channel=([^&]+)/);
-          if (match) {
-            channelId = match[1];
-            
-            // Update URL
-            try {
-              const url = new URL(location.href);
-              url.searchParams.set('channel', channelId);
-              if (SELECTEDCOMMUNITYID) {
-                url.searchParams.set('community', SELECTEDCOMMUNITYID);
-              }
-              history.replaceState(null, '', url);
-            } catch(err){}
-            
-            // Update active state
-            channelsList.querySelectorAll('.channel-item').forEach(item => {
-              item.classList.remove('active');
-            });
-            newLink.classList.add('active');
-            
-            // Load messages
-            updateChatHeader();
-            await loadMessages();
-          }
-        });
-      });
-    }, 200);
+  // ===== Right sidebar =====
+  function syncRightSidebarFromCommunity(commId){
+    const c = communityInfo(commId);
+    const imgEl = document.querySelector('[data-rs="image"]');
+    const nameEl = document.querySelector('[data-rs="name"]');
+    const countEl = document.querySelector('[data-rs="counts"]');
+    if (!c) return;
+    if (imgEl) imgEl.src = absUrl(c.backgroundpic || c.background_banner) || absUrl(c.profilepic || c.profile_pic) || 'https://via.placeholder.com/300x120';
+    if (nameEl) nameEl.textContent = c.name || "";
+    if (countEl) countEl.textContent = `${c.membercount || c.member_count || 0} Members, ${c.onlinecount || c.online_count || 0} Online`;
   }
 
-  // Override right sidebar render functions to add our handlers
-  if (window.renderRightSidebarChannels) {
-    const originalRenderChannels = window.renderRightSidebarChannels;
-    window.renderRightSidebarChannels = function(communityId) {
-      originalRenderChannels(communityId);
-      setupRightSidebarChannelHandlers();
-    };
+  // Show all channels for the community - NO VIRTUAL GENERAL
+  function renderRightSidebarChannels(commId){
+    const box = document.getElementById("channels-list");
+    if (!box) return;
+
+    const all = (CHANNELSCACHE || []).filter(c => String(c.community) === String(commId));
+
+    if (all.length === 0) {
+      box.innerHTML = '<div style="padding:12px;color:#888;font-size:13px;text-align:center;">No channels yet</div>';
+      return;
+    }
+
+    box.innerHTML = all.map(c => `
+      <a href="?channel=${c.id}" class="channel-item ${String(c.id) === String(channelId) ? 'active' : ''}" data-channel="${c.id}" data-comm="${commId}">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+        <span>${escapeHtml(c.name)}</span>
+      </a>
+    `).join("");
+
+    box.querySelectorAll(".channel-item").forEach(a => {
+      a.addEventListener("click", async (e) => {
+        e.preventDefault();
+        channelId = a.getAttribute("data-channel");
+        const comm = a.getAttribute('data-comm');
+        SELECTEDCOMMUNITYID = comm;
+        
+        try {
+          const url = new URL(location.href);
+          url.searchParams.set("channel", channelId);
+          history.replaceState(null, "", url);
+        } catch(e){}
+
+        box.querySelectorAll(".channel-item").forEach(x => x.classList.remove("active"));
+        a.classList.add("active");
+        
+        renderCommunityList();
+        updateChatHeader();
+        
+        // Enable input
+        const input = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        if (input) {
+          input.disabled = false;
+          input.placeholder = "Type your message";
+        }
+        if (sendBtn) sendBtn.disabled = false;
+        
+        await loadMessages();
+      });
+    });
   }
 
   // ===== Boot & events =====
@@ -667,28 +701,16 @@
     try{
       const data = await fetchMessages();
       const list = Array.isArray(data) ? data : (Array.isArray(data?.results) ? data.results : []);
-      if (!Array.isArray(list) || list.length === 0){
-        const wrap = document.getElementById("chatMessages");
-        if (wrap) {
-          wrap.innerHTML = `
-            <div style="height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#777;text-align:center;padding:24px;">
-              <div style="font-size:16px;margin-bottom:6px;">No messages yet</div>
-              <div style="font-size:14px;">Let's start our conversation.</div>
-            </div>
-          `;
-        }
-        updateChatHeader();
-        return;
-      }
-
+      
       render(list);
       updateChatHeader();
+      
       const cm = document.getElementById("chatMessages");
       if (cm) cm.scrollTop = cm.scrollHeight;
     } catch(e){
       console.warn(e);
       const wrap = document.getElementById("chatMessages");
-      if (wrap) wrap.innerHTML = `<p style="color:#b00020">Gagal memuat chat.</p>`;
+      if (wrap) wrap.innerHTML = `<p style="color:#b00020;padding:20px;text-align:center;">Gagal memuat chat.</p>`;
     }
   }
 
@@ -706,13 +728,18 @@
         const ch = (CHANNELSCACHE || []).find(c => String(c.id) === String(channelId));
         if (ch) {
           SELECTEDCOMMUNITYID = ch.community;
+          
+          // Enable input since we have a channel
+          const input = document.getElementById('messageInput');
+          const sendBtn = document.getElementById('sendBtn');
+          if (input) {
+            input.disabled = false;
+            input.placeholder = "Type your message";
+          }
+          if (sendBtn) sendBtn.disabled = false;
+          
+          await loadMessages();
         }
-      }
-      
-      // Handle community parameter from URL
-      const communityParam = params.get("community");
-      if (communityParam && !SELECTEDCOMMUNITYID) {
-        SELECTEDCOMMUNITYID = communityParam;
       }
       
       // If no community selected, pick first one
@@ -721,33 +748,16 @@
       }
 
       renderCommunityList();
-      
       if (SELECTEDCOMMUNITYID) {
-        // Sync right sidebar using global functions
-        if (typeof window.syncRightSidebarFromCommunity === 'function') {
-          window.syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
-        }
-        if (typeof window.renderRightSidebarChannels === 'function') {
-          window.renderRightSidebarChannels(SELECTEDCOMMUNITYID);
-        }
-        if (typeof window.renderRightSidebarEvents === 'function') {
-          window.renderRightSidebarEvents(SELECTEDCOMMUNITYID);
-        }
-        
-        // Setup channel handlers after render
-        setupRightSidebarChannelHandlers();
+        syncRightSidebarFromCommunity(SELECTEDCOMMUNITYID);
+        renderRightSidebarChannels(SELECTEDCOMMUNITYID);
       }
 
-      // Only auto-select general if no channel is specified
-      if (!channelId && SELECTEDCOMMUNITYID){
-        const general = (CHANNELSCACHE || []).find(c => 
-          String(c.community) === String(SELECTEDCOMMUNITYID) && 
-          (c.name || '').toLowerCase() === 'general'
-        );
-        if (general) channelId = general.id;
+      // Show empty state if no channel selected
+      if (!channelId) {
+        showEmptyChannelState();
       }
-
-      if (channelId) await loadMessages();
+      
       updateChatHeader();
     } catch(e){
       console.warn(e);
